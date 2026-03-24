@@ -845,16 +845,10 @@ function getFilteredEvents() {
 }
 
 function filterByType(typeKey) {
-  if (activeTypeFilter === typeKey) {
-    activeTypeFilter = null;
+  if (typeKey === null) {
+    activeTypeFilter = null;               // 전체 = 항상 필터 해제
   } else {
-    activeTypeFilter = typeKey;
-    // Switch to list view so filtering is clearly visible
-    if (typeKey !== null) {
-      currentView = 'list';
-      document.querySelectorAll('.view-tab').forEach((t,i) => t.classList.toggle('active', i===1));
-      document.querySelector('.nav-btns').style.display = 'flex';
-    }
+    activeTypeFilter = (activeTypeFilter === typeKey) ? null : typeKey; // 같은 거 누르면 해제
   }
   render();
   updateTypeFilterBanner();
