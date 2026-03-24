@@ -870,7 +870,7 @@ function render() {
   else if (currentView === 'hospital') renderHospital();
   else if (currentView === 'stats') renderStatsView();
   else if (currentView === 'voc') renderVocView();
-  updateHospitalDatalist();
+  updateAllHospitalSelects();
 }
 
 function updateLabel() {
@@ -931,7 +931,9 @@ function renderStats() {
     '<div class="stat-card" style="' + clickStyle + (activeTypeFilter==='purple'?activeStyle:'') + '" onclick="filterByType(\'purple\')">' +
       '<div class="num" style="color:#9f7aea">' + (counts.purple||0) + '</div><div class="lbl">학회 지원</div></div>' +
     '<div class="stat-card" style="' + clickStyle + (activeTypeFilter==='orange'?activeStyle:'') + '" onclick="filterByType(\'orange\')">' +
-      '<div class="num" style="color:#ed8936">' + (counts.orange||0) + '</div><div class="lbl">반차/연차</div></div>';
+      '<div class="num" style="color:#ed8936">' + (counts.orange||0) + '</div><div class="lbl">반차/연차</div></div>' +
+    '<div class="stat-card" style="' + clickStyle + (activeTypeFilter==='red'?activeStyle:'') + '" onclick="filterByType(\'red\')">' +
+      '<div class="num" style="color:#e53e3e">' + (counts.red||0) + '</div><div class="lbl">사내행사</div></div>';
 }
 
 function renderCalendar() {
@@ -1315,7 +1317,7 @@ function openAddModal(dateStr) {
   document.getElementById('f-complaint').value = '';
   setStatus('plan');
   updateTypeSelect();
-  updateHospitalDatalist();
+  updateAllHospitalSelects();
   document.getElementById('form-modal').classList.add('open');
   document.getElementById('f-title').focus();
 }
@@ -1509,7 +1511,7 @@ function openVocModal(id) {
     document.querySelectorAll('#voc-person-chips .chip-input').forEach(el => { el.checked = false; });
     document.getElementById('vs-open').checked = true;
   }
-  updateHospitalDatalist();
+  updateAllHospitalSelects();
   document.getElementById('voc-modal').classList.add('open');
 }
 
