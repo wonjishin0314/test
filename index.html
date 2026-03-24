@@ -1835,6 +1835,32 @@ function notifyEventSaved(eventData) {
     .catch(err => console.log('Teams notify failed:', err));
 }
 
+function notifyNewRequest(data) {
+  const s = loadNotifSettings();
+  if (!s.url) return;
+  const lines = [
+    '📋 새 교육 요청이 접수되었습니다.',
+    (data.institution ? '🏥 기관: ' + data.institution : ''),
+    (data.date ? '📅 날짜: ' + data.date + (data.startTime ? ' ' + data.startTime : '') : ''),
+    (data.products ? '🔬 제품: ' + data.products : ''),
+    (data.dept ? '👥 부서: ' + data.dept : ''),
+    (data.content ? '📝 내용: ' + data.content : ''),
+  ].filter(Boolean).join('\n');
+
+  const body = {
+    title: '⚠️ CA 교육 요청 대기함',
+    message: lines,
+    type: 'new_request',
+  };
+
+  fetch(s.url, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(body)
+  }).catch(err => console.log('Teams req notify failed:', err));
+}
+
 function checkUpcomingEvents() {
   // Legacy: kept for test button only
 }
@@ -1885,13 +1911,7 @@ function handleIncomingRequest() {
     if (!isDup) {
       requests.push({ ...data, id: Date.now(), status: 'pending', receivedAt: new Date().toISOString() });
       saveRequests(requests);
-      // Notify
-      if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification('새 교육 요청 접수', {
-          body: (data.institution || '') + ' · ' + (data.date || '') + ' · ' + (data.products || ''),
-          icon: './icon-192.png', tag: 'req-' + Date.now()
-        });
-      }
+      notifyNewRequest(data);
     }
     // Clean URL param
     history.replaceState({}, '', window.location.pathname);
