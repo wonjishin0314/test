@@ -55,8 +55,9 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
   background: white; padding: 8px 20px; display: flex; align-items: center;
   justify-content: space-between; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 6px;
 }
-.view-tabs { display: flex; gap: 3px; background: #f5f7fa; border-radius: 8px; padding: 3px; }
-.view-tab { padding: 5px 13px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; background: none; color: #718096; font-weight: 500; }
+.view-tabs { display: flex; gap: 3px; background: #f5f7fa; border-radius: 8px; padding: 3px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.view-tabs::-webkit-scrollbar { display: none; }
+.view-tab { padding: 5px 13px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; background: none; color: #718096; font-weight: 500; white-space: nowrap; flex-shrink: 0; }
 .view-tab.active { background: white; color: #764ba2; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
 .nav-btns { display: flex; align-items: center; gap: 6px; }
 .nav-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
@@ -317,6 +318,7 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
     <button class="view-tab" onclick="switchView('list', this)">목록</button>
     <button class="view-tab" onclick="switchView('hospital', this)">병원별</button>
     <button class="view-tab" onclick="switchView('stats', this)">통계</button>
+    <button class="view-tab" onclick="switchView('voc', this)">💬 VoC</button>
   </div>
   <div class="nav-btns">
     <button class="nav-btn" onclick="navigate(-1)">&#8249;</button>
@@ -848,7 +850,7 @@ function switchView(view, btn) {
   document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   const nb = document.querySelector('.nav-btns');
-  nb.style.display = (view === 'stats' || view === 'hospital') ? 'none' : 'flex';
+  nb.style.display = (view === 'stats' || view === 'hospital' || view === 'voc') ? 'none' : 'flex';
   render();
 }
 
@@ -867,6 +869,7 @@ function render() {
   else if (currentView === 'list') renderList();
   else if (currentView === 'hospital') renderHospital();
   else if (currentView === 'stats') renderStatsView();
+  else if (currentView === 'voc') renderVocView();
   updateHospitalDatalist();
 }
 
@@ -1137,45 +1140,49 @@ function renderStatsView() {
   });
   html += '</tbody></table></div>';
 
-  // VoC section: event-linked complaints + standalone entries
+  document.getElementById('view-container').innerHTML = '<div>' + html + '</div>';
+}
+
+function renderVocView() {
   const vocEvts = events.filter(e => (e.complaint && e.complaint.trim()) || (e.inquiry && e.inquiry.trim())).sort((a,b) => b.date.localeCompare(a.date));
   const vocStandalone = loadVocEntries().sort((a,b) => b.date.localeCompare(a.date));
   const totalVoc = vocEvts.length + vocStandalone.length;
 
-  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin:20px 0 10px">' +
-    '<h3 style="font-size:14px;font-weight:700;color:#e53e3e">💬 문의사항 / VoC (' + totalVoc + '건)</h3>' +
-    '<button class="btn btn-save" style="padding:5px 12px;font-size:12px" onclick="openVocModal()">+ VoC 등록</button>' +
+  let html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">' +
+    '<h3 style="font-size:15px;font-weight:700;color:#e53e3e">💬 문의사항 / VoC <span style="font-size:12px;font-weight:500;color:#718096">(' + totalVoc + '건)</span></h3>' +
+    '<button class="btn btn-save" style="padding:6px 14px;font-size:13px" onclick="openVocModal()">+ VoC 등록</button>' +
     '</div>';
 
   if (!totalVoc) {
-    html += '<div style="text-align:center;padding:30px;color:#a0aec0;background:white;border-radius:10px;">등록된 VoC가 없습니다.<br><small>유선 문의나 방문 시 접수된 내용을 "+ VoC 등록"으로 추가하세요.</small></div>';
+    html += '<div style="text-align:center;padding:40px 20px;color:#a0aec0;background:white;border-radius:12px;">' +
+      '<div style="font-size:36px;margin-bottom:10px">💬</div>' +
+      '<div style="font-weight:600;margin-bottom:6px">등록된 VoC가 없습니다</div>' +
+      '<small>유선 문의나 외근 중 접수된 내용을<br>"+ VoC 등록"으로 추가하세요.</small></div>';
   } else {
-    // Standalone VoC entries
     if (vocStandalone.length) {
-      html += '<div style="font-size:11px;color:#718096;font-weight:600;margin-bottom:6px">독립 VoC (유선/방문/이메일 등)</div>';
+      html += '<div style="font-size:11px;color:#718096;font-weight:700;margin-bottom:8px;letter-spacing:0.3px">📞 독립 VoC (유선/방문/이메일 등)</div>';
       vocStandalone.forEach(v => {
         const isDone = v.status === 'done';
         const channelIcon = { '유선':'📞', '방문':'🏥', '이메일':'📧', '기타':'💬' }[v.channel] || '💬';
         html += '<div class="voc-card" onclick="openVocModal(' + v.id + ')">' +
-          '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">' +
           '<div class="voc-meta">' + channelIcon + ' ' + v.channel + ' · ' + v.date + (v.hospital ? ' · 🏥 ' + v.hospital : '') + (v.person ? ' · ' + v.person : '') + '</div>' +
-          '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:' + (isDone?'#c6f6d5':'#fed7d7') + ';color:' + (isDone?'#276749':'#9b2c2c') + '">' + (isDone?'처리완료':'미처리') + '</span>' +
+          '<span style="flex-shrink:0;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:' + (isDone?'#c6f6d5':'#fed7d7') + ';color:' + (isDone?'#276749':'#9b2c2c') + '">' + (isDone?'처리완료':'미처리') + '</span>' +
           '</div>' +
-          '<div class="voc-text" style="margin-top:5px">' + v.content.replace(/\n/g,'<br>') + '</div>' +
+          '<div class="voc-text" style="margin-top:6px">' + v.content.replace(/\n/g,'<br>') + '</div>' +
           (v.response ? '<div style="margin-top:6px;padding:6px 10px;background:#f5f7fa;border-radius:6px;font-size:12px;color:#4a5568"><strong>대응:</strong> ' + v.response.replace(/\n/g,'<br>') + '</div>' : '') +
           '</div>';
       });
     }
-    // Event-linked complaints
     if (vocEvts.length) {
-      html += '<div style="font-size:11px;color:#718096;font-weight:600;margin:12px 0 6px">일정 연결 VoC (외근 중 접수)</div>';
+      html += '<div style="font-size:11px;color:#718096;font-weight:700;margin:14px 0 8px;letter-spacing:0.3px">📅 일정 연결 VoC (외근 중 접수)</div>';
       vocEvts.forEach(e => {
         const m = getTypeMeta(e.type);
         html += '<div class="voc-card" onclick="showDetail(' + e.id + ')">' +
           '<div class="voc-meta">📅 외근 · ' + e.date + (e.hospital ? ' · 🏥 ' + e.hospital : '') + (e.person ? ' · ' + e.person : '') + ' · <span style="background:' + m.bg + ';color:' + m.color + ';padding:1px 6px;border-radius:10px;font-size:10px">' + m.label + '</span></div>' +
-          '<div style="font-size:13px;font-weight:600;margin:3px 0">' + e.title + '</div>' +
+          '<div style="font-size:13px;font-weight:600;margin:4px 0 6px">' + e.title + '</div>' +
           (e.inquiry ? '<div class="voc-text" style="color:#2b6cb0"><strong>❓ 문의:</strong> ' + e.inquiry.replace(/\n/g,'<br>') + '</div>' : '') +
-        (e.complaint ? '<div class="voc-text" style="color:#e53e3e;margin-top:3px"><strong>🚨 컴플레인:</strong> ' + e.complaint.replace(/\n/g,'<br>') + '</div>' : '') +
+          (e.complaint ? '<div class="voc-text" style="color:#e53e3e;margin-top:4px"><strong>🚨 컴플레인:</strong> ' + e.complaint.replace(/\n/g,'<br>') + '</div>' : '') +
           '</div>';
       });
     }
