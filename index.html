@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>CA 외근 캘린더</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="외근캘린더">
+<meta name="theme-color" content="#764ba2">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: #f5f7fa; color: #2d3748; }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white; padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  header .subtitle { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .header-right { display: flex; gap: 8px; }
+  .btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+  .btn-white { background: white; color: #764ba2; }
+  .btn-white:hover { background: #f0e6ff; }
+  .btn-primary { background: #764ba2; color: white; border: 2px solid white; }
+  .btn-primary:hover { background: #5a3780; }
+
+  /* Legend */
+  .legend {
+    background: white; padding: 10px 24px; display: flex; gap: 20px; flex-wrap: wrap;
+    border-bottom: 1px solid #e2e8f0; align-items: center; font-size: 13px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+  /* View switcher */
+  .view-bar {
+    background: white; padding: 10px 24px; display: flex; align-items: center;
+    justify-content: space-between; border-bottom: 1px solid #e2e8f0;
+  }
+  .view-tabs { display: flex; gap: 4px; background: #f5f7fa; border-radius: 8px; padding: 4px; }
+  .view-tab { padding: 6px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; background: none; color: #718096; font-weight: 500; }
+  .view-tab.active { background: white; color: #764ba2; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+  .nav-btns { display: flex; align-items: center; gap: 8px; }
+  .nav-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .nav-btn:hover { background: #f5f7fa; }
+  #current-label { font-weight: 700; font-size: 16px; min-width: 140px; text-align: center; }
+
+  /* Main area */
+  .main { padding: 20px 24px; }
+
+  /* Calendar grid */
+  .calendar-grid { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .cal-header { display: grid; grid-template-columns: repeat(7,1fr); background: #f8f4ff; }
+  .cal-header-cell { text-align: center; padding: 10px; font-size: 12px; font-weight: 700; color: #718096; }
+  .cal-header-cell:first-child { color: #e53e3e; }
+  .cal-header-cell:last-child { color: #3182ce; }
+  .cal-body { display: grid; grid-template-columns: repeat(7,1fr); }
+  .cal-cell {
+    min-height: 110px; border-right: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0;
+    padding: 6px; position: relative; cursor: pointer; transition: background 0.15s;
+  }
+  .cal-cell:hover { background: #faf8ff; }
+  .cal-cell.other-month { background: #fafafa; }
+  .cal-cell.today { background: #f0e6ff; }
+  .cal-cell.today .date-num { background: #764ba2; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+  .date-num { font-size: 13px; font-weight: 600; color: #2d3748; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+  .cal-cell.other-month .date-num { color: #cbd5e0; }
+  .cal-cell:nth-child(7n+1) .date-num { color: #e53e3e; }
+  .cal-cell:nth-child(7n) .date-num { color: #3182ce; }
+  .cal-cell.today .date-num { color: white !important; }
+  .event-chip {
+    font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-top: 2px; cursor: pointer;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+    display: block; font-weight: 500; line-height: 1.5;
+  }
+  .more-chip { font-size: 10px; color: #718096; padding: 2px 4px; cursor: pointer; }
+
+  /* List view */
+  .list-view { display: flex; flex-direction: column; gap: 8px; }
+  .list-month-header { font-size: 14px; font-weight: 700; color: #764ba2; padding: 8px 0 4px; border-bottom: 2px solid #f0e6ff; margin-top: 8px; }
+  .list-item {
+    background: white; border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    display: flex; align-items: flex-start; gap: 14px; cursor: pointer; transition: box-shadow 0.2s;
+    border-left: 4px solid transparent;
+  }
+  .list-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .list-date { font-size: 12px; color: #718096; min-width: 80px; }
+  .list-date .day { font-size: 20px; font-weight: 700; color: #2d3748; line-height: 1; }
+  .list-body { flex: 1; }
+  .list-title { font-size: 14px; font-weight: 600; }
+  .list-meta { font-size: 12px; color: #718096; margin-top: 4px; }
+  .list-badge { font-size: 10px; padding: 2px 8px; border-radius: 12px; font-weight: 600; display: inline-block; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(2px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white; border-radius: 16px; padding: 28px; width: 480px; max-width: 95vw;
+    max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: #2d3748; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 600; color: #718096; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 10px 12px; border: 1.5px solid #e2e8f0; border-radius: 8px;
+    font-size: 14px; font-family: inherit; transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none; border-color: #764ba2;
+  }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+  .btn-danger { background: #fff5f5; color: #e53e3e; border: 1px solid #fed7d7; }
+  .btn-danger:hover { background: #fed7d7; }
+  .btn-save { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+  .btn-save:hover { opacity: 0.9; }
+  .btn-cancel { background: #f7fafc; color: #718096; border: 1px solid #e2e8f0; }
+
+  /* Detail modal */
+  .detail-type-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+  .detail-row { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+  .detail-label { color: #718096; min-width: 60px; font-weight: 500; }
+  .detail-value { color: #2d3748; flex: 1; }
+
+  /* Stats bar */
+  .stats-bar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .stat-card { background: white; border-radius: 10px; padding: 12px 18px; flex: 1; min-width: 120px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .stat-card .num { font-size: 24px; font-weight: 700; color: #764ba2; }
+  .stat-card .lbl { font-size: 12px; color: #718096; margin-top: 2px; }
+
+  /* Colors per type */
+  .type-green { background: #c6f6d5; color: #276749; border-color: #48bb78; }
+  .type-pink { background: #fed7e2; color: #97266d; border-color: #ed64a6; }
+  .type-purple { background: #e9d8fd; color: #553c9a; border-color: #9f7aea; }
+  .type-orange { background: #feebc8; color: #c05621; border-color: #ed8936; }
+  .type-red { background: #fed7d7; color: #9b2c2c; border-color: #fc8181; }
+
+  @media (max-width: 600px) {
+    .main { padding: 10px; }
+    header { padding: 10px 14px; }
+    header h1 { font-size: 18px; }
+    .header-right .btn { padding: 7px 11px; font-size: 12px; }
+    .legend { padding: 8px 12px; gap: 10px; font-size: 12px; }
+
+    /* View bar: stack tabs on top, nav below */
+    .view-bar { flex-direction: column; gap: 8px; padding: 10px 12px; align-items: stretch; }
+    .view-tabs { align-self: flex-start; }
+    .nav-btns { justify-content: center; }
+    #current-label { min-width: 110px; font-size: 14px; }
+    .nav-btn { width: 30px; height: 30px; }
+    .nav-btns .btn { padding: 5px 10px; font-size: 12px; }
+
+    /* Stats: 2x2 grid */
+    .stats-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-card { min-width: 0; padding: 10px 14px; }
+    .stat-card .num { font-size: 20px; }
+
+    /* Calendar cells */
+    .cal-cell { min-height: 60px; padding: 3px; }
+    .date-num { font-size: 11px; width: 20px; height: 20px; }
+    .event-chip { font-size: 9px; padding: 1px 3px; border-radius: 3px; }
+    .cal-header-cell { font-size: 11px; padding: 8px 4px; }
+
+    /* Modal */
+    .modal { padding: 18px; border-radius: 12px; }
+    .form-row { grid-template-columns: 1fr; }
+
+    /* List */
+    .list-item { padding: 12px; gap: 10px; }
+    .list-date .day { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>📅 CA 외근 캘린더</h1>
+    <div class="subtitle">뉴로펫 CA팀 외근 일정 관리</div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-white" onclick="openAddModal()">+ 일정 추가</button>
+  </div>
+</header>
+
+<div class="legend">
+  <strong style="font-size:12px;color:#718096;">외근 유형:</strong>
+  <div class="legend-item"><div class="legend-dot" style="background:#48bb78"></div>교육 외근</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ed64a6"></div>추가 교육</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#9f7aea"></div>학회 지원</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ed8936"></div>반차/연차</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#fc8181"></div>공휴일·사내행사</div>
+</div>
+
+<div class="view-bar">
+  <div class="view-tabs">
+    <button class="view-tab active" onclick="switchView('calendar', this)">월 캘린더</button>
+    <button class="view-tab" onclick="switchView('list', this)">목록</button>
+  </div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="navigate(-1)">‹</button>
+    <span id="current-label"></span>
+    <button class="nav-btn" onclick="navigate(1)">›</button>
+    <button class="btn btn-white" onclick="goToday()" style="padding:6px 12px;border:1px solid #e2e8f0;background:white;color:#764ba2;">오늘</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="stats-bar" id="stats-bar"></div>
+  <div id="view-container"></div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="form-modal">
+  <div class="modal">
+    <h2 id="form-title">일정 추가</h2>
+    <div class="form-group">
+      <label>일정 제목 *</label>
+      <input type="text" id="f-title" placeholder="예: [NM] 고대 구로병원 교육">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>날짜 *</label>
+        <input type="date" id="f-date">
+      </div>
+      <div class="form-group">
+        <label>시간</label>
+        <input type="time" id="f-time">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>유형</label>
+      <select id="f-type">
+        <option value="green">🟢 교육 외근</option>
+        <option value="pink">🩷 추가 교육</option>
+        <option value="purple">🟣 학회 지원</option>
+        <option value="orange">🟠 반차/연차</option>
+        <option value="red">🚫 공휴일·사내행사</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>담당자</label>
+        <input type="text" id="f-person" placeholder="예: DH, 선용, 원지">
+      </div>
+      <div class="form-group">
+        <label>제품</label>
+        <input type="text" id="f-product" placeholder="예: tES LAB, INNK">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>주소</label>
+      <input type="text" id="f-address" placeholder="주소 입력">
+    </div>
+    <div class="form-group">
+      <label>챙겨야 할 것</label>
+      <textarea id="f-notes" placeholder="준비물, 메모 등"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" id="delete-btn" onclick="deleteEvent()" style="display:none;">삭제</button>
+      <button class="btn btn-cancel" onclick="closeModal('form-modal')">취소</button>
+      <button class="btn btn-save" onclick="saveEvent()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal">
+    <div id="detail-content"></div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" onclick="closeModal('detail-modal')">닫기</button>
+      <button class="btn btn-save" id="detail-edit-btn">수정</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- Data ---
+const STORAGE_KEY = 'ca_calendar_events_v2';
+
+const TYPE_META = {
+  green:  { label: '교육 외근',     emoji: '🟢', bg: '#c6f6d5', color: '#276749', border: '#48bb78', dot: '#48bb78' },
+  pink:   { label: '추가 교육',     emoji: '🩷', bg: '#fed7e2', color: '#97266d', border: '#ed64a6', dot: '#ed64a6' },
+  purple: { label: '학회 지원',     emoji: '🟣', bg: '#e9d8fd', color: '#553c9a', border: '#9f7aea', dot: '#9f7aea' },
+  orange: { label: '반차/연차',     emoji: '🟠', bg: '#feebc8', color: '#c05621', border: '#ed8936', dot: '#ed8936' },
+  red:    { label: '공휴일·사내행사', emoji: '🚫', bg: '#fed7d7', color: '#9b2c2c', border: '#fc8181', dot: '#fc8181' },
+};
+
+// Initial seed data from PDF
+const SEED = [
+  { title: '[NI] 고대 구로병원 SCALE PET 설치', date: '2025-11-10', type: 'green', person: '', product: 'SCALE PET', address: '', notes: '' },
+  { title: '[NM] 강동 경희대학교병원', date: '2025-11-17', time: '12:00', type: 'green', person: '', product: 'NM', address: '', notes: '' },
+  { title: '[NM] 인천백병원 tES lab 교육 참관', date: '2025-11-24', time: '12:00', type: 'green', person: '', product: 'tES LAB', address: '', notes: '' },
+  { title: '[NM] 대한뇌자극학회 핸즈온 워크샵 지원 백범김구', date: '2025-11-25', time: '15:00', type: 'purple', person: '', product: 'NM', address: '백범김구기념관', notes: '' },
+  { title: '오전 반차/1시 출근', date: '2025-11-26', type: 'orange', person: '', product: '', address: '', notes: '' },
+  { title: '단풍데이 서울숲', date: '2025-11-27', type: 'red', person: '', product: '', address: '서울숲', notes: '' },
+  { title: '[NM] 한양대 구리병원 innk & tES LAB 데모 설치', date: '2025-12-01', time: '16:00', type: 'green', person: '', product: 'INNK, tES LAB', address: '', notes: '' },
+  { title: 'PM팀 회식', date: '2025-12-02', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '[NM] 중앙대 광명병원 tES lab & INNK 교육', date: '2025-12-03', time: '16:30', type: 'green', person: '', product: 'tES LAB, INNK', address: '', notes: '' },
+  { title: '[NM] 다빈치병원 tES lab & INNK 교육', date: '2025-12-04', time: '13:00', type: 'green', person: '', product: 'tES LAB, INNK', address: '', notes: '' },
+  { title: '[NM] 양산부산대병원 tES lab & INNK 교육', date: '2025-12-05', time: '12:00', type: 'green', person: '', product: 'tES LAB, INNK', address: '', notes: '' },
+  { title: '[NM] 아주대병원', date: '2025-12-08', time: '12:00', type: 'green', person: '', product: 'NM', address: '', notes: '' },
+  { title: '[NM] 한일병원', date: '2025-12-09', time: '13:30', type: 'green', person: '', product: 'NM', address: '서울 도봉구 우이천로 308', notes: '' },
+  { title: '[NM] 제주대병원', date: '2025-12-10', time: '12:00', type: 'green', person: '', product: 'NM', address: '', notes: '' },
+  { title: '[SP] 용인세브란스병원', date: '2025-12-11', time: '09:00', type: 'green', person: 'DH', product: 'JKD B001-3', address: '경기 용인시 기흥구 동백죽전대로 363', notes: '매뉴얼, 설명서, 교육동의서' },
+  { title: '연차', date: '2025-12-15', type: 'orange', person: '', product: '', address: '', notes: '' },
+  { title: '연차', date: '2025-12-16', type: 'orange', person: '', product: '', address: '', notes: '' },
+  { title: '[NM] 아주대병원 추가교육(2차 방문)', date: '2025-12-17', time: '12:00', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
+  { title: 'AQUA 데이터 선정 마감', date: '2025-12-19', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '[NM] 광주센트럴병원', date: '2025-12-22', time: '12:00', type: 'green', person: '', product: 'NM', address: '', notes: '' },
+  { title: '[사내] 해외세일즈 제품교육', date: '2025-12-24', time: '09:00', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '크리스마스', date: '2025-12-25', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '[NM] 노원을지대학교병원', date: '2025-12-26', time: '14:00', type: 'green', person: '', product: 'NM', address: '서울특별시 노원구 한글비석로 68', notes: '' },
+  { title: 'Josh 미팅 1~3pm', date: '2025-12-27', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '[NM] 이대목동병원 tES LAB & Innk 제품설명회 & 데모', date: '2025-12-29', time: '12:00', type: 'green', person: '', product: 'tES LAB, INNK', address: '', notes: '' },
+  { title: '팀 워크샵', date: '2025-12-30', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '연말회사행사', date: '2025-12-31', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '새해첫날', date: '2026-01-01', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '[NM] 아주대병원 교육', date: '2026-01-07', time: '14:00', type: 'green', person: '', product: 'NM', address: '', notes: '' },
+  { title: '원지 오후 반반차', date: '2026-01-08', type: 'orange', person: '원지', product: '', address: '', notes: '' },
+  { title: '오후 반반차 / 4시 퇴근', date: '2026-01-09', type: 'orange', person: '', product: '', address: '', notes: '' },
+  { title: '[NM] 원주 세브란스병원 교육', date: '2026-01-12', time: '13:30', type: 'green', person: '', product: 'NM', address: '', notes: '' },
+  { title: '[NM] 명지춘혜재활병원', date: '2026-01-13', time: '12:30', type: 'green', person: '', product: 'NM', address: '서울특별시 영등포구 대림로 223', notes: '' },
+  { title: '[NM] 명지춘혜재활병원 2차 교육', date: '2026-01-15', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
+  { title: 'Singapore General Hospital (SGH) 온라인 미팅', date: '2026-01-16', time: '15:00', type: 'green', person: 'DH', product: '', address: '온라인', notes: '' },
+  { title: '[NM] 명지춘혜재활병원 3차 교육', date: '2026-01-20', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
+  { title: '[NM] 명지춘혜재활병원 4차 교육', date: '2026-01-21', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
+  { title: '선용 오후 반차', date: '2026-01-22', type: 'orange', person: '선용', product: '', address: '', notes: '' },
+  { title: '선용 연차', date: '2026-01-26', type: 'orange', person: '선용', product: '', address: '', notes: '' },
+  { title: '설날', date: '2026-01-28', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '설날', date: '2026-01-29', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '설날', date: '2026-01-30', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '[NM] 상남한마음병원 tES LAB+innk 데모 시연', date: '2026-02-02', time: '12:30', type: 'green', person: '', product: 'tES LAB, INNK', address: '', notes: '' },
+  { title: '[NM] 중앙대병원 재활의학과 tES LAB + innk 데모 시연', date: '2026-02-03', time: '12:30', type: 'green', person: '', product: 'tES LAB, INNK', address: '', notes: '' },
+  { title: '치매학회 삼정호텔', date: '2026-02-05', type: 'purple', person: '', product: '', address: '삼정호텔', notes: '' },
+  { title: '2026년 2월 6일 대체 휴일', date: '2026-02-06', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: 'GPH 대리점 영업 대상 교육', date: '2026-02-09', type: 'green', person: '', product: '', address: '', notes: '' },
+  { title: '[NM] 중앙대 재활의학과 추가 교육', date: '2026-02-10', time: '15:00', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
+  { title: '[NM] 중앙대병원 재활의학과 추가교육', date: '2026-02-12', time: '15:00', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
+  { title: '국내 세일즈 NM 교육 및 케이스 스터디', date: '2026-02-16', time: '09:35', type: 'green', person: '', product: 'NM', address: '', notes: '' },
+  { title: '[NM] 원주의료원', date: '2026-02-17', time: '10:00', type: 'green', person: '', product: 'NM', address: '', notes: '' },
+  { title: '[NM] 원주의료원 추가 교육', date: '2026-02-18', time: '11:00', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
+  { title: '원지 오후 반차', date: '2026-02-19', type: 'orange', person: '원지', product: '', address: '', notes: '' },
+  { title: '8:00 미국팀 미팅', date: '2026-02-23', time: '08:00', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '뉴로써티 오픈', date: '2026-02-24', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '[NM] 중앙대 광명병원', date: '2026-03-05', time: '11:30', type: 'green', person: '', product: 'NM', address: '경기도 광명시 덕안로 110 중앙대학교광명병원', notes: '' },
+  { title: '선용/원지 연차', date: '2026-03-10', type: 'orange', person: '선용, 원지', product: '', address: '', notes: '' },
+  { title: '메일로 전사 공지', date: '2026-03-16', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: 'NSA 영상 작업 마감일', date: '2026-03-20', type: 'red', person: '', product: '', address: '', notes: '' },
+];
+
+// --- State ---
+let events = [];
+let currentView = 'calendar';
+let currentYear = new Date().getFullYear();
+let currentMonth = new Date().getMonth(); // 0-indexed
+let editingId = null;
+
+function loadEvents() {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    events = JSON.parse(stored);
+  } else {
+    events = SEED.map((e, i) => ({ ...e, id: Date.now() + i, time: e.time || '' }));
+    saveToStorage();
+  }
+}
+
+function saveToStorage() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+}
+
+// --- Navigation ---
+function navigate(dir) {
+  if (currentView === 'calendar') {
+    currentMonth += dir;
+    if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+    if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  } else {
+    currentYear += dir;
+  }
+  render();
+}
+
+function goToday() {
+  currentYear = new Date().getFullYear();
+  currentMonth = new Date().getMonth();
+  render();
+}
+
+function switchView(view, btn) {
+  currentView = view;
+  document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+// --- Render ---
+function render() {
+  updateLabel();
+  renderStats();
+  if (currentView === 'calendar') renderCalendar();
+  else renderList();
+}
+
+function updateLabel() {
+  const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  if (currentView === 'calendar') {
+    document.getElementById('current-label').textContent = `${currentYear}년 ${monthNames[currentMonth]}`;
+  } else {
+    document.getElementById('current-label').textContent = `${currentYear}년`;
+  }
+}
+
+function renderStats() {
+  const monthEvents = events.filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === currentYear && (currentView === 'list' || d.getMonth() === currentMonth);
+  });
+  const counts = {};
+  monthEvents.forEach(e => { counts[e.type] = (counts[e.type] || 0) + 1; });
+  const total = monthEvents.length;
+
+  document.getElementById('stats-bar').innerHTML = `
+    <div class="stat-card"><div class="num">${total}</div><div class="lbl">${currentView==='calendar'?'이번 달':'올해'} 전체</div></div>
+    <div class="stat-card"><div class="num" style="color:#48bb78">${(counts.green||0)+(counts.pink||0)}</div><div class="lbl">교육 외근</div></div>
+    <div class="stat-card"><div class="num" style="color:#9f7aea">${counts.purple||0}</div><div class="lbl">학회 지원</div></div>
+    <div class="stat-card"><div class="num" style="color:#ed8936">${counts.orange||0}</div><div class="lbl">반차/연차</div></div>
+  `;
+}
+
+function renderCalendar() {
+  const dayNames = ['일','월','화','수','목','금','토'];
+  const today = new Date();
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const daysInPrev = new Date(currentYear, currentMonth, 0).getDate();
+
+  let html = `<div class="calendar-grid">
+    <div class="cal-header">
+      ${dayNames.map(d => `<div class="cal-header-cell">${d}</div>`).join('')}
+    </div>
+    <div class="cal-body">`;
+
+  const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+  for (let i = 0; i < totalCells; i++) {
+    let date, month, year, otherMonth = false;
+    if (i < firstDay) {
+      date = daysInPrev - firstDay + i + 1;
+      month = currentMonth - 1;
+      year = currentYear;
+      if (month < 0) { month = 11; year--; }
+      otherMonth = true;
+    } else if (i >= firstDay + daysInMonth) {
+      date = i - firstDay - daysInMonth + 1;
+      month = currentMonth + 1;
+      year = currentYear;
+      if (month > 11) { month = 0; year++; }
+      otherMonth = true;
+    } else {
+      date = i - firstDay + 1;
+      month = currentMonth;
+      year = currentYear;
+    }
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(date).padStart(2,'0')}`;
+    const isToday = year === today.getFullYear() && month === today.getMonth() && date === today.getDate();
+    const dayEvents = events.filter(e => e.date === dateStr).sort((a,b) => (a.time||'99:99').localeCompare(b.time||'99:99'));
+
+    html += `<div class="cal-cell ${otherMonth?'other-month':''} ${isToday?'today':''}" onclick="onCellClick('${dateStr}')">
+      <div class="date-num">${date}</div>`;
+
+    const maxShow = 3;
+    dayEvents.slice(0, maxShow).forEach(e => {
+      const m = TYPE_META[e.type] || TYPE_META.green;
+      html += `<div class="event-chip" style="background:${m.bg};color:${m.color};" onclick="event.stopPropagation();showDetail(${e.id})" title="${e.title}">
+        ${e.time ? e.time+' ' : ''}${e.title}
+      </div>`;
+    });
+    if (dayEvents.length > maxShow) {
+      html += `<div class="more-chip">+${dayEvents.length - maxShow}개 더</div>`;
+    }
+    html += `</div>`;
+  }
+
+  html += `</div></div>`;
+  document.getElementById('view-container').innerHTML = html;
+}
+
+function renderList() {
+  const yearEvents = events
+    .filter(e => new Date(e.date).getFullYear() === currentYear)
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.time||'').localeCompare(b.time||''));
+
+  if (yearEvents.length === 0) {
+    document.getElementById('view-container').innerHTML = `<div style="text-align:center;padding:60px;color:#a0aec0;">이 연도에 일정이 없습니다.</div>`;
+    return;
+  }
+
+  const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const dayNames = ['일','월','화','수','목','금','토'];
+  let html = `<div class="list-view">`;
+  let lastMonth = -1;
+
+  yearEvents.forEach(e => {
+    const d = new Date(e.date);
+    const m = TYPE_META[e.type] || TYPE_META.green;
+    if (d.getMonth() !== lastMonth) {
+      lastMonth = d.getMonth();
+      html += `<div class="list-month-header">${currentYear}년 ${monthNames[lastMonth]}</div>`;
+    }
+    html += `<div class="list-item" style="border-left-color:${m.dot}" onclick="showDetail(${e.id})">
+      <div class="list-date">
+        <div class="day">${d.getDate()}</div>
+        <div>${monthNames[d.getMonth()]} ${dayNames[d.getDay()]}</div>
+        ${e.time ? `<div style="color:#764ba2;font-weight:600">${e.time}</div>` : ''}
+      </div>
+      <div class="list-body">
+        <div class="list-title">${e.title}</div>
+        <div class="list-meta">
+          <span class="list-badge" style="background:${m.bg};color:${m.color}">${m.emoji} ${m.label}</span>
+          ${e.person ? `&nbsp;· ${e.person}` : ''}
+          ${e.product ? `&nbsp;· ${e.product}` : ''}
+        </div>
+        ${e.address ? `<div class="list-meta" style="margin-top:4px">📍 ${e.address}</div>` : ''}
+        ${e.notes ? `<div class="list-meta" style="margin-top:4px">📝 ${e.notes}</div>` : ''}
+      </div>
+    </div>`;
+  });
+
+  html += `</div>`;
+  document.getElementById('view-container').innerHTML = html;
+}
+
+// --- Event CRUD ---
+function onCellClick(dateStr) {
+  openAddModal(dateStr);
+}
+
+function openAddModal(dateStr) {
+  editingId = null;
+  document.getElementById('form-title').textContent = '일정 추가';
+  document.getElementById('delete-btn').style.display = 'none';
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-date').value = dateStr || '';
+  document.getElementById('f-time').value = '';
+  document.getElementById('f-type').value = 'green';
+  document.getElementById('f-person').value = '';
+  document.getElementById('f-product').value = '';
+  document.getElementById('f-address').value = '';
+  document.getElementById('f-notes').value = '';
+  document.getElementById('form-modal').classList.add('open');
+  document.getElementById('f-title').focus();
+}
+
+function openEditModal(id) {
+  const e = events.find(ev => ev.id === id);
+  if (!e) return;
+  editingId = id;
+  document.getElementById('form-title').textContent = '일정 수정';
+  document.getElementById('delete-btn').style.display = 'block';
+  document.getElementById('f-title').value = e.title;
+  document.getElementById('f-date').value = e.date;
+  document.getElementById('f-time').value = e.time || '';
+  document.getElementById('f-type').value = e.type;
+  document.getElementById('f-person').value = e.person || '';
+  document.getElementById('f-product').value = e.product || '';
+  document.getElementById('f-address').value = e.address || '';
+  document.getElementById('f-notes').value = e.notes || '';
+  document.getElementById('detail-modal').classList.remove('open');
+  document.getElementById('form-modal').classList.add('open');
+}
+
+function saveEvent() {
+  const title = document.getElementById('f-title').value.trim();
+  const date = document.getElementById('f-date').value;
+  if (!title || !date) { alert('제목과 날짜는 필수입니다.'); return; }
+
+  const data = {
+    title,
+    date,
+    time: document.getElementById('f-time').value,
+    type: document.getElementById('f-type').value,
+    person: document.getElementById('f-person').value.trim(),
+    product: document.getElementById('f-product').value.trim(),
+    address: document.getElementById('f-address').value.trim(),
+    notes: document.getElementById('f-notes').value.trim(),
+  };
+
+  if (editingId) {
+    const idx = events.findIndex(e => e.id === editingId);
+    if (idx !== -1) events[idx] = { ...events[idx], ...data };
+  } else {
+    events.push({ id: Date.now(), ...data });
+  }
+
+  saveToStorage();
+  closeModal('form-modal');
+  render();
+}
+
+function deleteEvent() {
+  if (!editingId) return;
+  if (!confirm('이 일정을 삭제하시겠습니까?')) return;
+  events = events.filter(e => e.id !== editingId);
+  saveToStorage();
+  closeModal('form-modal');
+  render();
+}
+
+function showDetail(id) {
+  const e = events.find(ev => ev.id === id);
+  if (!e) return;
+  const m = TYPE_META[e.type] || TYPE_META.green;
+  const d = new Date(e.date);
+  const dayNames = ['일','월','화','수','목','금','토'];
+  const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+  document.getElementById('detail-content').innerHTML = `
+    <div class="detail-type-badge" style="background:${m.bg};color:${m.color}">${m.emoji} ${m.label}</div>
+    <h2 style="font-size:18px;margin-bottom:16px;line-height:1.4">${e.title}</h2>
+    <div class="detail-row"><span class="detail-label">날짜</span><span class="detail-value">${d.getFullYear()}년 ${monthNames[d.getMonth()]} ${d.getDate()}일 (${dayNames[d.getDay()]})${e.time ? ' ' + e.time : ''}</span></div>
+    ${e.person ? `<div class="detail-row"><span class="detail-label">담당자</span><span class="detail-value">${e.person}</span></div>` : ''}
+    ${e.product ? `<div class="detail-row"><span class="detail-label">제품</span><span class="detail-value">${e.product}</span></div>` : ''}
+    ${e.address ? `<div class="detail-row"><span class="detail-label">주소</span><span class="detail-value">📍 ${e.address}</span></div>` : ''}
+    ${e.notes ? `<div class="detail-row"><span class="detail-label">준비물</span><span class="detail-value">📝 ${e.notes}</span></div>` : ''}
+  `;
+
+  document.getElementById('detail-edit-btn').onclick = () => openEditModal(id);
+  document.getElementById('detail-modal').classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  }
+  if (e.key === 'Enter' && e.ctrlKey && document.getElementById('form-modal').classList.contains('open')) {
+    saveEvent();
+  }
+});
+
+// --- Init ---
+loadEvents();
+render();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(r => console.log('SW registered'))
+      .catch(e => console.log('SW error', e));
+  });
+}
+</script>
+</body>
+</html>
