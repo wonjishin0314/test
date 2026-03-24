@@ -12,174 +12,225 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: #f5f7fa; color: #2d3748; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: #f5f7fa; color: #2d3748; }
 
-  /* Header */
-  header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white; padding: 16px 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  }
-  header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-  header .subtitle { font-size: 12px; opacity: 0.85; margin-top: 2px; }
-  .header-right { display: flex; gap: 8px; }
-  .btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; }
-  .btn-white { background: white; color: #764ba2; }
-  .btn-white:hover { background: #f0e6ff; }
-  .btn-primary { background: #764ba2; color: white; border: 2px solid white; }
-  .btn-primary:hover { background: #5a3780; }
+header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white; padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
+.header-right { display: flex; gap: 6px; }
+.btn { padding: 7px 13px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+.btn-white { background: white; color: #764ba2; }
+.btn-white:hover { background: #f0e6ff; }
+.btn-primary { background: #764ba2; color: white; border: 2px solid white; }
+.btn-save { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+.btn-save:hover { opacity: 0.9; }
+.btn-cancel { background: #f7fafc; color: #718096; border: 1px solid #e2e8f0; }
+.btn-danger { background: #fff5f5; color: #e53e3e; border: 1px solid #fed7d7; }
+.btn-danger:hover { background: #fed7d7; }
 
-  /* Legend */
-  .legend {
-    background: white; padding: 10px 24px; display: flex; gap: 20px; flex-wrap: wrap;
-    border-bottom: 1px solid #e2e8f0; align-items: center; font-size: 13px;
-  }
-  .legend-item { display: flex; align-items: center; gap: 6px; }
-  .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.legend {
+  background: white; padding: 8px 20px; display: flex; gap: 14px; flex-wrap: wrap;
+  border-bottom: 1px solid #e2e8f0; align-items: center; font-size: 12px;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
 
-  /* View switcher */
-  .view-bar {
-    background: white; padding: 10px 24px; display: flex; align-items: center;
-    justify-content: space-between; border-bottom: 1px solid #e2e8f0;
-  }
-  .view-tabs { display: flex; gap: 4px; background: #f5f7fa; border-radius: 8px; padding: 4px; }
-  .view-tab { padding: 6px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; background: none; color: #718096; font-weight: 500; }
-  .view-tab.active { background: white; color: #764ba2; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
-  .nav-btns { display: flex; align-items: center; gap: 8px; }
-  .nav-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-  .nav-btn:hover { background: #f5f7fa; }
-  #current-label { font-weight: 700; font-size: 16px; min-width: 140px; text-align: center; }
+.filter-bar {
+  background: white; padding: 7px 20px; display: flex; gap: 6px; flex-wrap: wrap;
+  border-bottom: 1px solid #e2e8f0; align-items: center;
+}
+.filter-chip {
+  padding: 4px 11px; border-radius: 20px; border: 1.5px solid #e2e8f0;
+  background: white; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.15s;
+}
+.filter-chip.active { background: #764ba2; color: white; border-color: #764ba2; }
 
-  /* Main area */
-  .main { padding: 20px 24px; }
+.view-bar {
+  background: white; padding: 8px 20px; display: flex; align-items: center;
+  justify-content: space-between; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 6px;
+}
+.view-tabs { display: flex; gap: 3px; background: #f5f7fa; border-radius: 8px; padding: 3px; }
+.view-tab { padding: 5px 13px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; background: none; color: #718096; font-weight: 500; }
+.view-tab.active { background: white; color: #764ba2; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+.nav-btns { display: flex; align-items: center; gap: 6px; }
+.nav-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+.nav-btn:hover { background: #f5f7fa; }
+#current-label { font-weight: 700; font-size: 15px; min-width: 130px; text-align: center; }
 
-  /* Calendar grid */
-  .calendar-grid { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-  .cal-header { display: grid; grid-template-columns: repeat(7,1fr); background: #f8f4ff; }
-  .cal-header-cell { text-align: center; padding: 10px; font-size: 12px; font-weight: 700; color: #718096; }
-  .cal-header-cell:first-child { color: #e53e3e; }
-  .cal-header-cell:last-child { color: #3182ce; }
-  .cal-body { display: grid; grid-template-columns: repeat(7,1fr); }
-  .cal-cell {
-    min-height: 110px; border-right: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0;
-    padding: 6px; position: relative; cursor: pointer; transition: background 0.15s;
-  }
-  .cal-cell:hover { background: #faf8ff; }
-  .cal-cell.other-month { background: #fafafa; }
-  .cal-cell.today { background: #f0e6ff; }
-  .cal-cell.today .date-num { background: #764ba2; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
-  .date-num { font-size: 13px; font-weight: 600; color: #2d3748; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
-  .cal-cell.other-month .date-num { color: #cbd5e0; }
-  .cal-cell:nth-child(7n+1) .date-num { color: #e53e3e; }
-  .cal-cell:nth-child(7n) .date-num { color: #3182ce; }
-  .cal-cell.today .date-num { color: white !important; }
-  .event-chip {
-    font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-top: 2px; cursor: pointer;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
-    display: block; font-weight: 500; line-height: 1.5;
-  }
-  .more-chip { font-size: 10px; color: #718096; padding: 2px 4px; cursor: pointer; }
+.main { padding: 16px 20px; }
+.stats-bar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.stat-card { background: white; border-radius: 10px; padding: 10px 16px; flex: 1; min-width: 110px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.stat-card .num { font-size: 22px; font-weight: 700; color: #764ba2; }
+.stat-card .lbl { font-size: 11px; color: #718096; margin-top: 2px; }
 
-  /* List view */
-  .list-view { display: flex; flex-direction: column; gap: 8px; }
-  .list-month-header { font-size: 14px; font-weight: 700; color: #764ba2; padding: 8px 0 4px; border-bottom: 2px solid #f0e6ff; margin-top: 8px; }
-  .list-item {
-    background: white; border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    display: flex; align-items: flex-start; gap: 14px; cursor: pointer; transition: box-shadow 0.2s;
-    border-left: 4px solid transparent;
-  }
-  .list-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-  .list-date { font-size: 12px; color: #718096; min-width: 80px; }
-  .list-date .day { font-size: 20px; font-weight: 700; color: #2d3748; line-height: 1; }
-  .list-body { flex: 1; }
-  .list-title { font-size: 14px; font-weight: 600; }
-  .list-meta { font-size: 12px; color: #718096; margin-top: 4px; }
-  .list-badge { font-size: 10px; padding: 2px 8px; border-radius: 12px; font-weight: 600; display: inline-block; }
+/* Calendar */
+.calendar-grid { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.cal-header { display: grid; grid-template-columns: repeat(7,1fr); background: #f8f4ff; }
+.cal-header-cell { text-align: center; padding: 9px; font-size: 12px; font-weight: 700; color: #718096; }
+.cal-header-cell:first-child { color: #e53e3e; }
+.cal-header-cell:last-child { color: #3182ce; }
+.cal-body { display: grid; grid-template-columns: repeat(7,1fr); }
+.cal-cell {
+  min-height: 110px; border-right: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0;
+  padding: 5px; position: relative; cursor: pointer; transition: background 0.15s;
+}
+.cal-cell:hover { background: #faf8ff; }
+.cal-cell.other-month { background: #fafafa; }
+.cal-cell.today {
+  background: #ede0ff;
+  outline: 2px solid #764ba2;
+  outline-offset: -1px;
+  z-index: 1;
+  position: relative;
+}
+.date-num { font-size: 13px; font-weight: 600; color: #2d3748; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.cal-cell.today .date-num { background: #764ba2; color: white !important; }
+.cal-cell.other-month .date-num { color: #cbd5e0; }
+.cal-cell:nth-child(7n+1) .date-num { color: #e53e3e; }
+.cal-cell:nth-child(7n) .date-num { color: #3182ce; }
+.event-chip {
+  font-size: 10px; padding: 2px 5px; border-radius: 4px; margin-top: 2px; cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  display: block; font-weight: 500; line-height: 1.5;
+}
+.chip-done { opacity: 0.55; }
+.status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 3px; vertical-align: middle; }
+.more-chip { font-size: 10px; color: #718096; padding: 1px 3px; cursor: pointer; }
 
-  /* Modal */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-    z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(2px);
-  }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: white; border-radius: 16px; padding: 28px; width: 480px; max-width: 95vw;
-    max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-  }
-  .modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: #2d3748; }
-  .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; font-size: 12px; font-weight: 600; color: #718096; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .form-group input, .form-group select, .form-group textarea {
-    width: 100%; padding: 10px 12px; border: 1.5px solid #e2e8f0; border-radius: 8px;
-    font-size: 14px; font-family: inherit; transition: border-color 0.2s;
-  }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-    outline: none; border-color: #764ba2;
-  }
-  .form-group textarea { resize: vertical; min-height: 80px; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
-  .btn-danger { background: #fff5f5; color: #e53e3e; border: 1px solid #fed7d7; }
-  .btn-danger:hover { background: #fed7d7; }
-  .btn-save { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-  .btn-save:hover { opacity: 0.9; }
-  .btn-cancel { background: #f7fafc; color: #718096; border: 1px solid #e2e8f0; }
+/* List view */
+.list-view { display: flex; flex-direction: column; gap: 7px; }
+.list-month-header { font-size: 13px; font-weight: 700; color: #764ba2; padding: 7px 0 3px; border-bottom: 2px solid #f0e6ff; margin-top: 6px; }
+.list-item {
+  background: white; border-radius: 10px; padding: 12px 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  display: flex; align-items: flex-start; gap: 12px; cursor: pointer; transition: box-shadow 0.2s;
+  border-left: 4px solid transparent;
+}
+.list-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.list-date { font-size: 11px; color: #718096; min-width: 72px; }
+.list-date .day { font-size: 19px; font-weight: 700; color: #2d3748; line-height: 1; }
+.list-body { flex: 1; min-width: 0; }
+.list-title { font-size: 14px; font-weight: 600; }
+.list-meta { font-size: 11px; color: #718096; margin-top: 3px; }
+.list-badge { font-size: 10px; padding: 2px 7px; border-radius: 12px; font-weight: 600; display: inline-block; }
 
-  /* Detail modal */
-  .detail-type-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
-  .detail-row { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
-  .detail-label { color: #718096; min-width: 60px; font-weight: 500; }
-  .detail-value { color: #2d3748; flex: 1; }
+/* Hospital view */
+.hosp-group { background: white; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; }
+.hosp-header { padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #f8f4ff; border-bottom: 1px solid #e2e8f0; }
+.hosp-name { font-size: 14px; font-weight: 700; color: #553c9a; }
+.hosp-count { font-size: 11px; background: #764ba2; color: white; border-radius: 12px; padding: 2px 8px; }
+.hosp-events { padding: 8px 0; }
+.hosp-event-row { padding: 8px 16px; border-bottom: 1px solid #f5f7fa; cursor: pointer; transition: background 0.15s; }
+.hosp-event-row:last-child { border-bottom: none; }
+.hosp-event-row:hover { background: #faf8ff; }
 
-  /* Stats bar */
-  .stats-bar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-  .stat-card { background: white; border-radius: 10px; padding: 12px 18px; flex: 1; min-width: 120px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-  .stat-card .num { font-size: 24px; font-weight: 700; color: #764ba2; }
-  .stat-card .lbl { font-size: 12px; color: #718096; margin-top: 2px; }
+/* Stats / VoC view */
+.stats-table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 16px; }
+.stats-table th { background: #f8f4ff; padding: 10px 12px; font-size: 12px; color: #553c9a; text-align: center; border-bottom: 1px solid #e2e8f0; }
+.stats-table td { padding: 10px 12px; font-size: 13px; text-align: center; border-bottom: 1px solid #f5f7fa; }
+.stats-table tr:last-child td { border-bottom: none; }
+.stats-table td:first-child { text-align: left; font-weight: 600; }
+.voc-card { background: white; border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); cursor: pointer; }
+.voc-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.voc-meta { font-size: 11px; color: #718096; margin-bottom: 4px; }
+.voc-text { font-size: 13px; line-height: 1.6; color: #2d3748; }
 
-  /* Colors per type */
-  .type-green { background: #c6f6d5; color: #276749; border-color: #48bb78; }
-  .type-pink { background: #fed7e2; color: #97266d; border-color: #ed64a6; }
-  .type-purple { background: #e9d8fd; color: #553c9a; border-color: #9f7aea; }
-  .type-orange { background: #feebc8; color: #c05621; border-color: #ed8936; }
-  .type-red { background: #fed7d7; color: #9b2c2c; border-color: #fc8181; }
+/* Modal */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(2px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white; border-radius: 16px; padding: 24px; width: 480px; max-width: 95vw;
+  max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.modal h2 { font-size: 17px; font-weight: 700; margin-bottom: 18px; color: #2d3748; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 11px; font-weight: 600; color: #718096; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 9px 11px; border: 1.5px solid #e2e8f0; border-radius: 8px;
+  font-size: 14px; font-family: inherit; transition: border-color 0.2s; background: white;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #764ba2; }
+.form-group textarea { resize: vertical; min-height: 75px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-footer { display: flex; gap: 7px; justify-content: flex-end; margin-top: 18px; }
 
-  @media (max-width: 600px) {
-    .main { padding: 10px; }
-    header { padding: 10px 14px; }
-    header h1 { font-size: 18px; }
-    .header-right .btn { padding: 7px 11px; font-size: 12px; }
-    .legend { padding: 8px 12px; gap: 10px; font-size: 12px; }
+/* Chip selector */
+.chip-group { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
+.chip-input { display: none; }
+.chip-label {
+  padding: 5px 11px; border-radius: 20px; border: 1.5px solid #e2e8f0;
+  cursor: pointer; font-size: 12px; transition: all 0.15s;
+  background: white; color: #4a5568; user-select: none; line-height: 1.4;
+}
+.chip-label:hover { border-color: #9f7aea; color: #764ba2; }
+.chip-input:checked + .chip-label { background: #764ba2; color: white; border-color: #764ba2; }
 
-    /* View bar: stack tabs on top, nav below */
-    .view-bar { flex-direction: column; gap: 8px; padding: 10px 12px; align-items: stretch; }
-    .view-tabs { align-self: flex-start; }
-    .nav-btns { justify-content: center; }
-    #current-label { min-width: 110px; font-size: 14px; }
-    .nav-btn { width: 30px; height: 30px; }
-    .nav-btns .btn { padding: 5px 10px; font-size: 12px; }
+/* Status toggle */
+.status-toggle { display: flex; border-radius: 8px; overflow: hidden; border: 1.5px solid #e2e8f0; width: fit-content; }
+.status-radio { display: none; }
+.status-label { padding: 7px 18px; cursor: pointer; font-size: 13px; font-weight: 600; background: white; color: #718096; transition: all 0.15s; }
+.status-radio:checked + .status-label { background: #764ba2; color: white; }
+#s-done:checked + .status-label, #vs-done:checked + .status-label { background: #38a169; color: white; }
 
-    /* Stats: 2x2 grid */
-    .stats-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .stat-card { min-width: 0; padding: 10px 14px; }
-    .stat-card .num { font-size: 20px; }
+/* Address row */
+.addr-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-    /* Calendar cells */
-    .cal-cell { min-height: 60px; padding: 3px; }
-    .date-num { font-size: 11px; width: 20px; height: 20px; }
-    .event-chip { font-size: 9px; padding: 1px 3px; border-radius: 3px; }
-    .cal-header-cell { font-size: 11px; padding: 8px 4px; }
+/* Detail modal */
+.detail-type-badge { display: inline-block; padding: 3px 11px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+.detail-row { display: flex; gap: 8px; margin-bottom: 7px; font-size: 13px; }
+.detail-label { color: #718096; min-width: 55px; font-weight: 500; }
+.detail-value { color: #2d3748; flex: 1; }
 
-    /* Modal */
-    .modal { padding: 18px; border-radius: 12px; }
-    .form-row { grid-template-columns: 1fr; }
+/* Type manager */
+.type-manager-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+.type-color-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
 
-    /* List */
-    .list-item { padding: 12px; gap: 10px; }
-    .list-date .day { font-size: 18px; }
-  }
+/* Trash */
+.trash-item { background: #fff5f5; border-radius: 8px; padding: 10px 14px; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.trash-item-info { flex: 1; }
+.trash-item-title { font-size: 13px; font-weight: 600; color: #718096; }
+.trash-item-meta { font-size: 11px; color: #a0aec0; margin-top: 2px; }
+
+/* Request queue badge */
+.badge-btn { position: relative; }
+.req-badge { position: absolute; top: -5px; right: -5px; background: #e53e3e; color: white; border-radius: 50%; width: 17px; height: 17px; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+
+/* Request review modal */
+.req-field-row { display: flex; gap: 8px; margin-bottom: 8px; font-size: 13px; align-items: flex-start; }
+.req-field-label { color: #718096; min-width: 90px; font-size: 11px; font-weight: 600; padding-top: 2px; }
+.req-field-value { color: #2d3748; flex: 1; font-size: 13px; line-height: 1.5; }
+.req-card { background: #f8f4ff; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid #764ba2; }
+
+@media (max-width: 600px) {
+  .main { padding: 8px 10px; }
+  header { padding: 10px 12px; }
+  header h1 { font-size: 17px; }
+  .header-right .btn { padding: 6px 9px; font-size: 11px; }
+  .legend { padding: 6px 10px; gap: 8px; font-size: 11px; }
+  .filter-bar { padding: 6px 10px; }
+  .view-bar { padding: 7px 10px; }
+  .view-tab { padding: 4px 10px; font-size: 11px; }
+  .stats-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .stat-card { min-width: 0; padding: 8px 12px; }
+  .stat-card .num { font-size: 19px; }
+  .cal-cell { min-height: 58px; padding: 3px; }
+  .date-num { font-size: 11px; width: 19px; height: 19px; }
+  .event-chip { font-size: 9px; padding: 1px 3px; border-radius: 3px; }
+  .cal-header-cell { font-size: 11px; padding: 7px 3px; }
+  .modal { padding: 16px; border-radius: 12px; }
+  .form-row { grid-template-columns: 1fr; }
+  .list-item { padding: 10px 12px; gap: 8px; }
+  .list-date .day { font-size: 17px; }
+  #current-label { min-width: 100px; font-size: 13px; }
+}
 </style>
 </head>
 <body>
@@ -190,29 +241,48 @@
     <div class="subtitle">뉴로펫 CA팀 외근 일정 관리</div>
   </div>
   <div class="header-right">
-    <button class="btn btn-white" onclick="openAddModal()">+ 일정 추가</button>
+    <button class="btn btn-white badge-btn" id="req-btn" onclick="openRequestQueue()" title="교육 요청 대기함" style="display:none">📋 <span class="req-badge" id="req-badge">0</span></button>
+    <button class="btn btn-white" onclick="openTrashModal()" title="휴지통">🗑️</button>
+    <button class="btn btn-white" onclick="requestNotifPermission()" title="알림 설정">🔔</button>
+    <button class="btn btn-white" onclick="openTypeModal()" title="유형 관리">⚙️</button>
+    <button class="btn btn-white" onclick="openAddModal()">+ 추가</button>
   </div>
 </header>
 
-<div class="legend">
-  <strong style="font-size:12px;color:#718096;">외근 유형:</strong>
+<div class="legend" id="legend-bar">
+  <strong style="font-size:11px;color:#718096;">유형:</strong>
   <div class="legend-item"><div class="legend-dot" style="background:#48bb78"></div>교육 외근</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#38b2ac"></div>1차 교육</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#4299e1"></div>2차 교육</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#667eea"></div>3차 이상</div>
   <div class="legend-item"><div class="legend-dot" style="background:#ed64a6"></div>추가 교육</div>
   <div class="legend-item"><div class="legend-dot" style="background:#9f7aea"></div>학회 지원</div>
   <div class="legend-item"><div class="legend-dot" style="background:#ed8936"></div>반차/연차</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#fc8181"></div>공휴일·사내행사</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#fc8181"></div>공휴일·사내</div>
+</div>
+
+<div class="filter-bar" id="filter-bar">
+  <span style="font-size:11px;color:#718096;font-weight:600;">담당자:</span>
+  <button class="filter-chip active" onclick="filterPerson(null, this)">전체</button>
+  <button class="filter-chip" onclick="filterPerson('DH', this)">DH</button>
+  <button class="filter-chip" onclick="filterPerson('선용', this)">선용</button>
+  <button class="filter-chip" onclick="filterPerson('원지', this)">원지</button>
+  <button class="filter-chip" onclick="filterPerson('영', this)">영</button>
+  <button class="filter-chip" onclick="filterPerson('락균', this)">락균</button>
 </div>
 
 <div class="view-bar">
   <div class="view-tabs">
     <button class="view-tab active" onclick="switchView('calendar', this)">월 캘린더</button>
     <button class="view-tab" onclick="switchView('list', this)">목록</button>
+    <button class="view-tab" onclick="switchView('hospital', this)">병원별</button>
+    <button class="view-tab" onclick="switchView('stats', this)">통계</button>
   </div>
   <div class="nav-btns">
-    <button class="nav-btn" onclick="navigate(-1)">‹</button>
+    <button class="nav-btn" onclick="navigate(-1)">&#8249;</button>
     <span id="current-label"></span>
-    <button class="nav-btn" onclick="navigate(1)">›</button>
-    <button class="btn btn-white" onclick="goToday()" style="padding:6px 12px;border:1px solid #e2e8f0;background:white;color:#764ba2;">오늘</button>
+    <button class="nav-btn" onclick="navigate(1)">&#8250;</button>
+    <button class="btn btn-cancel" onclick="goToday()" style="padding:4px 10px;font-size:12px;">오늘</button>
   </div>
 </div>
 
@@ -243,29 +313,78 @@
       <label>유형</label>
       <select id="f-type">
         <option value="green">🟢 교육 외근</option>
+        <option value="edu1">1️⃣ 1차 교육</option>
+        <option value="edu2">2️⃣ 2차 교육</option>
+        <option value="edu3">3️⃣ 3차 교육+</option>
         <option value="pink">🩷 추가 교육</option>
         <option value="purple">🟣 학회 지원</option>
         <option value="orange">🟠 반차/연차</option>
         <option value="red">🚫 공휴일·사내행사</option>
       </select>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>담당자</label>
-        <input type="text" id="f-person" placeholder="예: DH, 선용, 원지">
+    <div class="form-group">
+      <label>담당자</label>
+      <div class="chip-group" id="person-chips">
+        <input class="chip-input" type="checkbox" id="p-DH" value="DH"><label class="chip-label" for="p-DH">DH</label>
+        <input class="chip-input" type="checkbox" id="p-선용" value="선용"><label class="chip-label" for="p-선용">선용</label>
+        <input class="chip-input" type="checkbox" id="p-원지" value="원지"><label class="chip-label" for="p-원지">원지</label>
+        <input class="chip-input" type="checkbox" id="p-영" value="영"><label class="chip-label" for="p-영">영</label>
+        <input class="chip-input" type="checkbox" id="p-락균" value="락균"><label class="chip-label" for="p-락균">락균</label>
       </div>
-      <div class="form-group">
-        <label>제품</label>
-        <input type="text" id="f-product" placeholder="예: tES LAB, INNK">
+    </div>
+    <div class="form-group">
+      <label>제품</label>
+      <div class="chip-group" id="product-chips">
+        <input class="chip-input" type="checkbox" id="pr-NM" value="NM"><label class="chip-label" for="pr-NM">NM</label>
+        <input class="chip-input" type="checkbox" id="pr-tES" value="tES LAB"><label class="chip-label" for="pr-tES">tES LAB</label>
+        <input class="chip-input" type="checkbox" id="pr-INNK" value="INNK"><label class="chip-label" for="pr-INNK">INNK</label>
+        <input class="chip-input" type="checkbox" id="pr-SCALE" value="SCALE PET"><label class="chip-label" for="pr-SCALE">SCALE PET</label>
+        <input class="chip-input" type="checkbox" id="pr-JKD" value="JKD"><label class="chip-label" for="pr-JKD">JKD</label>
+        <input class="chip-input" type="checkbox" id="pr-SP" value="SP"><label class="chip-label" for="pr-SP">SP</label>
       </div>
+    </div>
+    <div class="form-group">
+      <label>병원명</label>
+      <input type="text" id="f-hospital" list="hospital-list" placeholder="병원 이름 입력 또는 선택">
+      <datalist id="hospital-list"></datalist>
     </div>
     <div class="form-group">
       <label>주소</label>
-      <input type="text" id="f-address" placeholder="주소 입력">
+      <div class="addr-row">
+        <select id="f-sido" onchange="updateGugun()">
+          <option value="">시/도 선택</option>
+          <option>서울특별시</option><option>경기도</option><option>인천광역시</option>
+          <option>부산광역시</option><option>대구광역시</option><option>광주광역시</option>
+          <option>대전광역시</option><option>울산광역시</option><option>세종특별자치시</option>
+          <option>강원특별자치도</option><option>충청북도</option><option>충청남도</option>
+          <option>전북특별자치도</option><option>전라남도</option><option>경상북도</option>
+          <option>경상남도</option><option>제주특별자치도</option>
+        </select>
+        <select id="f-gugun"><option value="">구/시/군 선택</option></select>
+      </div>
+      <input type="text" id="f-detail" placeholder="상세주소 (도로명, 건물명 등)" style="margin-top:7px">
+    </div>
+    <div class="form-group">
+      <label>상태</label>
+      <div class="status-toggle">
+        <input class="status-radio" type="radio" name="f-status" id="s-plan" value="plan" checked>
+        <label class="status-label" for="s-plan">📅 예정</label>
+        <input class="status-radio" type="radio" name="f-status" id="s-done" value="done">
+        <label class="status-label" for="s-done">✅ 완료</label>
+      </div>
     </div>
     <div class="form-group">
       <label>챙겨야 할 것</label>
-      <textarea id="f-notes" placeholder="준비물, 메모 등"></textarea>
+      <div style="display:flex;gap:5px;margin-bottom:5px;flex-wrap:wrap">
+        <button type="button" class="btn btn-cancel" style="padding:3px 9px;font-size:11px" onclick="insertTemplate('교육')">교육</button>
+        <button type="button" class="btn btn-cancel" style="padding:3px 9px;font-size:11px" onclick="insertTemplate('학회')">학회</button>
+        <button type="button" class="btn btn-cancel" style="padding:3px 9px;font-size:11px" onclick="insertTemplate('설치')">설치</button>
+      </div>
+      <textarea id="f-notes" placeholder="준비물, 메모 등" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label>문의사항 / 컴플레인 (VoC)</label>
+      <textarea id="f-complaint" placeholder="병원 측 문의, 불만, 요청사항 등 자유롭게 입력 (VoC 데이터로 활용됩니다)" rows="3"></textarea>
     </div>
     <div class="modal-footer">
       <button class="btn btn-danger" id="delete-btn" onclick="deleteEvent()" style="display:none;">삭제</button>
@@ -286,94 +405,269 @@
   </div>
 </div>
 
+<!-- Type Manager Modal -->
+<div class="modal-overlay" id="type-modal">
+  <div class="modal" style="max-width:400px">
+    <h2>외근 유형 관리</h2>
+    <div id="type-list" style="margin:14px 0"></div>
+    <div class="form-group" style="margin-top:10px">
+      <label>새 유형 추가</label>
+      <div style="display:flex;gap:7px;align-items:center">
+        <input type="color" id="new-type-color" value="#48bb78" style="width:38px;height:34px;border:none;cursor:pointer;border-radius:6px;padding:2px">
+        <input type="text" id="new-type-label" placeholder="유형 이름" style="flex:1">
+        <button class="btn btn-save" onclick="addCustomType()" style="white-space:nowrap">추가</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" onclick="closeModal('type-modal')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Duplicate Warning Modal -->
+<div class="modal-overlay" id="dup-modal">
+  <div class="modal" style="max-width:360px;text-align:center">
+    <div style="font-size:36px;margin-bottom:10px">⚠️</div>
+    <h2 style="margin-bottom:10px;font-size:16px">담당자 중복 배정</h2>
+    <p id="dup-msg" style="font-size:13px;color:#718096;margin-bottom:18px;line-height:1.6;text-align:left"></p>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button class="btn btn-cancel" onclick="closeModal('dup-modal')">취소</button>
+      <button class="btn btn-save" id="dup-confirm-btn">그래도 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Education Request Queue Modal -->
+<div class="modal-overlay" id="req-queue-modal">
+  <div class="modal" style="max-width:500px">
+    <h2>📋 교육 요청 대기함</h2>
+    <p style="font-size:12px;color:#718096;margin-bottom:14px">세일즈팀의 교육 요청을 확인하고 캘린더에 등록하세요.</p>
+    <div id="req-queue-list"></div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" onclick="closeModal('req-queue-modal')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Education Request Review Modal -->
+<div class="modal-overlay" id="req-review-modal">
+  <div class="modal" style="max-width:520px">
+    <h2>📋 교육 요청 검토</h2>
+    <div id="req-review-content"></div>
+    <div id="req-create-form"></div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" id="req-reject-btn">요청 거절</button>
+      <button class="btn btn-cancel" onclick="closeModal('req-review-modal')">취소</button>
+      <button class="btn btn-save" id="req-create-btn">✅ 일정 생성</button>
+    </div>
+  </div>
+</div>
+
+<!-- VoC Entry Modal -->
+<div class="modal-overlay" id="voc-modal">
+  <div class="modal" style="max-width:460px">
+    <h2 id="voc-modal-title">💬 VoC 등록</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>날짜 *</label>
+        <input type="date" id="v-date">
+      </div>
+      <div class="form-group">
+        <label>유형</label>
+        <select id="v-channel">
+          <option value="유선">📞 유선 문의</option>
+          <option value="방문">🏥 방문 시</option>
+          <option value="이메일">📧 이메일</option>
+          <option value="기타">💬 기타</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>병원명</label>
+      <input type="text" id="v-hospital" list="hospital-list" placeholder="병원 이름">
+    </div>
+    <div class="form-group">
+      <label>담당자 (대응자)</label>
+      <div class="chip-group" id="voc-person-chips">
+        <input class="chip-input" type="checkbox" id="vp-DH" value="DH"><label class="chip-label" for="vp-DH">DH</label>
+        <input class="chip-input" type="checkbox" id="vp-선용" value="선용"><label class="chip-label" for="vp-선용">선용</label>
+        <input class="chip-input" type="checkbox" id="vp-원지" value="원지"><label class="chip-label" for="vp-원지">원지</label>
+        <input class="chip-input" type="checkbox" id="vp-영" value="영"><label class="chip-label" for="vp-영">영</label>
+        <input class="chip-input" type="checkbox" id="vp-락균" value="락균"><label class="chip-label" for="vp-락균">락균</label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>문의/컴플레인 내용 *</label>
+      <textarea id="v-content" placeholder="문의 내용, 불만 사항, 요청 등을 자유롭게 입력하세요" rows="4"></textarea>
+    </div>
+    <div class="form-group">
+      <label>대응 내용 / 처리 결과</label>
+      <textarea id="v-response" placeholder="어떻게 대응했는지, 처리 결과 등" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label>처리 상태</label>
+      <div class="status-toggle">
+        <input class="status-radio" type="radio" name="v-status" id="vs-open" value="open" checked>
+        <label class="status-label" for="vs-open">🔴 미처리</label>
+        <input class="status-radio" type="radio" name="v-status" id="vs-done" value="done">
+        <label class="status-label" for="vs-done">✅ 처리완료</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" id="voc-delete-btn" onclick="deleteVoc()" style="display:none">삭제</button>
+      <button class="btn btn-cancel" onclick="closeModal('voc-modal')">취소</button>
+      <button class="btn btn-save" onclick="saveVoc()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Trash Modal -->
+<div class="modal-overlay" id="trash-modal">
+  <div class="modal" style="max-width:500px">
+    <h2>🗑️ 휴지통 <span style="font-size:12px;color:#a0aec0;font-weight:400">(삭제 후 30일 보관)</span></h2>
+    <div id="trash-list" style="margin:14px 0;max-height:60vh;overflow-y:auto"></div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" onclick="emptyTrash()">모두 영구 삭제</button>
+      <button class="btn btn-cancel" onclick="closeModal('trash-modal')">닫기</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// --- Data ---
+// ===== Constants =====
 const STORAGE_KEY = 'ca_calendar_events_v2';
+const TRASH_KEY = 'ca_trash_events';
+const CUSTOM_TYPES_KEY = 'ca_custom_types';
 
 const TYPE_META = {
   green:  { label: '교육 외근',     emoji: '🟢', bg: '#c6f6d5', color: '#276749', border: '#48bb78', dot: '#48bb78' },
+  edu1:   { label: '1차 교육',      emoji: '1️⃣', bg: '#b2f5ea', color: '#234e52', border: '#38b2ac', dot: '#38b2ac' },
+  edu2:   { label: '2차 교육',      emoji: '2️⃣', bg: '#bee3f8', color: '#2a4365', border: '#4299e1', dot: '#4299e1' },
+  edu3:   { label: '3차 교육+',     emoji: '3️⃣', bg: '#c3dafe', color: '#3c366b', border: '#667eea', dot: '#667eea' },
   pink:   { label: '추가 교육',     emoji: '🩷', bg: '#fed7e2', color: '#97266d', border: '#ed64a6', dot: '#ed64a6' },
   purple: { label: '학회 지원',     emoji: '🟣', bg: '#e9d8fd', color: '#553c9a', border: '#9f7aea', dot: '#9f7aea' },
   orange: { label: '반차/연차',     emoji: '🟠', bg: '#feebc8', color: '#c05621', border: '#ed8936', dot: '#ed8936' },
   red:    { label: '공휴일·사내행사', emoji: '🚫', bg: '#fed7d7', color: '#9b2c2c', border: '#fc8181', dot: '#fc8181' },
 };
 
-// Initial seed data from PDF
+const EDU_TYPES = new Set(['green','edu1','edu2','edu3','pink']);
+
+const KR_HOLIDAYS = {
+  '2025-01-01': '새해', '2025-01-28': '설날연휴', '2025-01-29': '설날', '2025-01-30': '설날연휴',
+  '2025-03-01': '삼일절', '2025-05-05': '어린이날', '2025-05-06': '어린이날대체', '2025-05-15': '부처님오신날',
+  '2025-06-06': '현충일', '2025-08-15': '광복절', '2025-10-03': '개천절', '2025-10-05': '추석연휴',
+  '2025-10-06': '추석', '2025-10-07': '추석연휴', '2025-10-08': '추석대체', '2025-10-09': '한글날',
+  '2025-12-25': '크리스마스',
+  '2026-01-01': '새해', '2026-01-28': '설날연휴', '2026-01-29': '설날', '2026-01-30': '설날연휴',
+  '2026-02-06': '대체공휴일', '2026-03-01': '삼일절', '2026-05-05': '어린이날',
+  '2026-05-24': '부처님오신날', '2026-06-06': '현충일', '2026-08-15': '광복절',
+  '2026-09-24': '추석연휴', '2026-09-25': '추석', '2026-09-26': '추석연휴',
+  '2026-10-03': '개천절', '2026-10-09': '한글날', '2026-12-25': '크리스마스',
+};
+
+const GUGUN_MAP = {
+  '서울특별시': ['강남구','강동구','강북구','강서구','관악구','광진구','구로구','금천구','노원구','도봉구','동대문구','동작구','마포구','서대문구','서초구','성동구','성북구','송파구','양천구','영등포구','용산구','은평구','종로구','중구','중랑구'],
+  '경기도': ['수원시','성남시','의정부시','안양시','부천시','광명시','평택시','동두천시','안산시','고양시','과천시','구리시','남양주시','오산시','시흥시','군포시','의왕시','하남시','용인시','파주시','이천시','안성시','김포시','화성시','광주시','양주시','포천시','여주시','연천군','가평군','양평군'],
+  '인천광역시': ['중구','동구','미추홀구','연수구','남동구','부평구','계양구','서구','강화군','옹진군'],
+  '부산광역시': ['중구','서구','동구','영도구','부산진구','동래구','남구','북구','해운대구','사하구','금정구','강서구','연제구','수영구','사상구','기장군'],
+  '대구광역시': ['중구','동구','서구','남구','북구','수성구','달서구','달성군','군위군'],
+  '광주광역시': ['동구','서구','남구','북구','광산구'],
+  '대전광역시': ['동구','중구','서구','유성구','대덕구'],
+  '울산광역시': ['중구','남구','동구','북구','울주군'],
+  '세종특별자치시': ['세종시'],
+  '강원특별자치도': ['춘천시','원주시','강릉시','동해시','태백시','속초시','삼척시','홍천군','횡성군','영월군','평창군','정선군','철원군','화천군','양구군','인제군','고성군','양양군'],
+  '충청북도': ['청주시','충주시','제천시','보은군','옥천군','영동군','증평군','진천군','괴산군','음성군','단양군'],
+  '충청남도': ['천안시','공주시','보령시','아산시','서산시','논산시','계룡시','당진시','금산군','부여군','서천군','청양군','홍성군','예산군','태안군'],
+  '전북특별자치도': ['전주시','군산시','익산시','정읍시','남원시','김제시','완주군','진안군','무주군','장수군','임실군','순창군','고창군','부안군'],
+  '전라남도': ['목포시','여수시','순천시','나주시','광양시','담양군','곡성군','구례군','고흥군','보성군','화순군','장흥군','강진군','해남군','영암군','무안군','함평군','영광군','장성군','완도군','진도군','신안군'],
+  '경상북도': ['포항시','경주시','김천시','안동시','구미시','영주시','영천시','상주시','문경시','경산시','의성군','청송군','영양군','영덕군','청도군','고령군','성주군','칠곡군','예천군','봉화군','울진군','울릉군'],
+  '경상남도': ['창원시','진주시','통영시','사천시','김해시','밀양시','거제시','양산시','의령군','함안군','창녕군','고성군','남해군','하동군','산청군','함양군','거창군','합천군'],
+  '제주특별자치도': ['제주시','서귀포시'],
+};
+
+const TEMPLATES = {
+  '교육': '[ 준비물 ]\n- 매뉴얼\n- 설명서\n- 교육동의서\n\n[ 메모 ]\n- ',
+  '학회': '[ 준비물 ]\n- 제품 브로셔\n- 명함\n- 데모 장비\n\n[ 메모 ]\n- ',
+  '설치': '[ 준비물 ]\n- 제품 본체\n- 전원 어댑터\n- 매뉴얼\n- 설치 확인서\n\n[ 메모 ]\n- ',
+};
+
 const SEED = [
-  { title: '[NI] 고대 구로병원 SCALE PET 설치', date: '2025-11-10', type: 'green', person: '', product: 'SCALE PET', address: '', notes: '' },
-  { title: '[NM] 강동 경희대학교병원', date: '2025-11-17', time: '12:00', type: 'green', person: '', product: 'NM', address: '', notes: '' },
-  { title: '[NM] 인천백병원 tES lab 교육 참관', date: '2025-11-24', time: '12:00', type: 'green', person: '', product: 'tES LAB', address: '', notes: '' },
-  { title: '[NM] 대한뇌자극학회 핸즈온 워크샵 지원 백범김구', date: '2025-11-25', time: '15:00', type: 'purple', person: '', product: 'NM', address: '백범김구기념관', notes: '' },
-  { title: '오전 반차/1시 출근', date: '2025-11-26', type: 'orange', person: '', product: '', address: '', notes: '' },
-  { title: '단풍데이 서울숲', date: '2025-11-27', type: 'red', person: '', product: '', address: '서울숲', notes: '' },
-  { title: '[NM] 한양대 구리병원 innk & tES LAB 데모 설치', date: '2025-12-01', time: '16:00', type: 'green', person: '', product: 'INNK, tES LAB', address: '', notes: '' },
-  { title: 'PM팀 회식', date: '2025-12-02', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: '[NM] 중앙대 광명병원 tES lab & INNK 교육', date: '2025-12-03', time: '16:30', type: 'green', person: '', product: 'tES LAB, INNK', address: '', notes: '' },
-  { title: '[NM] 다빈치병원 tES lab & INNK 교육', date: '2025-12-04', time: '13:00', type: 'green', person: '', product: 'tES LAB, INNK', address: '', notes: '' },
-  { title: '[NM] 양산부산대병원 tES lab & INNK 교육', date: '2025-12-05', time: '12:00', type: 'green', person: '', product: 'tES LAB, INNK', address: '', notes: '' },
-  { title: '[NM] 아주대병원', date: '2025-12-08', time: '12:00', type: 'green', person: '', product: 'NM', address: '', notes: '' },
-  { title: '[NM] 한일병원', date: '2025-12-09', time: '13:30', type: 'green', person: '', product: 'NM', address: '서울 도봉구 우이천로 308', notes: '' },
-  { title: '[NM] 제주대병원', date: '2025-12-10', time: '12:00', type: 'green', person: '', product: 'NM', address: '', notes: '' },
-  { title: '[SP] 용인세브란스병원', date: '2025-12-11', time: '09:00', type: 'green', person: 'DH', product: 'JKD B001-3', address: '경기 용인시 기흥구 동백죽전대로 363', notes: '매뉴얼, 설명서, 교육동의서' },
-  { title: '연차', date: '2025-12-15', type: 'orange', person: '', product: '', address: '', notes: '' },
-  { title: '연차', date: '2025-12-16', type: 'orange', person: '', product: '', address: '', notes: '' },
-  { title: '[NM] 아주대병원 추가교육(2차 방문)', date: '2025-12-17', time: '12:00', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
-  { title: 'AQUA 데이터 선정 마감', date: '2025-12-19', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: '[NM] 광주센트럴병원', date: '2025-12-22', time: '12:00', type: 'green', person: '', product: 'NM', address: '', notes: '' },
-  { title: '[사내] 해외세일즈 제품교육', date: '2025-12-24', time: '09:00', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: '크리스마스', date: '2025-12-25', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: '[NM] 노원을지대학교병원', date: '2025-12-26', time: '14:00', type: 'green', person: '', product: 'NM', address: '서울특별시 노원구 한글비석로 68', notes: '' },
-  { title: 'Josh 미팅 1~3pm', date: '2025-12-27', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: '[NM] 이대목동병원 tES LAB & Innk 제품설명회 & 데모', date: '2025-12-29', time: '12:00', type: 'green', person: '', product: 'tES LAB, INNK', address: '', notes: '' },
-  { title: '팀 워크샵', date: '2025-12-30', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: '연말회사행사', date: '2025-12-31', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: '새해첫날', date: '2026-01-01', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: '[NM] 아주대병원 교육', date: '2026-01-07', time: '14:00', type: 'green', person: '', product: 'NM', address: '', notes: '' },
-  { title: '원지 오후 반반차', date: '2026-01-08', type: 'orange', person: '원지', product: '', address: '', notes: '' },
-  { title: '오후 반반차 / 4시 퇴근', date: '2026-01-09', type: 'orange', person: '', product: '', address: '', notes: '' },
-  { title: '[NM] 원주 세브란스병원 교육', date: '2026-01-12', time: '13:30', type: 'green', person: '', product: 'NM', address: '', notes: '' },
-  { title: '[NM] 명지춘혜재활병원', date: '2026-01-13', time: '12:30', type: 'green', person: '', product: 'NM', address: '서울특별시 영등포구 대림로 223', notes: '' },
-  { title: '[NM] 명지춘혜재활병원 2차 교육', date: '2026-01-15', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
-  { title: 'Singapore General Hospital (SGH) 온라인 미팅', date: '2026-01-16', time: '15:00', type: 'green', person: 'DH', product: '', address: '온라인', notes: '' },
-  { title: '[NM] 명지춘혜재활병원 3차 교육', date: '2026-01-20', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
-  { title: '[NM] 명지춘혜재활병원 4차 교육', date: '2026-01-21', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
-  { title: '선용 오후 반차', date: '2026-01-22', type: 'orange', person: '선용', product: '', address: '', notes: '' },
-  { title: '선용 연차', date: '2026-01-26', type: 'orange', person: '선용', product: '', address: '', notes: '' },
-  { title: '설날', date: '2026-01-28', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: '설날', date: '2026-01-29', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: '설날', date: '2026-01-30', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: '[NM] 상남한마음병원 tES LAB+innk 데모 시연', date: '2026-02-02', time: '12:30', type: 'green', person: '', product: 'tES LAB, INNK', address: '', notes: '' },
-  { title: '[NM] 중앙대병원 재활의학과 tES LAB + innk 데모 시연', date: '2026-02-03', time: '12:30', type: 'green', person: '', product: 'tES LAB, INNK', address: '', notes: '' },
-  { title: '치매학회 삼정호텔', date: '2026-02-05', type: 'purple', person: '', product: '', address: '삼정호텔', notes: '' },
-  { title: '2026년 2월 6일 대체 휴일', date: '2026-02-06', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: 'GPH 대리점 영업 대상 교육', date: '2026-02-09', type: 'green', person: '', product: '', address: '', notes: '' },
-  { title: '[NM] 중앙대 재활의학과 추가 교육', date: '2026-02-10', time: '15:00', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
-  { title: '[NM] 중앙대병원 재활의학과 추가교육', date: '2026-02-12', time: '15:00', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
-  { title: '국내 세일즈 NM 교육 및 케이스 스터디', date: '2026-02-16', time: '09:35', type: 'green', person: '', product: 'NM', address: '', notes: '' },
-  { title: '[NM] 원주의료원', date: '2026-02-17', time: '10:00', type: 'green', person: '', product: 'NM', address: '', notes: '' },
-  { title: '[NM] 원주의료원 추가 교육', date: '2026-02-18', time: '11:00', type: 'pink', person: '', product: 'NM', address: '', notes: '' },
-  { title: '원지 오후 반차', date: '2026-02-19', type: 'orange', person: '원지', product: '', address: '', notes: '' },
-  { title: '8:00 미국팀 미팅', date: '2026-02-23', time: '08:00', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: '뉴로써티 오픈', date: '2026-02-24', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: '[NM] 중앙대 광명병원', date: '2026-03-05', time: '11:30', type: 'green', person: '', product: 'NM', address: '경기도 광명시 덕안로 110 중앙대학교광명병원', notes: '' },
-  { title: '선용/원지 연차', date: '2026-03-10', type: 'orange', person: '선용, 원지', product: '', address: '', notes: '' },
-  { title: '메일로 전사 공지', date: '2026-03-16', type: 'red', person: '', product: '', address: '', notes: '' },
-  { title: 'NSA 영상 작업 마감일', date: '2026-03-20', type: 'red', person: '', product: '', address: '', notes: '' },
+  { title: '[NI] 고대 구로병원 SCALE PET 설치', date: '2025-11-10', type: 'green', hospital: '고대 구로병원', person: '', product: 'SCALE PET', address: '', notes: '', complaint: '' },
+  { title: '[NM] 강동 경희대학교병원', date: '2025-11-17', time: '12:00', type: 'green', hospital: '강동 경희대학교병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 인천백병원 tES lab 교육 참관', date: '2025-11-24', time: '12:00', type: 'green', hospital: '인천백병원', person: '', product: 'tES LAB', address: '', notes: '', complaint: '' },
+  { title: '[NM] 대한뇌자극학회 핸즈온 워크샵 지원 백범김구', date: '2025-11-25', time: '15:00', type: 'purple', hospital: '', person: '', product: 'NM', address: '백범김구기념관', notes: '', complaint: '' },
+  { title: '오전 반차/1시 출근', date: '2025-11-26', type: 'orange', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '단풍데이 서울숲', date: '2025-11-27', type: 'red', hospital: '', person: '', product: '', address: '서울숲', notes: '', complaint: '' },
+  { title: '[NM] 한양대 구리병원 innk & tES LAB 데모 설치', date: '2025-12-01', time: '16:00', type: 'green', hospital: '한양대 구리병원', person: '', product: 'INNK, tES LAB', address: '', notes: '', complaint: '' },
+  { title: 'PM팀 회식', date: '2025-12-02', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 중앙대 광명병원 tES lab & INNK 교육', date: '2025-12-03', time: '16:30', type: 'green', hospital: '중앙대 광명병원', person: '', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
+  { title: '[NM] 다빈치병원 tES lab & INNK 교육', date: '2025-12-04', time: '13:00', type: 'green', hospital: '다빈치병원', person: '', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
+  { title: '[NM] 양산부산대병원 tES lab & INNK 교육', date: '2025-12-05', time: '12:00', type: 'green', hospital: '양산부산대병원', person: '', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
+  { title: '[NM] 아주대병원', date: '2025-12-08', time: '12:00', type: 'green', hospital: '아주대병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 한일병원', date: '2025-12-09', time: '13:30', type: 'green', hospital: '한일병원', person: '', product: 'NM', address: '서울 도봉구 우이천로 308', notes: '', complaint: '' },
+  { title: '[NM] 제주대병원', date: '2025-12-10', time: '12:00', type: 'green', hospital: '제주대병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[SP] 용인세브란스병원', date: '2025-12-11', time: '09:00', type: 'green', hospital: '용인세브란스병원', person: 'DH', product: 'JKD B001-3', address: '경기 용인시 기흥구 동백죽전대로 363', notes: '매뉴얼, 설명서, 교육동의서', complaint: '' },
+  { title: '연차', date: '2025-12-15', type: 'orange', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '연차', date: '2025-12-16', type: 'orange', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 아주대병원 추가교육(2차 방문)', date: '2025-12-17', time: '12:00', type: 'pink', hospital: '아주대병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: 'AQUA 데이터 선정 마감', date: '2025-12-19', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 광주센트럴병원', date: '2025-12-22', time: '12:00', type: 'green', hospital: '광주센트럴병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[사내] 해외세일즈 제품교육', date: '2025-12-24', time: '09:00', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '크리스마스', date: '2025-12-25', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 노원을지대학교병원', date: '2025-12-26', time: '14:00', type: 'green', hospital: '노원을지대학교병원', person: '', product: 'NM', address: '서울특별시 노원구 한글비석로 68', notes: '', complaint: '' },
+  { title: 'Josh 미팅 1~3pm', date: '2025-12-27', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 이대목동병원 tES LAB & Innk 제품설명회 & 데모', date: '2025-12-29', time: '12:00', type: 'green', hospital: '이대목동병원', person: '', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
+  { title: '팀 워크샵', date: '2025-12-30', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '연말회사행사', date: '2025-12-31', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '새해첫날', date: '2026-01-01', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 아주대병원 교육', date: '2026-01-07', time: '14:00', type: 'green', hospital: '아주대병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '원지 오후 반반차', date: '2026-01-08', type: 'orange', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
+  { title: '오후 반반차 / 4시 퇴근', date: '2026-01-09', type: 'orange', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 원주 세브란스병원 교육', date: '2026-01-12', time: '13:30', type: 'green', hospital: '원주 세브란스병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 명지춘혜재활병원', date: '2026-01-13', time: '12:30', type: 'edu1', hospital: '명지춘혜재활병원', person: '', product: 'NM', address: '서울특별시 영등포구 대림로 223', notes: '', complaint: '' },
+  { title: '[NM] 명지춘혜재활병원 2차 교육', date: '2026-01-15', type: 'edu2', hospital: '명지춘혜재활병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: 'Singapore General Hospital (SGH) 온라인 미팅', date: '2026-01-16', time: '15:00', type: 'green', hospital: 'SGH', person: 'DH', product: '', address: '온라인', notes: '', complaint: '' },
+  { title: '[NM] 명지춘혜재활병원 3차 교육', date: '2026-01-20', type: 'edu3', hospital: '명지춘혜재활병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 명지춘혜재활병원 4차 교육', date: '2026-01-21', type: 'edu3', hospital: '명지춘혜재활병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '선용 오후 반차', date: '2026-01-22', type: 'orange', hospital: '', person: '선용', product: '', address: '', notes: '', complaint: '' },
+  { title: '선용 연차', date: '2026-01-26', type: 'orange', hospital: '', person: '선용', product: '', address: '', notes: '', complaint: '' },
+  { title: '설날', date: '2026-01-28', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '설날', date: '2026-01-29', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '설날', date: '2026-01-30', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 상남한마음병원 tES LAB+innk 데모 시연', date: '2026-02-02', time: '12:30', type: 'green', hospital: '상남한마음병원', person: '', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
+  { title: '[NM] 중앙대병원 재활의학과 tES LAB + innk 데모 시연', date: '2026-02-03', time: '12:30', type: 'green', hospital: '중앙대병원', person: '', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
+  { title: '치매학회 삼정호텔', date: '2026-02-05', type: 'purple', hospital: '', person: '', product: '', address: '삼정호텔', notes: '', complaint: '' },
+  { title: '2026년 2월 6일 대체 휴일', date: '2026-02-06', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: 'GPH 대리점 영업 대상 교육', date: '2026-02-09', type: 'green', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 중앙대 재활의학과 추가 교육', date: '2026-02-10', time: '15:00', type: 'pink', hospital: '중앙대병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 중앙대병원 재활의학과 추가교육', date: '2026-02-12', time: '15:00', type: 'pink', hospital: '중앙대병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '국내 세일즈 NM 교육 및 케이스 스터디', date: '2026-02-16', time: '09:35', type: 'green', hospital: '', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 원주의료원', date: '2026-02-17', time: '10:00', type: 'edu1', hospital: '원주의료원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 원주의료원 추가 교육', date: '2026-02-18', time: '11:00', type: 'edu2', hospital: '원주의료원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '원지 오후 반차', date: '2026-02-19', type: 'orange', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
+  { title: '8:00 미국팀 미팅', date: '2026-02-23', time: '08:00', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '뉴로써티 오픈', date: '2026-02-24', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 중앙대 광명병원', date: '2026-03-05', time: '11:30', type: 'green', hospital: '중앙대 광명병원', person: '', product: 'NM', address: '경기도 광명시 덕안로 110 중앙대학교광명병원', notes: '', complaint: '' },
+  { title: '선용/원지 연차', date: '2026-03-10', type: 'orange', hospital: '', person: '선용, 원지', product: '', address: '', notes: '', complaint: '' },
+  { title: '메일로 전사 공지', date: '2026-03-16', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: 'NSA 영상 작업 마감일', date: '2026-03-20', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
 ];
 
-// --- State ---
+// ===== State =====
 let events = [];
 let currentView = 'calendar';
 let currentYear = new Date().getFullYear();
-let currentMonth = new Date().getMonth(); // 0-indexed
+let currentMonth = new Date().getMonth();
 let editingId = null;
+let activePersonFilter = null;
 
+// ===== Storage =====
 function loadEvents() {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored) {
     events = JSON.parse(stored);
   } else {
-    events = SEED.map((e, i) => ({ ...e, id: Date.now() + i, time: e.time || '' }));
+    events = SEED.map((e, i) => ({ hospital: '', complaint: '', ...e, id: Date.now() + i, time: e.time || '' }));
     saveToStorage();
   }
 }
@@ -382,7 +676,43 @@ function saveToStorage() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
 }
 
-// --- Navigation ---
+function loadTrash() {
+  const stored = localStorage.getItem(TRASH_KEY);
+  const items = stored ? JSON.parse(stored) : [];
+  const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  return items.filter(e => e.deletedAt > cutoff);
+}
+
+function saveTrash(items) {
+  localStorage.setItem(TRASH_KEY, JSON.stringify(items));
+}
+
+// ===== Custom Types =====
+function loadCustomTypes() {
+  const stored = localStorage.getItem(CUSTOM_TYPES_KEY);
+  return stored ? JSON.parse(stored) : {};
+}
+
+function saveCustomTypes(ct) {
+  localStorage.setItem(CUSTOM_TYPES_KEY, JSON.stringify(ct));
+}
+
+function getTypeMeta(type) {
+  if (TYPE_META[type]) return TYPE_META[type];
+  const ct = loadCustomTypes();
+  if (ct[type]) {
+    const c = ct[type];
+    return { label: c.label, emoji: '🔵', bg: c.bg || c.color + '33', color: c.color, border: c.color, dot: c.color };
+  }
+  return TYPE_META.green;
+}
+
+function hexToLight(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return 'rgb(' + Math.min(255,r+130) + ',' + Math.min(255,g+130) + ',' + Math.min(255,b+130) + ')';
+}
+
+// ===== Navigation =====
 function navigate(dir) {
   if (currentView === 'calendar') {
     currentMonth += dir;
@@ -404,41 +734,55 @@ function switchView(view, btn) {
   currentView = view;
   document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
+  const nb = document.querySelector('.nav-btns');
+  nb.style.display = (view === 'stats' || view === 'hospital') ? 'none' : 'flex';
   render();
 }
 
-// --- Render ---
+function filterPerson(name, btn) {
+  activePersonFilter = name;
+  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+// ===== Render =====
 function render() {
   updateLabel();
   renderStats();
   if (currentView === 'calendar') renderCalendar();
-  else renderList();
+  else if (currentView === 'list') renderList();
+  else if (currentView === 'hospital') renderHospital();
+  else if (currentView === 'stats') renderStatsView();
+  updateHospitalDatalist();
 }
 
 function updateLabel() {
   const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-  if (currentView === 'calendar') {
-    document.getElementById('current-label').textContent = `${currentYear}년 ${monthNames[currentMonth]}`;
-  } else {
-    document.getElementById('current-label').textContent = `${currentYear}년`;
-  }
+  const el = document.getElementById('current-label');
+  if (currentView === 'calendar') el.textContent = currentYear + '년 ' + monthNames[currentMonth];
+  else el.textContent = currentYear + '년';
+}
+
+function getFilteredEvents() {
+  return events.filter(e => !activePersonFilter || (e.person||'').split(',').map(s=>s.trim()).includes(activePersonFilter));
 }
 
 function renderStats() {
-  const monthEvents = events.filter(e => {
+  const filtered = getFilteredEvents().filter(e => {
     const d = new Date(e.date);
-    return d.getFullYear() === currentYear && (currentView === 'list' || d.getMonth() === currentMonth);
+    return d.getFullYear() === currentYear && (currentView !== 'calendar' || d.getMonth() === currentMonth);
   });
   const counts = {};
-  monthEvents.forEach(e => { counts[e.type] = (counts[e.type] || 0) + 1; });
-  const total = monthEvents.length;
+  filtered.forEach(e => { counts[e.type] = (counts[e.type]||0) + 1; });
+  const total = filtered.length;
+  const eduCount = ['green','edu1','edu2','edu3','pink'].reduce((s,t) => s + (counts[t]||0), 0);
 
-  document.getElementById('stats-bar').innerHTML = `
-    <div class="stat-card"><div class="num">${total}</div><div class="lbl">${currentView==='calendar'?'이번 달':'올해'} 전체</div></div>
-    <div class="stat-card"><div class="num" style="color:#48bb78">${(counts.green||0)+(counts.pink||0)}</div><div class="lbl">교육 외근</div></div>
-    <div class="stat-card"><div class="num" style="color:#9f7aea">${counts.purple||0}</div><div class="lbl">학회 지원</div></div>
-    <div class="stat-card"><div class="num" style="color:#ed8936">${counts.orange||0}</div><div class="lbl">반차/연차</div></div>
-  `;
+  document.getElementById('stats-bar').innerHTML =
+    '<div class="stat-card"><div class="num">' + total + '</div><div class="lbl">' + (currentView==='calendar'?'이번 달':'올해') + ' 전체</div></div>' +
+    '<div class="stat-card"><div class="num" style="color:#48bb78">' + eduCount + '</div><div class="lbl">교육 외근</div></div>' +
+    '<div class="stat-card"><div class="num" style="color:#9f7aea">' + (counts.purple||0) + '</div><div class="lbl">학회 지원</div></div>' +
+    '<div class="stat-card"><div class="num" style="color:#ed8936">' + (counts.orange||0) + '</div><div class="lbl">반차/연차</div></div>';
 }
 
 function renderCalendar() {
@@ -448,105 +792,208 @@ function renderCalendar() {
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const daysInPrev = new Date(currentYear, currentMonth, 0).getDate();
 
-  let html = `<div class="calendar-grid">
-    <div class="cal-header">
-      ${dayNames.map(d => `<div class="cal-header-cell">${d}</div>`).join('')}
-    </div>
-    <div class="cal-body">`;
+  let html = '<div class="calendar-grid"><div class="cal-header">' +
+    dayNames.map(d => '<div class="cal-header-cell">' + d + '</div>').join('') +
+    '</div><div class="cal-body">';
 
   const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
   for (let i = 0; i < totalCells; i++) {
     let date, month, year, otherMonth = false;
     if (i < firstDay) {
-      date = daysInPrev - firstDay + i + 1;
-      month = currentMonth - 1;
-      year = currentYear;
+      date = daysInPrev - firstDay + i + 1; month = currentMonth - 1; year = currentYear;
       if (month < 0) { month = 11; year--; }
       otherMonth = true;
     } else if (i >= firstDay + daysInMonth) {
-      date = i - firstDay - daysInMonth + 1;
-      month = currentMonth + 1;
-      year = currentYear;
+      date = i - firstDay - daysInMonth + 1; month = currentMonth + 1; year = currentYear;
       if (month > 11) { month = 0; year++; }
       otherMonth = true;
     } else {
-      date = i - firstDay + 1;
-      month = currentMonth;
-      year = currentYear;
+      date = i - firstDay + 1; month = currentMonth; year = currentYear;
     }
-    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(date).padStart(2,'0')}`;
+    const dateStr = year + '-' + String(month+1).padStart(2,'0') + '-' + String(date).padStart(2,'0');
     const isToday = year === today.getFullYear() && month === today.getMonth() && date === today.getDate();
-    const dayEvents = events.filter(e => e.date === dateStr).sort((a,b) => (a.time||'99:99').localeCompare(b.time||'99:99'));
+    const holiday = KR_HOLIDAYS[dateStr];
+    const dayEvts = getFilteredEvents().filter(e => e.date === dateStr).sort((a,b) => (a.time||'99:99').localeCompare(b.time||'99:99'));
 
-    html += `<div class="cal-cell ${otherMonth?'other-month':''} ${isToday?'today':''}" onclick="onCellClick('${dateStr}')">
-      <div class="date-num">${date}</div>`;
+    html += '<div class="cal-cell ' + (otherMonth?'other-month':'') + ' ' + (isToday?'today':'') + '" onclick="onCellClick(\'' + dateStr + '\')">' +
+      '<div class="date-num" style="' + (holiday&&!otherMonth?'color:#e53e3e;font-weight:800':'') + '">' + date + '</div>' +
+      (holiday&&!otherMonth ? '<div style="font-size:9px;color:#e53e3e;line-height:1.2;padding:0 2px;">' + holiday + '</div>' : '');
 
-    const maxShow = 3;
-    dayEvents.slice(0, maxShow).forEach(e => {
-      const m = TYPE_META[e.type] || TYPE_META.green;
-      html += `<div class="event-chip" style="background:${m.bg};color:${m.color};" onclick="event.stopPropagation();showDetail(${e.id})" title="${e.title}">
-        ${e.time ? e.time+' ' : ''}${e.title}
-      </div>`;
+    dayEvts.slice(0,3).forEach(e => {
+      const m = getTypeMeta(e.type);
+      const isDone = e.status === 'done';
+      html += '<div class="event-chip ' + (isDone?'chip-done':'') + '" style="background:' + m.bg + ';color:' + m.color + ';border-left:3px solid ' + (isDone?'#38a169':m.border) + '" onclick="event.stopPropagation();showDetail(' + e.id + ')" title="' + e.title.replace(/"/g,'&quot;') + '">' +
+        (isDone ? '<span class="status-dot" style="background:#38a169"></span>' : '') +
+        (e.time ? e.time + ' ' : '') + e.title +
+        '</div>';
     });
-    if (dayEvents.length > maxShow) {
-      html += `<div class="more-chip">+${dayEvents.length - maxShow}개 더</div>`;
-    }
-    html += `</div>`;
+    if (dayEvts.length > 3) html += '<div class="more-chip">+' + (dayEvts.length-3) + '개 더</div>';
+    html += '</div>';
   }
-
-  html += `</div></div>`;
+  html += '</div></div>';
   document.getElementById('view-container').innerHTML = html;
 }
 
 function renderList() {
-  const yearEvents = events
+  const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const dayNames = ['일','월','화','수','목','금','토'];
+  const yearEvts = getFilteredEvents()
     .filter(e => new Date(e.date).getFullYear() === currentYear)
-    .sort((a, b) => a.date.localeCompare(b.date) || (a.time||'').localeCompare(b.time||''));
+    .sort((a,b) => a.date.localeCompare(b.date) || (a.time||'').localeCompare(b.time||''));
 
-  if (yearEvents.length === 0) {
-    document.getElementById('view-container').innerHTML = `<div style="text-align:center;padding:60px;color:#a0aec0;">이 연도에 일정이 없습니다.</div>`;
+  if (!yearEvts.length) {
+    document.getElementById('view-container').innerHTML = '<div style="text-align:center;padding:50px;color:#a0aec0;">이 연도에 일정이 없습니다.</div>';
+    return;
+  }
+
+  let html = '<div class="list-view">';
+  let lastMonth = -1;
+  yearEvts.forEach(e => {
+    const d = new Date(e.date);
+    const m = getTypeMeta(e.type);
+    if (d.getMonth() !== lastMonth) {
+      lastMonth = d.getMonth();
+      html += '<div class="list-month-header">' + currentYear + '년 ' + monthNames[lastMonth] + '</div>';
+    }
+    const statusBg = e.status==='done' ? '#c6f6d5' : '#ebf8ff';
+    const statusColor = e.status==='done' ? '#276749' : '#2b6cb0';
+    html += '<div class="list-item" style="border-left-color:' + m.dot + '" onclick="showDetail(' + e.id + ')">' +
+      '<div class="list-date"><div class="day">' + d.getDate() + '</div><div>' + monthNames[d.getMonth()] + ' ' + dayNames[d.getDay()] + '</div>' +
+      (e.time ? '<div style="color:#764ba2;font-weight:600">' + e.time + '</div>' : '') + '</div>' +
+      '<div class="list-body"><div class="list-title">' + e.title + '</div>' +
+      '<div class="list-meta">' +
+        '<span class="list-badge" style="background:' + m.bg + ';color:' + m.color + '">' + m.emoji + ' ' + m.label + '</span>' +
+        (e.hospital ? ' &nbsp;· 🏥 ' + e.hospital : '') +
+        (e.person ? ' &nbsp;· ' + e.person : '') +
+        (e.product ? ' &nbsp;· ' + e.product : '') +
+        ' &nbsp;<span style="padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600;background:' + statusBg + ';color:' + statusColor + '">' + (e.status==='done'?'완료':'예정') + '</span>' +
+      '</div>' +
+      (e.address ? '<div class="list-meta" style="margin-top:3px">📍 ' + e.address + '</div>' : '') +
+      (e.complaint ? '<div class="list-meta" style="margin-top:3px;color:#e53e3e">💬 VoC 있음</div>' : '') +
+      '</div></div>';
+  });
+  html += '</div>';
+  document.getElementById('view-container').innerHTML = html;
+}
+
+function renderHospital() {
+  const filtered = getFilteredEvents().filter(e => e.hospital);
+  const byHosp = {};
+  filtered.forEach(e => {
+    const h = e.hospital;
+    if (!byHosp[h]) byHosp[h] = [];
+    byHosp[h].push(e);
+  });
+
+  const sorted = Object.keys(byHosp).sort();
+  if (!sorted.length) {
+    document.getElementById('view-container').innerHTML = '<div style="text-align:center;padding:50px;color:#a0aec0;">병원 정보가 있는 일정이 없습니다.</div>';
     return;
   }
 
   const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
   const dayNames = ['일','월','화','수','목','금','토'];
-  let html = `<div class="list-view">`;
-  let lastMonth = -1;
-
-  yearEvents.forEach(e => {
-    const d = new Date(e.date);
-    const m = TYPE_META[e.type] || TYPE_META.green;
-    if (d.getMonth() !== lastMonth) {
-      lastMonth = d.getMonth();
-      html += `<div class="list-month-header">${currentYear}년 ${monthNames[lastMonth]}</div>`;
-    }
-    html += `<div class="list-item" style="border-left-color:${m.dot}" onclick="showDetail(${e.id})">
-      <div class="list-date">
-        <div class="day">${d.getDate()}</div>
-        <div>${monthNames[d.getMonth()]} ${dayNames[d.getDay()]}</div>
-        ${e.time ? `<div style="color:#764ba2;font-weight:600">${e.time}</div>` : ''}
-      </div>
-      <div class="list-body">
-        <div class="list-title">${e.title}</div>
-        <div class="list-meta">
-          <span class="list-badge" style="background:${m.bg};color:${m.color}">${m.emoji} ${m.label}</span>
-          ${e.person ? `&nbsp;· ${e.person}` : ''}
-          ${e.product ? `&nbsp;· ${e.product}` : ''}
-        </div>
-        ${e.address ? `<div class="list-meta" style="margin-top:4px">📍 ${e.address}</div>` : ''}
-        ${e.notes ? `<div class="list-meta" style="margin-top:4px">📝 ${e.notes}</div>` : ''}
-      </div>
-    </div>`;
+  let html = '<div>';
+  sorted.forEach(hosp => {
+    const hospEvts = byHosp[hosp].sort((a,b) => a.date.localeCompare(b.date));
+    html += '<div class="hosp-group">' +
+      '<div class="hosp-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'">' +
+        '<span class="hosp-name">🏥 ' + hosp + '</span>' +
+        '<span class="hosp-count">' + hospEvts.length + '건</span>' +
+      '</div>' +
+      '<div class="hosp-events">';
+    hospEvts.forEach(e => {
+      const d = new Date(e.date);
+      const m = getTypeMeta(e.type);
+      html += '<div class="hosp-event-row" onclick="showDetail(' + e.id + ')">' +
+        '<div style="display:flex;align-items:center;gap:8px">' +
+        '<span style="font-size:11px;color:#718096;min-width:65px">' + d.getFullYear() + '-' + monthNames[d.getMonth()] + d.getDate() + '(' + dayNames[d.getDay()] + ')</span>' +
+        '<span class="list-badge" style="background:' + m.bg + ';color:' + m.color + '">' + m.label + '</span>' +
+        '<span style="font-size:13px;font-weight:600">' + e.title + '</span>' +
+        (e.person ? '<span style="font-size:11px;color:#718096">' + e.person + '</span>' : '') +
+        (e.complaint ? '<span style="font-size:10px;color:#e53e3e;font-weight:600">💬</span>' : '') +
+        '</div>' +
+        '</div>';
+    });
+    html += '</div></div>';
   });
-
-  html += `</div>`;
+  html += '</div>';
   document.getElementById('view-container').innerHTML = html;
 }
 
-// --- Event CRUD ---
-function onCellClick(dateStr) {
-  openAddModal(dateStr);
+function renderStatsView() {
+  const persons = ['DH', '선용', '원지', '영', '락균'];
+  const yearEvts = events.filter(e => new Date(e.date).getFullYear() === currentYear);
+
+  // Education counts table
+  let html = '<h3 style="font-size:14px;font-weight:700;color:#764ba2;margin-bottom:10px">담당자별 교육 횟수 (' + currentYear + '년)</h3>';
+  html += '<div style="overflow-x:auto"><table class="stats-table"><thead><tr>' +
+    '<th>담당자</th><th>교육 외근</th><th>1차</th><th>2차</th><th>3차+</th><th>추가</th><th>학회</th><th>합계</th>' +
+    '</tr></thead><tbody>';
+
+  persons.forEach(p => {
+    const pEvts = yearEvts.filter(e => (e.person||'').split(',').map(s=>s.trim()).includes(p));
+    const cnt = type => pEvts.filter(e => e.type === type).length;
+    const total = pEvts.filter(e => EDU_TYPES.has(e.type) || e.type === 'purple').length;
+    html += '<tr><td>' + p + '</td><td>' + cnt('green') + '</td><td>' + cnt('edu1') + '</td><td>' + cnt('edu2') + '</td><td>' + cnt('edu3') + '</td><td>' + cnt('pink') + '</td><td>' + cnt('purple') + '</td><td><strong>' + total + '</strong></td></tr>';
+  });
+  html += '</tbody></table></div>';
+
+  // VoC section: event-linked complaints + standalone entries
+  const vocEvts = events.filter(e => e.complaint && e.complaint.trim()).sort((a,b) => b.date.localeCompare(a.date));
+  const vocStandalone = loadVocEntries().sort((a,b) => b.date.localeCompare(a.date));
+  const totalVoc = vocEvts.length + vocStandalone.length;
+
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin:20px 0 10px">' +
+    '<h3 style="font-size:14px;font-weight:700;color:#e53e3e">💬 문의사항 / VoC (' + totalVoc + '건)</h3>' +
+    '<button class="btn btn-save" style="padding:5px 12px;font-size:12px" onclick="openVocModal()">+ VoC 등록</button>' +
+    '</div>';
+
+  if (!totalVoc) {
+    html += '<div style="text-align:center;padding:30px;color:#a0aec0;background:white;border-radius:10px;">등록된 VoC가 없습니다.<br><small>유선 문의나 방문 시 접수된 내용을 "+ VoC 등록"으로 추가하세요.</small></div>';
+  } else {
+    // Standalone VoC entries
+    if (vocStandalone.length) {
+      html += '<div style="font-size:11px;color:#718096;font-weight:600;margin-bottom:6px">독립 VoC (유선/방문/이메일 등)</div>';
+      vocStandalone.forEach(v => {
+        const isDone = v.status === 'done';
+        const channelIcon = { '유선':'📞', '방문':'🏥', '이메일':'📧', '기타':'💬' }[v.channel] || '💬';
+        html += '<div class="voc-card" onclick="openVocModal(' + v.id + ')">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+          '<div class="voc-meta">' + channelIcon + ' ' + v.channel + ' · ' + v.date + (v.hospital ? ' · 🏥 ' + v.hospital : '') + (v.person ? ' · ' + v.person : '') + '</div>' +
+          '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:' + (isDone?'#c6f6d5':'#fed7d7') + ';color:' + (isDone?'#276749':'#9b2c2c') + '">' + (isDone?'처리완료':'미처리') + '</span>' +
+          '</div>' +
+          '<div class="voc-text" style="margin-top:5px">' + v.content.replace(/\n/g,'<br>') + '</div>' +
+          (v.response ? '<div style="margin-top:6px;padding:6px 10px;background:#f5f7fa;border-radius:6px;font-size:12px;color:#4a5568"><strong>대응:</strong> ' + v.response.replace(/\n/g,'<br>') + '</div>' : '') +
+          '</div>';
+      });
+    }
+    // Event-linked complaints
+    if (vocEvts.length) {
+      html += '<div style="font-size:11px;color:#718096;font-weight:600;margin:12px 0 6px">일정 연결 VoC (외근 중 접수)</div>';
+      vocEvts.forEach(e => {
+        const m = getTypeMeta(e.type);
+        html += '<div class="voc-card" onclick="showDetail(' + e.id + ')">' +
+          '<div class="voc-meta">📅 외근 · ' + e.date + (e.hospital ? ' · 🏥 ' + e.hospital : '') + (e.person ? ' · ' + e.person : '') + ' · <span style="background:' + m.bg + ';color:' + m.color + ';padding:1px 6px;border-radius:10px;font-size:10px">' + m.label + '</span></div>' +
+          '<div style="font-size:13px;font-weight:600;margin:3px 0">' + e.title + '</div>' +
+          '<div class="voc-text">' + e.complaint.replace(/\n/g,'<br>') + '</div>' +
+          '</div>';
+      });
+    }
+  }
+
+  document.getElementById('view-container').innerHTML = '<div>' + html + '</div>';
 }
+
+// ===== Hospital Datalist =====
+function updateHospitalDatalist() {
+  const hosps = [...new Set(events.map(e => e.hospital).filter(Boolean))].sort();
+  const dl = document.getElementById('hospital-list');
+  if (dl) dl.innerHTML = hosps.map(h => '<option value="' + h + '">').join('');
+}
+
+// ===== Event CRUD =====
+function onCellClick(dateStr) { openAddModal(dateStr); }
 
 function openAddModal(dateStr) {
   editingId = null;
@@ -556,10 +1003,16 @@ function openAddModal(dateStr) {
   document.getElementById('f-date').value = dateStr || '';
   document.getElementById('f-time').value = '';
   document.getElementById('f-type').value = 'green';
-  document.getElementById('f-person').value = '';
-  document.getElementById('f-product').value = '';
-  document.getElementById('f-address').value = '';
+  clearChips('person-chips'); clearChips('product-chips');
+  document.getElementById('f-hospital').value = '';
+  document.getElementById('f-sido').value = '';
+  document.getElementById('f-gugun').innerHTML = '<option value="">구/시/군 선택</option>';
+  document.getElementById('f-detail').value = '';
   document.getElementById('f-notes').value = '';
+  document.getElementById('f-complaint').value = '';
+  setStatus('plan');
+  updateTypeSelect();
+  updateHospitalDatalist();
   document.getElementById('form-modal').classList.add('open');
   document.getElementById('f-title').focus();
 }
@@ -574,10 +1027,24 @@ function openEditModal(id) {
   document.getElementById('f-date').value = e.date;
   document.getElementById('f-time').value = e.time || '';
   document.getElementById('f-type').value = e.type;
-  document.getElementById('f-person').value = e.person || '';
-  document.getElementById('f-product').value = e.product || '';
-  document.getElementById('f-address').value = e.address || '';
+  clearChips('person-chips');
+  (e.person||'').split(',').map(s=>s.trim()).filter(Boolean).forEach(p => {
+    const el = document.getElementById('p-' + p); if (el) el.checked = true;
+  });
+  clearChips('product-chips');
+  (e.product||'').split(',').map(s=>s.trim()).filter(Boolean).forEach(p => {
+    document.querySelectorAll('#product-chips .chip-input').forEach(el => { if (el.value === p) el.checked = true; });
+  });
+  document.getElementById('f-hospital').value = e.hospital || '';
+  const ap = parseAddress(e.address || '');
+  document.getElementById('f-sido').value = ap.sido;
+  updateGugun(ap.gugun);
+  document.getElementById('f-detail').value = ap.detail;
   document.getElementById('f-notes').value = e.notes || '';
+  document.getElementById('f-complaint').value = e.complaint || '';
+  setStatus(e.status || 'plan');
+  updateTypeSelect();
+  updateHospitalDatalist();
   document.getElementById('detail-modal').classList.remove('open');
   document.getElementById('form-modal').classList.add('open');
 }
@@ -587,15 +1054,48 @@ function saveEvent() {
   const date = document.getElementById('f-date').value;
   if (!title || !date) { alert('제목과 날짜는 필수입니다.'); return; }
 
+  const type = document.getElementById('f-type').value;
+  const persons = [...document.querySelectorAll('#person-chips .chip-input:checked')].map(el => el.value);
+
+  // Check duplicate person assignment for education types
+  if (EDU_TYPES.has(type) && persons.length > 0) {
+    const conflicts = checkPersonConflict(date, persons, editingId);
+    if (conflicts.length > 0) {
+      const msg = conflicts.map(c => '<strong>' + c.person + '</strong>: ' + c.event.title + ' (' + c.event.date + ')').join('<br>');
+      document.getElementById('dup-msg').innerHTML = '아래 담당자가 해당 날짜에 이미 교육 일정이 있습니다:<br><br>' + msg + '<br><br>그래도 등록하시겠습니까?';
+      document.getElementById('dup-confirm-btn').onclick = () => { closeModal('dup-modal'); doSaveEvent(title, date, type, persons); };
+      document.getElementById('dup-modal').classList.add('open');
+      return;
+    }
+  }
+  doSaveEvent(title, date, type, persons);
+}
+
+function checkPersonConflict(date, persons, excludeId) {
+  const conflicts = [];
+  persons.forEach(p => {
+    const conflict = events.find(e =>
+      e.id !== excludeId &&
+      e.date === date &&
+      EDU_TYPES.has(e.type) &&
+      (e.person||'').split(',').map(s=>s.trim()).includes(p)
+    );
+    if (conflict) conflicts.push({ person: p, event: conflict });
+  });
+  return conflicts;
+}
+
+function doSaveEvent(title, date, type, persons) {
   const data = {
-    title,
-    date,
+    title, date, type,
     time: document.getElementById('f-time').value,
-    type: document.getElementById('f-type').value,
-    person: document.getElementById('f-person').value.trim(),
-    product: document.getElementById('f-product').value.trim(),
-    address: document.getElementById('f-address').value.trim(),
+    person: persons.join(', '),
+    product: [...document.querySelectorAll('#product-chips .chip-input:checked')].map(el => el.value).join(', '),
+    hospital: document.getElementById('f-hospital').value.trim(),
+    address: [document.getElementById('f-sido').value, document.getElementById('f-gugun').value, document.getElementById('f-detail').value.trim()].filter(Boolean).join(' '),
     notes: document.getElementById('f-notes').value.trim(),
+    complaint: document.getElementById('f-complaint').value.trim(),
+    status: getStatus(),
   };
 
   if (editingId) {
@@ -612,9 +1112,15 @@ function saveEvent() {
 
 function deleteEvent() {
   if (!editingId) return;
-  if (!confirm('이 일정을 삭제하시겠습니까?')) return;
-  events = events.filter(e => e.id !== editingId);
-  saveToStorage();
+  if (!confirm('이 일정을 휴지통으로 이동하시겠습니까?')) return;
+  const e = events.find(ev => ev.id === editingId);
+  if (e) {
+    const trash = loadTrash();
+    trash.push({ ...e, deletedAt: Date.now() });
+    saveTrash(trash);
+    events = events.filter(ev => ev.id !== editingId);
+    saveToStorage();
+  }
   closeModal('form-modal');
   render();
 }
@@ -622,20 +1128,24 @@ function deleteEvent() {
 function showDetail(id) {
   const e = events.find(ev => ev.id === id);
   if (!e) return;
-  const m = TYPE_META[e.type] || TYPE_META.green;
+  const m = getTypeMeta(e.type);
   const d = new Date(e.date);
   const dayNames = ['일','월','화','수','목','금','토'];
   const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
-  document.getElementById('detail-content').innerHTML = `
-    <div class="detail-type-badge" style="background:${m.bg};color:${m.color}">${m.emoji} ${m.label}</div>
-    <h2 style="font-size:18px;margin-bottom:16px;line-height:1.4">${e.title}</h2>
-    <div class="detail-row"><span class="detail-label">날짜</span><span class="detail-value">${d.getFullYear()}년 ${monthNames[d.getMonth()]} ${d.getDate()}일 (${dayNames[d.getDay()]})${e.time ? ' ' + e.time : ''}</span></div>
-    ${e.person ? `<div class="detail-row"><span class="detail-label">담당자</span><span class="detail-value">${e.person}</span></div>` : ''}
-    ${e.product ? `<div class="detail-row"><span class="detail-label">제품</span><span class="detail-value">${e.product}</span></div>` : ''}
-    ${e.address ? `<div class="detail-row"><span class="detail-label">주소</span><span class="detail-value">📍 ${e.address}</span></div>` : ''}
-    ${e.notes ? `<div class="detail-row"><span class="detail-label">준비물</span><span class="detail-value">📝 ${e.notes}</span></div>` : ''}
-  `;
+  document.getElementById('detail-content').innerHTML =
+    '<div style="display:flex;gap:7px;align-items:center;margin-bottom:10px">' +
+      '<div class="detail-type-badge" style="background:' + m.bg + ';color:' + m.color + '">' + m.emoji + ' ' + m.label + '</div>' +
+      '<div class="detail-type-badge" style="background:' + (e.status==='done'?'#c6f6d5':'#ebf8ff') + ';color:' + (e.status==='done'?'#276749':'#2b6cb0') + '">' + (e.status==='done'?'✅ 완료':'📅 예정') + '</div>' +
+    '</div>' +
+    '<h2 style="font-size:17px;margin-bottom:14px;line-height:1.4">' + e.title + '</h2>' +
+    '<div class="detail-row"><span class="detail-label">날짜</span><span class="detail-value">' + d.getFullYear() + '년 ' + monthNames[d.getMonth()] + ' ' + d.getDate() + '일 (' + dayNames[d.getDay()] + ')' + (e.time ? ' ' + e.time : '') + '</span></div>' +
+    (e.hospital ? '<div class="detail-row"><span class="detail-label">병원</span><span class="detail-value">🏥 ' + e.hospital + '</span></div>' : '') +
+    (e.person ? '<div class="detail-row"><span class="detail-label">담당자</span><span class="detail-value">' + e.person + '</span></div>' : '') +
+    (e.product ? '<div class="detail-row"><span class="detail-label">제품</span><span class="detail-value">' + e.product + '</span></div>' : '') +
+    (e.address ? '<div class="detail-row"><span class="detail-label">주소</span><span class="detail-value">📍 ' + e.address + '</span></div>' : '') +
+    (e.notes ? '<div class="detail-row"><span class="detail-label">준비물</span><span class="detail-value" style="white-space:pre-wrap">📝 ' + e.notes + '</span></div>' : '') +
+    (e.complaint ? '<div class="detail-row"><span class="detail-label">VoC</span><span class="detail-value" style="white-space:pre-wrap;color:#e53e3e">💬 ' + e.complaint + '</span></div>' : '');
 
   document.getElementById('detail-edit-btn').onclick = () => openEditModal(id);
   document.getElementById('detail-modal').classList.add('open');
@@ -645,36 +1155,508 @@ function closeModal(id) {
   document.getElementById(id).classList.remove('open');
 }
 
-// Close on overlay click
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('open');
+// ===== VoC (Standalone) =====
+const VOC_KEY = 'ca_voc_entries';
+let editingVocId = null;
+
+function loadVocEntries() {
+  const stored = localStorage.getItem(VOC_KEY);
+  return stored ? JSON.parse(stored) : [];
+}
+
+function saveVocEntries(items) {
+  localStorage.setItem(VOC_KEY, JSON.stringify(items));
+}
+
+function openVocModal(id) {
+  editingVocId = id || null;
+  const today = new Date().toISOString().slice(0,10);
+  if (id) {
+    const entries = loadVocEntries();
+    const e = entries.find(x => x.id === id);
+    if (!e) return;
+    document.getElementById('voc-modal-title').textContent = '💬 VoC 수정';
+    document.getElementById('voc-delete-btn').style.display = 'block';
+    document.getElementById('v-date').value = e.date;
+    document.getElementById('v-channel').value = e.channel || '유선';
+    document.getElementById('v-hospital').value = e.hospital || '';
+    document.getElementById('v-content').value = e.content || '';
+    document.getElementById('v-response').value = e.response || '';
+    document.querySelectorAll('#voc-person-chips .chip-input').forEach(el => { el.checked = false; });
+    (e.person||'').split(',').map(s=>s.trim()).filter(Boolean).forEach(p => {
+      const el = document.getElementById('vp-' + p); if (el) el.checked = true;
+    });
+    const vsDone = document.getElementById('vs-done');
+    const vsOpen = document.getElementById('vs-open');
+    if (e.status === 'done') vsDone.checked = true; else vsOpen.checked = true;
+  } else {
+    document.getElementById('voc-modal-title').textContent = '💬 VoC 등록';
+    document.getElementById('voc-delete-btn').style.display = 'none';
+    document.getElementById('v-date').value = today;
+    document.getElementById('v-channel').value = '유선';
+    document.getElementById('v-hospital').value = '';
+    document.getElementById('v-content').value = '';
+    document.getElementById('v-response').value = '';
+    document.querySelectorAll('#voc-person-chips .chip-input').forEach(el => { el.checked = false; });
+    document.getElementById('vs-open').checked = true;
+  }
+  updateHospitalDatalist();
+  document.getElementById('voc-modal').classList.add('open');
+}
+
+function saveVoc() {
+  const content = document.getElementById('v-content').value.trim();
+  const date = document.getElementById('v-date').value;
+  if (!content || !date) { alert('날짜와 내용은 필수입니다.'); return; }
+  const data = {
+    date,
+    channel: document.getElementById('v-channel').value,
+    hospital: document.getElementById('v-hospital').value.trim(),
+    person: [...document.querySelectorAll('#voc-person-chips .chip-input:checked')].map(el => el.value).join(', '),
+    content,
+    response: document.getElementById('v-response').value.trim(),
+    status: document.querySelector('input[name="v-status"]:checked').value,
+  };
+  const entries = loadVocEntries();
+  if (editingVocId) {
+    const idx = entries.findIndex(x => x.id === editingVocId);
+    if (idx !== -1) entries[idx] = { ...entries[idx], ...data };
+  } else {
+    entries.push({ id: Date.now(), ...data });
+  }
+  saveVocEntries(entries);
+  closeModal('voc-modal');
+  if (currentView === 'stats') render();
+}
+
+function deleteVoc() {
+  if (!editingVocId || !confirm('이 VoC 항목을 삭제하시겠습니까?')) return;
+  saveVocEntries(loadVocEntries().filter(x => x.id !== editingVocId));
+  closeModal('voc-modal');
+  if (currentView === 'stats') render();
+}
+
+// ===== Trash =====
+function openTrashModal() {
+  const items = loadTrash();
+  if (!items.length) {
+    document.getElementById('trash-list').innerHTML = '<div style="text-align:center;padding:30px;color:#a0aec0;">휴지통이 비어 있습니다.</div>';
+  } else {
+    document.getElementById('trash-list').innerHTML = items.sort((a,b) => b.deletedAt - a.deletedAt).map(e => {
+      const daysLeft = Math.ceil((e.deletedAt + 30*24*60*60*1000 - Date.now()) / (24*60*60*1000));
+      return '<div class="trash-item"><div class="trash-item-info">' +
+        '<div class="trash-item-title">' + e.title + '</div>' +
+        '<div class="trash-item-meta">' + e.date + (e.hospital ? ' · ' + e.hospital : '') + ' · ' + daysLeft + '일 후 자동 삭제</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:5px">' +
+        '<button class="btn btn-save" style="padding:4px 10px;font-size:11px" onclick="restoreEvent(' + e.id + ')">복원</button>' +
+        '<button class="btn btn-danger" style="padding:4px 10px;font-size:11px" onclick="permanentDelete(' + e.id + ')">삭제</button>' +
+        '</div></div>';
+    }).join('');
+  }
+  document.getElementById('trash-modal').classList.add('open');
+}
+
+function restoreEvent(id) {
+  const trash = loadTrash();
+  const e = trash.find(x => x.id === id);
+  if (e) {
+    const { deletedAt, ...restored } = e;
+    events.push(restored);
+    saveToStorage();
+    saveTrash(trash.filter(x => x.id !== id));
+    openTrashModal();
+    render();
+  }
+}
+
+function permanentDelete(id) {
+  if (!confirm('완전히 삭제합니다. 되돌릴 수 없습니다.')) return;
+  saveTrash(loadTrash().filter(x => x.id !== id));
+  openTrashModal();
+}
+
+function emptyTrash() {
+  if (!confirm('휴지통을 모두 비웁니다. 되돌릴 수 없습니다.')) return;
+  saveTrash([]);
+  openTrashModal();
+}
+
+// ===== Type Manager =====
+function openTypeModal() {
+  const ct = loadCustomTypes();
+  const builtIn = Object.entries(TYPE_META);
+  let html = '<div style="font-size:11px;color:#718096;margin-bottom:7px">기본 유형 (편집 불가)</div>';
+  builtIn.forEach(([key, t]) => {
+    html += '<div class="type-manager-row"><div class="type-color-dot" style="background:' + t.dot + '"></div><span style="font-size:13px">' + t.emoji + ' ' + t.label + '</span></div>';
   });
-});
+  if (Object.keys(ct).length > 0) {
+    html += '<div style="font-size:11px;color:#718096;margin:10px 0 7px">사용자 정의 유형</div>';
+    Object.entries(ct).forEach(([key, t]) => {
+      html += '<div class="type-manager-row"><div class="type-color-dot" style="background:' + t.color + '"></div><span style="font-size:13px;flex:1">' + t.label + '</span><button class="btn btn-danger" style="padding:2px 9px;font-size:11px" data-key="' + key + '" onclick="deleteCustomType(this.dataset.key)">삭제</button></div>';
+    });
+  }
+  document.getElementById('type-list').innerHTML = html;
+  document.getElementById('type-modal').classList.add('open');
+  updateTypeSelect();
+}
 
-// Keyboard shortcuts
+function addCustomType() {
+  const label = document.getElementById('new-type-label').value.trim();
+  const color = document.getElementById('new-type-color').value;
+  if (!label) return;
+  const ct = loadCustomTypes();
+  const key = 'custom_' + Date.now();
+  ct[key] = { label, color, bg: hexToLight(color) };
+  saveCustomTypes(ct);
+  document.getElementById('new-type-label').value = '';
+  openTypeModal();
+}
+
+function deleteCustomType(key) {
+  const ct = loadCustomTypes();
+  delete ct[key];
+  saveCustomTypes(ct);
+  openTypeModal();
+}
+
+function updateTypeSelect() {
+  const sel = document.getElementById('f-type');
+  [...sel.options].forEach(o => { if (o.value.startsWith('custom_')) sel.remove(o.index); });
+  const ct = loadCustomTypes();
+  Object.entries(ct).forEach(([key, t]) => {
+    const opt = document.createElement('option');
+    opt.value = key; opt.textContent = t.label;
+    sel.appendChild(opt);
+  });
+}
+
+// ===== Helpers =====
+function updateGugun(preselect) {
+  const sido = document.getElementById('f-sido').value;
+  const sel = document.getElementById('f-gugun');
+  sel.innerHTML = '<option value="">구/시/군 선택</option>';
+  (GUGUN_MAP[sido]||[]).forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g; opt.textContent = g;
+    if (g === preselect) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function parseAddress(addr) {
+  if (!addr) return { sido: '', gugun: '', detail: '' };
+  for (const s of Object.keys(GUGUN_MAP)) {
+    if (addr.startsWith(s)) {
+      const rest = addr.slice(s.length).trim();
+      for (const g of (GUGUN_MAP[s]||[])) {
+        if (rest.startsWith(g)) return { sido: s, gugun: g, detail: rest.slice(g.length).trim() };
+      }
+      return { sido: s, gugun: '', detail: rest };
+    }
+  }
+  return { sido: '', gugun: '', detail: addr };
+}
+
+function clearChips(groupId) {
+  document.querySelectorAll('#' + groupId + ' .chip-input').forEach(el => el.checked = false);
+}
+
+function insertTemplate(type) {
+  const el = document.getElementById('f-notes');
+  el.value = TEMPLATES[type] || '';
+  el.focus();
+  el.setSelectionRange(el.value.length, el.value.length);
+}
+
+function getStatus() {
+  return document.querySelector('input[name="f-status"]:checked').value;
+}
+function setStatus(val) {
+  const el = document.getElementById(val === 'done' ? 's-done' : 's-plan');
+  if (el) el.checked = true;
+}
+
+// ===== Notifications =====
+function requestNotifPermission() {
+  if (!('Notification' in window)) { alert('이 브라우저는 알림을 지원하지 않습니다.'); return; }
+  Notification.requestPermission().then(p => {
+    if (p === 'granted') { alert('알림 활성화됨! 오늘/내일 일정을 알려드립니다.'); checkUpcomingEvents(); }
+  });
+}
+
+function checkUpcomingEvents() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0,10);
+  const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate()+1);
+  const tomorrowStr = tomorrow.toISOString().slice(0,10);
+  events.filter(e => e.status !== 'done').forEach(e => {
+    if (e.date === todayStr) {
+      new Notification('오늘 외근 일정', { body: (e.time?e.time+' ':'') + e.title + (e.person?' | '+e.person:''), icon: './icon-192.png', tag: 'today-'+e.id });
+    } else if (e.date === tomorrowStr) {
+      new Notification('내일 외근 일정', { body: (e.time?e.time+' ':'') + e.title + (e.person?' | '+e.person:''), icon: './icon-192.png', tag: 'tmr-'+e.id });
+    }
+  });
+}
+
+// ===== Modal close =====
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
+});
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
-  }
-  if (e.key === 'Enter' && e.ctrlKey && document.getElementById('form-modal').classList.contains('open')) {
-    saveEvent();
-  }
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  if (e.key === 'Enter' && e.ctrlKey && document.getElementById('form-modal').classList.contains('open')) saveEvent();
 });
 
-// --- Init ---
+// ===== Education Request Queue =====
+const REQ_KEY = 'ca_edu_requests';
+let reviewingReqId = null;
+
+function loadRequests() {
+  const stored = localStorage.getItem(REQ_KEY);
+  return stored ? JSON.parse(stored) : [];
+}
+function saveRequests(items) {
+  localStorage.setItem(REQ_KEY, JSON.stringify(items));
+}
+
+function updateRequestBadge() {
+  const pending = loadRequests().filter(r => r.status === 'pending');
+  const btn = document.getElementById('req-btn');
+  const badge = document.getElementById('req-badge');
+  if (pending.length > 0) {
+    btn.style.display = '';
+    badge.textContent = pending.length;
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+// Called on page load — reads ?req=BASE64 URL param from Power Automate link
+function handleIncomingRequest() {
+  const params = new URLSearchParams(window.location.search);
+  const encoded = params.get('req');
+  if (!encoded) return;
+  try {
+    const data = JSON.parse(atob(decodeURIComponent(encoded)));
+    const requests = loadRequests();
+    // Avoid duplicate (same timestamp from Power Automate)
+    const isDup = requests.some(r => r.paId && r.paId === data.paId);
+    if (!isDup) {
+      requests.push({ ...data, id: Date.now(), status: 'pending', receivedAt: new Date().toISOString() });
+      saveRequests(requests);
+      // Notify
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('새 교육 요청 접수', {
+          body: (data.institution || '') + ' · ' + (data.date || '') + ' · ' + (data.products || ''),
+          icon: './icon-192.png', tag: 'req-' + Date.now()
+        });
+      }
+    }
+    // Clean URL param
+    history.replaceState({}, '', window.location.pathname);
+    updateRequestBadge();
+    openRequestQueue();
+  } catch(e) { console.log('Request parse error', e); }
+}
+
+function openRequestQueue() {
+  const requests = loadRequests().filter(r => r.status === 'pending');
+  if (!requests.length) {
+    document.getElementById('req-queue-list').innerHTML =
+      '<div style="text-align:center;padding:30px;color:#a0aec0">대기 중인 교육 요청이 없습니다.</div>';
+  } else {
+    document.getElementById('req-queue-list').innerHTML = requests.map(r => {
+      const ago = Math.floor((Date.now() - new Date(r.receivedAt).getTime()) / 60000);
+      const agoStr = ago < 60 ? ago + '분 전' : Math.floor(ago/60) + '시간 전';
+      return '<div class="req-card" style="cursor:pointer" onclick="openRequestReview(' + r.id + ')">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+        '<div style="font-size:14px;font-weight:700;color:#553c9a">' + (r.institution || '기관 미상') + '</div>' +
+        '<span style="font-size:11px;color:#a0aec0">' + agoStr + '</span>' +
+        '</div>' +
+        '<div style="font-size:12px;color:#718096;margin-top:4px">' +
+          '📅 ' + (r.date || '-') + (r.startTime ? ' ' + r.startTime : '') +
+          (r.products ? ' &nbsp;·&nbsp; 🔬 ' + r.products : '') +
+          (r.dept ? ' &nbsp;·&nbsp; ' + r.dept : '') +
+        '</div>' +
+        (r.content ? '<div style="font-size:12px;color:#4a5568;margin-top:4px">' + r.content + '</div>' : '') +
+        '<div style="margin-top:8px;font-size:11px;color:#764ba2;font-weight:600">클릭하여 검토 →</div>' +
+        '</div>';
+    }).join('');
+  }
+  document.getElementById('req-queue-modal').classList.add('open');
+}
+
+function openRequestReview(id) {
+  const requests = loadRequests();
+  const r = requests.find(x => x.id === id);
+  if (!r) return;
+  reviewingReqId = id;
+  closeModal('req-queue-modal');
+
+  // Build form data fields from request
+  const autoTitle = buildAutoTitle(r);
+
+  document.getElementById('req-review-content').innerHTML =
+    '<div class="req-card">' +
+    '<div style="font-size:12px;font-weight:700;color:#553c9a;margin-bottom:10px">📋 세일즈 요청 내용</div>' +
+    reqRow('신청 부서', r.dept) +
+    reqRow('병원 / 진료과', r.institution) +
+    reqRow('희망 날짜', r.date) +
+    reqRow('교육 시간', (r.startTime||'') + (r.endTime ? ' ~ ' + r.endTime : '')) +
+    reqRow('장소 및 형식', r.locationFormat) +
+    reqRow('장소 상세', r.locationDetail) +
+    reqRow('참여 인원', r.participants ? r.participants + '명' : '') +
+    reqRow('참가자 구성', r.participantComp) +
+    reqRow('교육 제품', r.products) +
+    reqRow('교육 내용/주제', r.content) +
+    reqRow('관심 주제', r.interest) +
+    reqRow('Key Person', r.keyPerson) +
+    reqRow('제품 이해 수준', r.understanding) +
+    reqRow('계약 조건', r.contract) +
+    reqRow('특이사항', r.notes) +
+    '</div>' +
+    '<div style="font-size:12px;color:#718096;margin:12px 0 6px;font-weight:600">캘린더 등록 내용 (수정 가능)</div>' +
+    '<div class="form-group"><label>일정 제목</label><input type="text" id="rr-title" value="' + autoTitle.replace(/"/g,'&quot;') + '"></div>' +
+    '<div class="form-row">' +
+    '<div class="form-group"><label>날짜</label><input type="date" id="rr-date" value="' + (r.date||'') + '"></div>' +
+    '<div class="form-group"><label>시작 시간</label><input type="time" id="rr-time" value="' + (r.startTime||'') + '"></div>' +
+    '</div>' +
+    '<div class="form-group"><label>담당자 배정</label><div class="chip-group" id="rr-person-chips">' +
+    ['DH','선용','원지','영','락균'].map(p => '<input class="chip-input" type="checkbox" id="rp-' + p + '" value="' + p + '"><label class="chip-label" for="rp-' + p + '">' + p + '</label>').join('') +
+    '</div></div>';
+
+  document.getElementById('req-create-btn').onclick = () => createEventFromRequest(r);
+  document.getElementById('req-reject-btn').onclick = () => rejectRequest(id);
+  document.getElementById('req-review-modal').classList.add('open');
+}
+
+function reqRow(label, value) {
+  if (!value) return '';
+  return '<div class="req-field-row"><span class="req-field-label">' + label + '</span><span class="req-field-value">' + value + '</span></div>';
+}
+
+function buildAutoTitle(r) {
+  const prod = r.products ? '[' + r.products.split(',')[0].trim() + '] ' : '';
+  const inst = r.institution ? r.institution.split(' ')[0] : '';
+  return prod + inst + ' 교육';
+}
+
+function createEventFromRequest(r) {
+  const title = document.getElementById('rr-title').value.trim();
+  const date = document.getElementById('rr-date').value;
+  if (!title || !date) { alert('제목과 날짜는 필수입니다.'); return; }
+
+  const persons = [...document.querySelectorAll('#rr-person-chips .chip-input:checked')].map(el => el.value);
+
+  // Build structured notes from all form fields
+  const noteLines = [
+    '[ 교육 요청 정보 ]',
+    r.dept ? '신청 부서: ' + r.dept : '',
+    r.participantComp ? '참가자 구성: ' + r.participantComp : '',
+    r.participants ? '참여 인원: ' + r.participants + '명' : '',
+    r.content ? '교육내용: ' + r.content : '',
+    r.interest ? '관심 주제: ' + r.interest : '',
+    r.keyPerson ? 'Key Person: ' + r.keyPerson : '',
+    r.understanding ? '제품 이해: ' + r.understanding : '',
+    r.contract ? '계약 조건: ' + r.contract : '',
+    r.notes ? '특이사항: ' + r.notes : '',
+  ].filter(Boolean).join('\n');
+
+  // Map products to chip values
+  const PRODUCT_MAP = { 'NM': 'NM', 'tES': 'tES LAB', 'INNK': 'INNK', 'SCALE': 'SCALE PET', 'JKD': 'JKD', 'SP': 'SP' };
+  const products = r.products ? r.products.split(',').map(p => p.trim()).join(', ') : '';
+  const address = [r.locationFormat, r.locationDetail].filter(Boolean).join(' ');
+
+  const event = {
+    id: Date.now(),
+    title, date,
+    time: r.startTime || '',
+    type: 'green',
+    person: persons.join(', '),
+    product: products,
+    hospital: r.institution ? r.institution.split(' ')[0] : '',
+    address,
+    notes: noteLines,
+    complaint: '',
+    status: 'plan',
+    fromRequest: true,
+  };
+
+  events.push(event);
+  saveToStorage();
+
+  // Mark request as processed
+  const requests = loadRequests();
+  const idx = requests.findIndex(x => x.id === reviewingReqId);
+  if (idx !== -1) { requests[idx].status = 'created'; requests[idx].eventId = event.id; }
+  saveRequests(requests);
+
+  closeModal('req-review-modal');
+  updateRequestBadge();
+  render();
+
+  // Show confirmation
+  alert('일정이 생성되었습니다: ' + title + ' (' + date + ')');
+}
+
+function rejectRequest(id) {
+  if (!confirm('이 요청을 거절하시겠습니까?')) return;
+  const requests = loadRequests();
+  const idx = requests.findIndex(x => x.id === id);
+  if (idx !== -1) requests[idx].status = 'rejected';
+  saveRequests(requests);
+  closeModal('req-review-modal');
+  updateRequestBadge();
+}
+
+// ===== Init =====
 loadEvents();
+updateTypeSelect();
 render();
+handleIncomingRequest();
+updateRequestBadge();
+window.addEventListener('load', () => setTimeout(checkUpcomingEvents, 1500));
 </script>
 
 <script>
+// Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(r => console.log('SW registered'))
-      .catch(e => console.log('SW error', e));
+    navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW error', e));
   });
 }
 </script>
+
+<script>
+// Swipe to switch views
+(function() {
+  let sx = 0, sy = 0;
+  document.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (document.querySelector('.modal-overlay.open')) return;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      const tabs = document.querySelectorAll('.view-tab');
+      const views = ['calendar','list','hospital','stats'];
+      const cur = views.indexOf(currentView);
+      if (dx < 0 && cur < views.length - 1) {
+        currentView = views[cur + 1];
+        tabs.forEach(t => t.classList.remove('active'));
+        tabs[cur + 1].classList.add('active');
+        render();
+      } else if (dx > 0 && cur > 0) {
+        currentView = views[cur - 1];
+        tabs.forEach(t => t.classList.remove('active'));
+        tabs[cur - 1].classList.add('active');
+        render();
+      }
+    }
+  }, { passive: true });
+})();
+</script>
+
 </body>
 </html>
