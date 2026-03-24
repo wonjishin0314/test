@@ -1586,30 +1586,39 @@ function testTeamsNotif() {
     date: new Date().toISOString().slice(0,10),
     time: '10:00', title: '테스트 일정 (CA 캘린더 연동 확인)', person: 'CA팀', hospital: '테스트', type: 'today'
   }]).then(() => {
-    document.getElementById('notif-status').innerHTML = '<span style="color:#38a169">✅ 전송 성공! Teams를 확인하세요.</span>';
+    document.getElementById('notif-status').innerHTML =
+      '<span style="color:#38a169">✅ 요청 전송됨 — Teams 채널을 확인하세요.<br>' +
+      '<small style="color:#718096">메시지가 안 오면 Power Automate 플로우 실행 기록을 확인해주세요.</small></span>';
   }).catch(e => {
-    document.getElementById('notif-status').innerHTML = '<span style="color:#e53e3e">❌ 전송 실패: ' + e.message + '</span>';
+    document.getElementById('notif-status').innerHTML =
+      '<span style="color:#e53e3e">❌ 전송 실패: ' + e.message + '<br>' +
+      '<small>Power Automate URL이 올바른지 확인하세요.</small></span>';
   });
 }
 
 function sendTeamsMessage(url, eventList) {
   const lines = eventList.map(e =>
-    '• **' + (e.type === 'tomorrow' ? '[내일]' : '[오늘]') + ' ' + e.title + '**' +
+    '• [' + (e.type === 'tomorrow' ? '내일' : '오늘') + '] ' + e.title +
     (e.time ? ' ' + e.time : '') +
-    (e.hospital ? ' 🏥 ' + e.hospital : '') +
-    (e.person ? ' 👤 ' + e.person : '')
+    (e.hospital ? ' / ' + e.hospital : '') +
+    (e.person ? ' / ' + e.person : '')
   ).join('\n');
 
   const body = {
-    title: '📅 CA 외근 캘린더 알림',
+    title: 'CA 외근 캘린더 알림',
     message: lines,
     count: eventList.length,
-    events: eventList
+    events: eventList.map(e => ({
+      type: e.type, title: e.title, date: e.date,
+      time: e.time || '', hospital: e.hospital || '', person: e.person || ''
+    }))
   };
 
+  // no-cors: avoids CORS preflight, request reaches PA but response is opaque
   return fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(body)
   });
 }
