@@ -1535,14 +1535,14 @@ function saveVoc() {
   }
   saveVocEntries(entries);
   closeModal('voc-modal');
-  if (currentView === 'stats') render();
+  if (currentView === 'voc' || currentView === 'stats') render();
 }
 
 function deleteVoc() {
   if (!editingVocId || !confirm('이 VoC 항목을 삭제하시겠습니까?')) return;
   saveVocEntries(loadVocEntries().filter(x => x.id !== editingVocId));
   closeModal('voc-modal');
-  if (currentView === 'stats') render();
+  if (currentView === 'voc' || currentView === 'stats') render();
 }
 
 // ===== Trash =====
