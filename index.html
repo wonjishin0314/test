@@ -723,9 +723,18 @@ function loadEvents() {
   if (stored) {
     events = JSON.parse(stored);
   } else {
-    events = SEED.map((e, i) => ({ hospital: '', complaint: '', ...e, id: Date.now() + i, time: e.time || '' }));
-    saveToStorage();
+    events = SEED.map((e, i) => ({ hospital: '', complaint: '', inquiry: '', ...e, id: Date.now() + i, time: e.time || '' }));
   }
+  // Auto-complete past events
+  const todayStr = new Date().toISOString().slice(0,10);
+  let changed = false;
+  events.forEach(e => {
+    if (e.date < todayStr && (!e.status || e.status === 'plan') && e.type !== 'red') {
+      e.status = 'done';
+      changed = true;
+    }
+  });
+  if (changed) saveToStorage();
 }
 
 function saveToStorage() {
@@ -821,12 +830,16 @@ function updateLabel() {
 }
 
 let activeTypeFilter = null; // null = 전체, 'edu' = 교육외근, 'purple' = 학회, 'orange' = 반차
+let activeStatusFilter = null; // null = 전체, 'upcoming' = 예정, 'done' = 완료
 
 function getFilteredEvents() {
+  const todayStr = new Date().toISOString().slice(0,10);
   return events.filter(e => {
     if (activePersonFilter && !(e.person||'').split(',').map(s=>s.trim()).includes(activePersonFilter)) return false;
-    if (activeTypeFilter === 'edu') return ['green','edu1','edu2','edu3','pink'].includes(e.type);
-    if (activeTypeFilter) return e.type === activeTypeFilter;
+    if (activeTypeFilter === 'edu' && !['green','edu1','edu2','edu3','pink'].includes(e.type)) return false;
+    if (activeTypeFilter && activeTypeFilter !== 'edu' && e.type !== activeTypeFilter) return false;
+    if (activeStatusFilter === 'upcoming' && e.date < todayStr) return false;
+    if (activeStatusFilter === 'done' && e.date >= todayStr) return false;
     return true;
   });
 }
@@ -939,20 +952,56 @@ function renderCalendar() {
 function renderList() {
   const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
   const dayNames = ['일','월','화','수','목','금','토'];
+  const todayStr = new Date().toISOString().slice(0,10);
   const yearEvts = getFilteredEvents()
     .filter(e => new Date(e.date).getFullYear() === currentYear)
-    .sort((a,b) => a.date.localeCompare(b.date) || (a.time||'').localeCompare(b.time||''));
+    .sort((a,b) => {
+      // Upcoming (today+) first, then past in reverse
+      const aFuture = a.date >= todayStr;
+      const bFuture = b.date >= todayStr;
+      if (aFuture && !bFuture) return -1;
+      if (!aFuture && bFuture) return 1;
+      if (aFuture && bFuture) return a.date.localeCompare(b.date) || (a.time||'').localeCompare(b.time||'');
+      return b.date.localeCompare(a.date); // past: newest first
+    });
 
   if (!yearEvts.length) {
     document.getElementById('view-container').innerHTML = '<div style="text-align:center;padding:50px;color:#a0aec0;">이 연도에 일정이 없습니다.</div>';
     return;
   }
 
-  let html = '<div class="list-view">';
+  const asSel = 'background:#764ba2;color:white;border-color:#764ba2;';
+  const asNor = 'background:white;color:#718096;';
+  let html = '<div style="display:flex;gap:6px;margin-bottom:12px">' +
+    '<button onclick="setStatusFilter(null)" style="' + (!activeStatusFilter?asSel:asNor) + 'border:1.5px solid #e2e8f0;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer">전체</button>' +
+    '<button onclick="setStatusFilter(\'upcoming\')" style="' + (activeStatusFilter==='upcoming'?asSel:asNor) + 'border:1.5px solid #e2e8f0;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer">📅 예정만</button>' +
+    '<button onclick="setStatusFilter(\'done\')" style="' + (activeStatusFilter==='done'?asSel:asNor) + 'border:1.5px solid #e2e8f0;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer">✅ 완료만</button>' +
+    '</div>';
+  html += '<div class="list-view">';
   let lastMonth = -1;
+  let shownPastDivider = false;
+  let shownFutureDivider = false;
   yearEvts.forEach(e => {
     const d = new Date(e.date);
     const m = getTypeMeta(e.type);
+    const isPast = e.date < todayStr;
+
+    if (!shownFutureDivider && !isPast) {
+      shownFutureDivider = true;
+      lastMonth = -1;
+      html += '<div style="font-size:12px;font-weight:700;color:#764ba2;padding:8px 4px 4px;border-bottom:2px solid #764ba2;margin-bottom:4px">📅 예정 일정</div>';
+    }
+    if (!shownPastDivider && isPast && shownFutureDivider) {
+      shownPastDivider = true;
+      lastMonth = -1;
+      html += '<div style="font-size:12px;font-weight:700;color:#a0aec0;padding:16px 4px 4px;border-bottom:2px solid #e2e8f0;margin-bottom:4px">✅ 지난 일정</div>';
+    }
+    if (!shownFutureDivider && !shownPastDivider) {
+      shownPastDivider = true;
+      lastMonth = -1;
+      html += '<div style="font-size:12px;font-weight:700;color:#a0aec0;padding:8px 4px 4px;border-bottom:2px solid #e2e8f0;margin-bottom:4px">✅ 지난 일정</div>';
+    }
+
     if (d.getMonth() !== lastMonth) {
       lastMonth = d.getMonth();
       html += '<div class="list-month-header">' + currentYear + '년 ' + monthNames[lastMonth] + '</div>';
@@ -974,58 +1023,73 @@ function renderList() {
       ((e.inquiry||e.complaint) ? '<div class="list-meta" style="margin-top:3px">' + (e.inquiry?'<span style="color:#2b6cb0">❓ 문의 </span>':'') + (e.complaint?'<span style="color:#e53e3e">🚨 컴플레인</span>':'') + '</div>' : '') +
       '</div></div>';
   });
-  html += '</div>';
+  html += '</div></div>';
   document.getElementById('view-container').innerHTML = html;
 }
 
+function setStatusFilter(val) {
+  activeStatusFilter = val;
+  render();
+}
+
 function renderHospital() {
-  const filtered = getFilteredEvents().filter(e => e.hospital);
+  const searchVal = (document.getElementById('hosp-search-input') ? document.getElementById('hosp-search-input').value : '').toLowerCase();
+  const filtered = getFilteredEvents().filter(e => e.hospital && new Date(e.date).getFullYear() === currentYear);
   const byHosp = {};
   filtered.forEach(e => {
     const h = e.hospital;
+    if (searchVal && !h.toLowerCase().includes(searchVal)) return;
     if (!byHosp[h]) byHosp[h] = [];
     byHosp[h].push(e);
   });
 
   const sorted = Object.keys(byHosp).sort();
-  if (!sorted.length) {
-    document.getElementById('view-container').innerHTML = '<div style="text-align:center;padding:50px;color:#a0aec0;">병원 정보가 있는 일정이 없습니다.</div>';
-    return;
-  }
 
   const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
   const dayNames = ['일','월','화','수','목','금','토'];
-  let html = '<div>';
+
+  let html = '<div style="margin-bottom:10px">' +
+    '<input id="hosp-search-input" type="text" placeholder="🔍 병원명 검색..." value="' + searchVal.replace(/"/g,'&quot;') + '"' +
+    ' oninput="renderHospital()" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;font-family:inherit">' +
+    '</div>';
+
+  if (!sorted.length) {
+    html += '<div style="text-align:center;padding:40px;color:#a0aec0;">해당하는 병원 일정이 없습니다.</div>';
+    document.getElementById('view-container').innerHTML = html;
+    return;
+  }
+
   sorted.forEach(hosp => {
     const hospEvts = byHosp[hosp].sort((a,b) => a.date.localeCompare(b.date));
+    const grpId = 'hosp-grp-' + hosp.replace(/\s/g,'_');
     html += '<div class="hosp-group">' +
-      '<div class="hosp-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'">' +
+      '<div class="hosp-header" onclick="var el=document.getElementById(\'' + grpId + '\');el.style.display=el.style.display===\'none\'?\'block\':\'none\'">' +
         '<span class="hosp-name">🏥 ' + hosp + '</span>' +
         '<span class="hosp-count">' + hospEvts.length + '건</span>' +
       '</div>' +
-      '<div class="hosp-events">';
+      '<div id="' + grpId + '" class="hosp-events" style="display:none">';
     hospEvts.forEach(e => {
       const d = new Date(e.date);
       const m = getTypeMeta(e.type);
       html += '<div class="hosp-event-row" onclick="showDetail(' + e.id + ')">' +
-        '<div style="display:flex;align-items:center;gap:8px">' +
-        '<span style="font-size:11px;color:#718096;min-width:65px">' + d.getFullYear() + '-' + monthNames[d.getMonth()] + d.getDate() + '(' + dayNames[d.getDay()] + ')</span>' +
+        '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">' +
+        '<span style="font-size:11px;color:#718096;min-width:60px">' + monthNames[d.getMonth()] + ' ' + d.getDate() + '(' + dayNames[d.getDay()] + ')</span>' +
         '<span class="list-badge" style="background:' + m.bg + ';color:' + m.color + '">' + m.label + '</span>' +
-        '<span style="font-size:13px;font-weight:600">' + e.title + '</span>' +
+        '<span style="font-size:13px;font-weight:600;flex:1">' + e.title + '</span>' +
         (e.person ? '<span style="font-size:11px;color:#718096">' + e.person + '</span>' : '') +
-        (e.complaint ? '<span style="font-size:10px;color:#e53e3e;font-weight:600">💬</span>' : '') +
+        ((e.inquiry||e.complaint) ? '<span style="font-size:10px;color:#e53e3e">VoC</span>' : '') +
         '</div>' +
         '</div>';
     });
     html += '</div></div>';
   });
-  html += '</div>';
+
   document.getElementById('view-container').innerHTML = html;
 }
 
 function renderStatsView() {
   const persons = ['선용', '원지'];
-  const yearEvts = events.filter(e => new Date(e.date).getFullYear() === currentYear);
+  const yearEvts = getFilteredEvents().filter(e => new Date(e.date).getFullYear() === currentYear);
 
   // Education counts table
   let html = '<h3 style="font-size:14px;font-weight:700;color:#764ba2;margin-bottom:10px">담당자별 교육 횟수 (' + currentYear + '년)</h3>';
