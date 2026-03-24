@@ -221,9 +221,10 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
   .stats-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
   .stat-card { min-width: 0; padding: 8px 12px; }
   .stat-card .num { font-size: 19px; }
-  .cal-cell { min-height: 58px; padding: 3px; }
+  .cal-body { grid-auto-rows: 68px; }
+  .cal-cell { height: 68px; overflow: hidden; padding: 3px; min-height: unset; }
   .date-num { font-size: 11px; width: 19px; height: 19px; }
-  .event-chip { font-size: 9px; padding: 1px 3px; border-radius: 3px; }
+  .event-chip { font-size: 9px; padding: 1px 3px; border-radius: 3px; white-space: nowrap; }
   .cal-header-cell { font-size: 11px; padding: 7px 3px; }
   .modal { padding: 16px; border-radius: 12px; }
   .form-row { grid-template-columns: 1fr; }
