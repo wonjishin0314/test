@@ -243,7 +243,7 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
   <div class="header-right">
     <button class="btn btn-white badge-btn" id="req-btn" onclick="openRequestQueue()" title="교육 요청 대기함" style="display:none">📋 <span class="req-badge" id="req-badge">0</span></button>
     <button class="btn btn-white" onclick="openTrashModal()" title="휴지통">🗑️</button>
-    <button class="btn btn-white" onclick="requestNotifPermission()" title="알림 설정">🔔</button>
+    <button class="btn btn-white" onclick="openNotifSettings()" title="Teams 알림 설정">🔔</button>
     <button class="btn btn-white" onclick="openTypeModal()" title="유형 관리">⚙️</button>
     <button class="btn btn-white" onclick="openAddModal()">+ 추가</button>
   </div>
@@ -459,6 +459,42 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
       <button class="btn btn-danger" id="req-reject-btn">요청 거절</button>
       <button class="btn btn-cancel" onclick="closeModal('req-review-modal')">취소</button>
       <button class="btn btn-save" id="req-create-btn">✅ 일정 생성</button>
+    </div>
+  </div>
+</div>
+
+<!-- Teams Notification Settings Modal -->
+<div class="modal-overlay" id="notif-modal">
+  <div class="modal" style="max-width:460px">
+    <h2>🔔 Teams 알림 설정</h2>
+    <p style="font-size:12px;color:#718096;margin-bottom:14px;line-height:1.6">
+      Power Automate HTTP 트리거 URL을 입력하면<br>
+      앱 열릴 때 오늘/내일 일정을 Teams로 알려드립니다.
+    </p>
+    <div class="form-group">
+      <label>Power Automate Webhook URL</label>
+      <input type="url" id="notif-url" placeholder="https://prod-xx.westus.logic.azure.com/workflows/...">
+    </div>
+    <div class="form-group">
+      <label>알림 받을 Teams 채널 (참고용)</label>
+      <input type="text" id="notif-channel" placeholder="예: CA팀 채널">
+    </div>
+    <div class="form-group">
+      <label>알림 시점</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:5px;font-size:13px;text-transform:none;letter-spacing:0">
+          <input type="checkbox" id="notif-today" checked> 당일 일정
+        </label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:13px;text-transform:none;letter-spacing:0">
+          <input type="checkbox" id="notif-tomorrow" checked> 전날 일정
+        </label>
+      </div>
+    </div>
+    <div id="notif-status" style="font-size:12px;margin-top:4px"></div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" onclick="testTeamsNotif()" style="color:#764ba2;border-color:#764ba2">테스트 전송</button>
+      <button class="btn btn-cancel" onclick="closeModal('notif-modal')">취소</button>
+      <button class="btn btn-save" onclick="saveNotifSettings()">저장</button>
     </div>
   </div>
 </div>
@@ -1377,27 +1413,96 @@ function setStatus(val) {
   if (el) el.checked = true;
 }
 
-// ===== Notifications =====
-function requestNotifPermission() {
-  if (!('Notification' in window)) { alert('이 브라우저는 알림을 지원하지 않습니다.'); return; }
-  Notification.requestPermission().then(p => {
-    if (p === 'granted') { alert('알림 활성화됨! 오늘/내일 일정을 알려드립니다.'); checkUpcomingEvents(); }
+// ===== Teams Notifications via Power Automate =====
+const NOTIF_KEY = 'ca_notif_settings';
+const NOTIF_SENT_KEY = 'ca_notif_sent';
+
+function loadNotifSettings() {
+  const s = localStorage.getItem(NOTIF_KEY);
+  return s ? JSON.parse(s) : { url: '', channel: '', today: true, tomorrow: true };
+}
+
+function openNotifSettings() {
+  const s = loadNotifSettings();
+  document.getElementById('notif-url').value = s.url || '';
+  document.getElementById('notif-channel').value = s.channel || '';
+  document.getElementById('notif-today').checked = s.today !== false;
+  document.getElementById('notif-tomorrow').checked = s.tomorrow !== false;
+  document.getElementById('notif-status').textContent = '';
+  document.getElementById('notif-modal').classList.add('open');
+}
+
+function saveNotifSettings() {
+  const s = {
+    url: document.getElementById('notif-url').value.trim(),
+    channel: document.getElementById('notif-channel').value.trim(),
+    today: document.getElementById('notif-today').checked,
+    tomorrow: document.getElementById('notif-tomorrow').checked,
+  };
+  localStorage.setItem(NOTIF_KEY, JSON.stringify(s));
+  closeModal('notif-modal');
+  alert('저장되었습니다. 다음 앱 로드 시 Teams 알림이 전송됩니다.');
+}
+
+function testTeamsNotif() {
+  const url = document.getElementById('notif-url').value.trim();
+  if (!url) { document.getElementById('notif-status').innerHTML = '<span style="color:#e53e3e">URL을 먼저 입력하세요.</span>'; return; }
+  document.getElementById('notif-status').innerHTML = '<span style="color:#718096">전송 중...</span>';
+  sendTeamsMessage(url, [{
+    date: new Date().toISOString().slice(0,10),
+    time: '10:00', title: '테스트 일정 (CA 캘린더 연동 확인)', person: 'CA팀', hospital: '테스트', type: 'today'
+  }]).then(() => {
+    document.getElementById('notif-status').innerHTML = '<span style="color:#38a169">✅ 전송 성공! Teams를 확인하세요.</span>';
+  }).catch(e => {
+    document.getElementById('notif-status').innerHTML = '<span style="color:#e53e3e">❌ 전송 실패: ' + e.message + '</span>';
+  });
+}
+
+function sendTeamsMessage(url, eventList) {
+  const lines = eventList.map(e =>
+    '• **' + (e.type === 'tomorrow' ? '[내일]' : '[오늘]') + ' ' + e.title + '**' +
+    (e.time ? ' ' + e.time : '') +
+    (e.hospital ? ' 🏥 ' + e.hospital : '') +
+    (e.person ? ' 👤 ' + e.person : '')
+  ).join('\n');
+
+  const body = {
+    title: '📅 CA 외근 캘린더 알림',
+    message: lines,
+    count: eventList.length,
+    events: eventList
+  };
+
+  return fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
   });
 }
 
 function checkUpcomingEvents() {
-  if (!('Notification' in window) || Notification.permission !== 'granted') return;
-  const today = new Date();
-  const todayStr = today.toISOString().slice(0,10);
-  const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate()+1);
+  const s = loadNotifSettings();
+  if (!s.url) return;
+
+  // Avoid duplicate sends on same day
+  const today = new Date().toISOString().slice(0,10);
+  const lastSent = localStorage.getItem(NOTIF_SENT_KEY);
+  if (lastSent === today) return;
+
+  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
   const tomorrowStr = tomorrow.toISOString().slice(0,10);
-  events.filter(e => e.status !== 'done').forEach(e => {
-    if (e.date === todayStr) {
-      new Notification('오늘 외근 일정', { body: (e.time?e.time+' ':'') + e.title + (e.person?' | '+e.person:''), icon: './icon-192.png', tag: 'today-'+e.id });
-    } else if (e.date === tomorrowStr) {
-      new Notification('내일 외근 일정', { body: (e.time?e.time+' ':'') + e.title + (e.person?' | '+e.person:''), icon: './icon-192.png', tag: 'tmr-'+e.id });
-    }
+
+  const upcoming = events.filter(e => e.status !== 'done').flatMap(e => {
+    if (s.today && e.date === today) return [{ ...e, type: 'today' }];
+    if (s.tomorrow && e.date === tomorrowStr) return [{ ...e, type: 'tomorrow' }];
+    return [];
   });
+
+  if (!upcoming.length) return;
+
+  sendTeamsMessage(s.url, upcoming)
+    .then(() => localStorage.setItem(NOTIF_SENT_KEY, today))
+    .catch(err => console.log('Teams notify failed:', err));
 }
 
 // ===== Modal close =====
