@@ -832,8 +832,36 @@ function getFilteredEvents() {
 }
 
 function filterByType(typeKey) {
-  activeTypeFilter = (activeTypeFilter === typeKey) ? null : typeKey;
+  if (activeTypeFilter === typeKey) {
+    activeTypeFilter = null;
+  } else {
+    activeTypeFilter = typeKey;
+    // Switch to list view so filtering is clearly visible
+    if (typeKey !== null) {
+      currentView = 'list';
+      document.querySelectorAll('.view-tab').forEach((t,i) => t.classList.toggle('active', i===1));
+      document.querySelector('.nav-btns').style.display = 'flex';
+    }
+  }
   render();
+  updateTypeFilterBanner();
+}
+
+function updateTypeFilterBanner() {
+  let banner = document.getElementById('type-filter-banner');
+  if (!activeTypeFilter) {
+    if (banner) banner.remove();
+    return;
+  }
+  const labels = { edu: '교육 외근', purple: '학회 지원', orange: '반차/연차' };
+  const label = labels[activeTypeFilter] || activeTypeFilter;
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'type-filter-banner';
+    banner.style.cssText = 'background:#f0e6ff;padding:6px 16px;font-size:12px;color:#553c9a;font-weight:600;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #d6bcfa;';
+    document.getElementById('stats-bar').parentNode.insertBefore(banner, document.getElementById('stats-bar').nextSibling);
+  }
+  banner.innerHTML = '🔍 필터: ' + label + ' <button onclick="filterByType(null)" style="border:none;background:none;color:#e53e3e;font-size:13px;cursor:pointer;font-weight:700">✕ 해제</button>';
 }
 
 function renderStats() {
@@ -1874,6 +1902,7 @@ loadEvents();
 updateTypeSelect();
 updateAllHospitalSelects();
 render();
+updateTypeFilterBanner();
 handleIncomingRequest();
 updateRequestBadge();
 window.addEventListener('load', () => setTimeout(checkUpcomingEvents, 1500));
