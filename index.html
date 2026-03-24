@@ -264,11 +264,8 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
 <div class="filter-bar" id="filter-bar">
   <span style="font-size:11px;color:#718096;font-weight:600;">담당자:</span>
   <button class="filter-chip active" onclick="filterPerson(null, this)">전체</button>
-  <button class="filter-chip" onclick="filterPerson('DH', this)">DH</button>
   <button class="filter-chip" onclick="filterPerson('선용', this)">선용</button>
   <button class="filter-chip" onclick="filterPerson('원지', this)">원지</button>
-  <button class="filter-chip" onclick="filterPerson('영', this)">영</button>
-  <button class="filter-chip" onclick="filterPerson('락균', this)">락균</button>
 </div>
 
 <div class="view-bar">
@@ -325,11 +322,8 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
     <div class="form-group">
       <label>담당자</label>
       <div class="chip-group" id="person-chips">
-        <input class="chip-input" type="checkbox" id="p-DH" value="DH"><label class="chip-label" for="p-DH">DH</label>
         <input class="chip-input" type="checkbox" id="p-선용" value="선용"><label class="chip-label" for="p-선용">선용</label>
         <input class="chip-input" type="checkbox" id="p-원지" value="원지"><label class="chip-label" for="p-원지">원지</label>
-        <input class="chip-input" type="checkbox" id="p-영" value="영"><label class="chip-label" for="p-영">영</label>
-        <input class="chip-input" type="checkbox" id="p-락균" value="락균"><label class="chip-label" for="p-락균">락균</label>
       </div>
     </div>
     <div class="form-group">
@@ -553,11 +547,8 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
     <div class="form-group">
       <label>담당자 (대응자)</label>
       <div class="chip-group" id="voc-person-chips">
-        <input class="chip-input" type="checkbox" id="vp-DH" value="DH"><label class="chip-label" for="vp-DH">DH</label>
         <input class="chip-input" type="checkbox" id="vp-선용" value="선용"><label class="chip-label" for="vp-선용">선용</label>
         <input class="chip-input" type="checkbox" id="vp-원지" value="원지"><label class="chip-label" for="vp-원지">원지</label>
-        <input class="chip-input" type="checkbox" id="vp-영" value="영"><label class="chip-label" for="vp-영">영</label>
-        <input class="chip-input" type="checkbox" id="vp-락균" value="락균"><label class="chip-label" for="vp-락균">락균</label>
       </div>
     </div>
     <div class="form-group">
@@ -986,7 +977,7 @@ function renderHospital() {
 }
 
 function renderStatsView() {
-  const persons = ['DH', '선용', '원지', '영', '락균'];
+  const persons = ['선용', '원지'];
   const yearEvts = events.filter(e => new Date(e.date).getFullYear() === currentYear);
 
   // Education counts table
@@ -1772,7 +1763,7 @@ function openRequestReview(id) {
     '<div class="form-group"><label>시작 시간</label><input type="time" id="rr-time" value="' + (r.startTime||'') + '"></div>' +
     '</div>' +
     '<div class="form-group"><label>담당자 배정</label><div class="chip-group" id="rr-person-chips">' +
-    ['DH','선용','원지','영','락균'].map(p => '<input class="chip-input" type="checkbox" id="rp-' + p + '" value="' + p + '"><label class="chip-label" for="rp-' + p + '">' + p + '</label>').join('') +
+    ['선용','원지'].map(p => '<input class="chip-input" type="checkbox" id="rp-' + p + '" value="' + p + '"><label class="chip-label" for="rp-' + p + '">' + p + '</label>').join('') +
     '</div></div>';
 
   document.getElementById('req-create-btn').onclick = () => createEventFromRequest(r);
