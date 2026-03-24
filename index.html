@@ -820,8 +820,20 @@ function updateLabel() {
   else el.textContent = currentYear + '년';
 }
 
+let activeTypeFilter = null; // null = 전체, 'edu' = 교육외근, 'purple' = 학회, 'orange' = 반차
+
 function getFilteredEvents() {
-  return events.filter(e => !activePersonFilter || (e.person||'').split(',').map(s=>s.trim()).includes(activePersonFilter));
+  return events.filter(e => {
+    if (activePersonFilter && !(e.person||'').split(',').map(s=>s.trim()).includes(activePersonFilter)) return false;
+    if (activeTypeFilter === 'edu') return ['green','edu1','edu2','edu3','pink'].includes(e.type);
+    if (activeTypeFilter) return e.type === activeTypeFilter;
+    return true;
+  });
+}
+
+function filterByType(typeKey) {
+  activeTypeFilter = (activeTypeFilter === typeKey) ? null : typeKey;
+  render();
 }
 
 function renderStats() {
@@ -834,11 +846,17 @@ function renderStats() {
   const total = filtered.length;
   const eduCount = ['green','edu1','edu2','edu3','pink'].reduce((s,t) => s + (counts[t]||0), 0);
 
+  const activeStyle = 'outline:2px solid #764ba2;outline-offset:2px;';
+  const clickStyle = 'cursor:pointer;user-select:none;';
   document.getElementById('stats-bar').innerHTML =
-    '<div class="stat-card"><div class="num">' + total + '</div><div class="lbl">' + (currentView==='calendar'?'이번 달':'올해') + ' 전체</div></div>' +
-    '<div class="stat-card"><div class="num" style="color:#48bb78">' + eduCount + '</div><div class="lbl">교육 외근</div></div>' +
-    '<div class="stat-card"><div class="num" style="color:#9f7aea">' + (counts.purple||0) + '</div><div class="lbl">학회 지원</div></div>' +
-    '<div class="stat-card"><div class="num" style="color:#ed8936">' + (counts.orange||0) + '</div><div class="lbl">반차/연차</div></div>';
+    '<div class="stat-card" style="' + clickStyle + (activeTypeFilter===null?activeStyle:'') + '" onclick="filterByType(null)">' +
+      '<div class="num">' + total + '</div><div class="lbl">' + (currentView==='calendar'?'이번 달':'올해') + ' 전체</div></div>' +
+    '<div class="stat-card" style="' + clickStyle + (activeTypeFilter==='edu'?activeStyle:'') + '" onclick="filterByType(\'edu\')">' +
+      '<div class="num" style="color:#48bb78">' + eduCount + '</div><div class="lbl">교육 외근</div></div>' +
+    '<div class="stat-card" style="' + clickStyle + (activeTypeFilter==='purple'?activeStyle:'') + '" onclick="filterByType(\'purple\')">' +
+      '<div class="num" style="color:#9f7aea">' + (counts.purple||0) + '</div><div class="lbl">학회 지원</div></div>' +
+    '<div class="stat-card" style="' + clickStyle + (activeTypeFilter==='orange'?activeStyle:'') + '" onclick="filterByType(\'orange\')">' +
+      '<div class="num" style="color:#ed8936">' + (counts.orange||0) + '</div><div class="lbl">반차/연차</div></div>';
 }
 
 function renderCalendar() {
