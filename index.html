@@ -924,7 +924,7 @@ function renderStats() {
   const activeStyle = 'outline:2.5px solid #764ba2;outline-offset:2px;background:#f5f0ff;';
   const clickStyle = 'cursor:pointer;user-select:none;';
   document.getElementById('stats-bar').innerHTML =
-    '<div class="stat-card" style="' + clickStyle + '" onclick="filterByType(null)">' +
+    '<div class="stat-card" style="' + clickStyle + (activeTypeFilter===null?activeStyle:'') + '" onclick="filterByType(null)">' +
       '<div class="num">' + total + '</div><div class="lbl">' + (currentView==='calendar'?'이번 달':'올해') + ' 전체</div></div>' +
     '<div class="stat-card" style="' + clickStyle + (activeTypeFilter==='edu'?activeStyle:'') + '" onclick="filterByType(\'edu\')">' +
       '<div class="num" style="color:#48bb78">' + eduCount + '</div><div class="lbl">교육 외근</div></div>' +
