@@ -904,13 +904,18 @@ function filterByType(typeKey) {
 function updateTypeFilterBanner() {}
 
 function renderStats() {
-  const filtered = getFilteredEvents().filter(e => {
+  // 스탯 카드 집계는 타입 필터 무관, 담당자/기간 필터만 적용
+  const todayStr = new Date().toISOString().slice(0,10);
+  const base = events.filter(e => {
+    if (activePersonFilter && !(e.person||'').split(',').map(s=>s.trim()).includes(activePersonFilter)) return false;
+    if (activeStatusFilter === 'upcoming' && e.date < todayStr) return false;
+    if (activeStatusFilter === 'done' && e.date >= todayStr) return false;
     const d = new Date(e.date);
     return d.getFullYear() === currentYear && (currentView !== 'calendar' || d.getMonth() === currentMonth);
   });
   const counts = {};
-  filtered.forEach(e => { counts[e.type] = (counts[e.type]||0) + 1; });
-  const total = filtered.length;
+  base.forEach(e => { counts[e.type] = (counts[e.type]||0) + 1; });
+  const total = base.length;
   const eduCount = ['green','edu1','edu2','edu3','pink'].reduce((s,t) => s + (counts[t]||0), 0);
 
   const activeStyle = 'outline:2.5px solid #764ba2;outline-offset:2px;background:#f5f0ff;';
