@@ -1549,9 +1549,11 @@ function setStatus(val) {
 const NOTIF_KEY = 'ca_notif_settings';
 const NOTIF_SENT_KEY = 'ca_notif_sent';
 
+const DEFAULT_PA_URL = 'https://default0e0de970ba3248a4a04899d48e6eb2.82.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/add3427fc4b440db8b48c148f6527157/triggers/manual/paths/invoke?api-version=1';
+
 function loadNotifSettings() {
   const s = localStorage.getItem(NOTIF_KEY);
-  return s ? JSON.parse(s) : { url: '', channel: '', today: true, tomorrow: true };
+  return s ? JSON.parse(s) : { url: DEFAULT_PA_URL, channel: 'CA팀', today: true, tomorrow: true };
 }
 
 function openNotifSettings() {
