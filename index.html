@@ -345,8 +345,14 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
     </div>
     <div class="form-group">
       <label>병원명</label>
-      <input type="text" id="f-hospital" list="hospital-list" placeholder="병원 이름 입력 또는 선택">
-      <datalist id="hospital-list"></datalist>
+      <select id="f-hospital" onchange="onHospitalSelectChange()">
+        <option value="">병원 선택</option>
+        <option value="__new__">➕ 새 병원 추가...</option>
+      </select>
+      <div id="f-hospital-new-wrap" style="display:none;margin-top:6px;display:none">
+        <input type="text" id="f-hospital-new" placeholder="병원명 입력 후 추가 버튼 클릭" style="margin-bottom:5px">
+        <button type="button" class="btn btn-save" style="padding:5px 12px;font-size:12px;width:100%" onclick="addHospitalFromForm()">➕ 목록에 추가 후 선택</button>
+      </div>
     </div>
     <div class="form-group">
       <label>주소</label>
@@ -383,8 +389,12 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
       <textarea id="f-notes" placeholder="준비물, 메모 등" rows="3"></textarea>
     </div>
     <div class="form-group">
-      <label>문의사항 / 컴플레인 (VoC)</label>
-      <textarea id="f-complaint" placeholder="병원 측 문의, 불만, 요청사항 등 자유롭게 입력 (VoC 데이터로 활용됩니다)" rows="3"></textarea>
+      <label>문의사항 (VoC)</label>
+      <textarea id="f-inquiry" placeholder="병원 측 질문, 요청사항 등" rows="2"></textarea>
+    </div>
+    <div class="form-group">
+      <label>컴플레인 (VoC)</label>
+      <textarea id="f-complaint" placeholder="불만, 이슈, 개선 요청 등" rows="2"></textarea>
     </div>
     <div class="modal-footer">
       <button class="btn btn-danger" id="delete-btn" onclick="deleteEvent()" style="display:none;">삭제</button>
@@ -407,15 +417,30 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
 
 <!-- Type Manager Modal -->
 <div class="modal-overlay" id="type-modal">
-  <div class="modal" style="max-width:400px">
-    <h2>외근 유형 관리</h2>
-    <div id="type-list" style="margin:14px 0"></div>
-    <div class="form-group" style="margin-top:10px">
-      <label>새 유형 추가</label>
-      <div style="display:flex;gap:7px;align-items:center">
-        <input type="color" id="new-type-color" value="#48bb78" style="width:38px;height:34px;border:none;cursor:pointer;border-radius:6px;padding:2px">
-        <input type="text" id="new-type-label" placeholder="유형 이름" style="flex:1">
-        <button class="btn btn-save" onclick="addCustomType()" style="white-space:nowrap">추가</button>
+  <div class="modal" style="max-width:440px">
+    <div style="display:flex;gap:6px;margin-bottom:16px">
+      <button class="view-tab active" id="tab-type" onclick="switchSettingsTab('type')">외근 유형</button>
+      <button class="view-tab" id="tab-hospital" onclick="switchSettingsTab('hospital')">🏥 병원 목록</button>
+    </div>
+    <div id="settings-type-panel">
+      <div id="type-list" style="margin-bottom:14px"></div>
+      <div class="form-group">
+        <label>새 유형 추가</label>
+        <div style="display:flex;gap:7px;align-items:center">
+          <input type="color" id="new-type-color" value="#48bb78" style="width:38px;height:34px;border:none;cursor:pointer;border-radius:6px;padding:2px">
+          <input type="text" id="new-type-label" placeholder="유형 이름" style="flex:1">
+          <button class="btn btn-save" onclick="addCustomType()" style="white-space:nowrap">추가</button>
+        </div>
+      </div>
+    </div>
+    <div id="settings-hospital-panel" style="display:none">
+      <div id="hospital-list-mgmt" style="max-height:300px;overflow-y:auto;margin-bottom:12px"></div>
+      <div class="form-group">
+        <label>병원 추가</label>
+        <div style="display:flex;gap:7px;align-items:center">
+          <input type="text" id="new-hospital-name" placeholder="병원명 입력" style="flex:1">
+          <button class="btn btn-save" onclick="addHospital()" style="white-space:nowrap">추가</button>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -520,7 +545,10 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
     </div>
     <div class="form-group">
       <label>병원명</label>
-      <input type="text" id="v-hospital" list="hospital-list" placeholder="병원 이름">
+      <select id="v-hospital">
+        <option value="">병원 선택</option>
+        <option value="__new__">➕ 새 병원 추가...</option>
+      </select>
     </div>
     <div class="form-group">
       <label>담당자 (대응자)</label>
@@ -905,7 +933,7 @@ function renderList() {
         ' &nbsp;<span style="padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600;background:' + statusBg + ';color:' + statusColor + '">' + (e.status==='done'?'완료':'예정') + '</span>' +
       '</div>' +
       (e.address ? '<div class="list-meta" style="margin-top:3px">📍 ' + e.address + '</div>' : '') +
-      (e.complaint ? '<div class="list-meta" style="margin-top:3px;color:#e53e3e">💬 VoC 있음</div>' : '') +
+      ((e.inquiry||e.complaint) ? '<div class="list-meta" style="margin-top:3px">' + (e.inquiry?'<span style="color:#2b6cb0">❓ 문의 </span>':'') + (e.complaint?'<span style="color:#e53e3e">🚨 컴플레인</span>':'') + '</div>' : '') +
       '</div></div>';
   });
   html += '</div>';
@@ -976,7 +1004,7 @@ function renderStatsView() {
   html += '</tbody></table></div>';
 
   // VoC section: event-linked complaints + standalone entries
-  const vocEvts = events.filter(e => e.complaint && e.complaint.trim()).sort((a,b) => b.date.localeCompare(a.date));
+  const vocEvts = events.filter(e => (e.complaint && e.complaint.trim()) || (e.inquiry && e.inquiry.trim())).sort((a,b) => b.date.localeCompare(a.date));
   const vocStandalone = loadVocEntries().sort((a,b) => b.date.localeCompare(a.date));
   const totalVoc = vocEvts.length + vocStandalone.length;
 
@@ -1012,7 +1040,8 @@ function renderStatsView() {
         html += '<div class="voc-card" onclick="showDetail(' + e.id + ')">' +
           '<div class="voc-meta">📅 외근 · ' + e.date + (e.hospital ? ' · 🏥 ' + e.hospital : '') + (e.person ? ' · ' + e.person : '') + ' · <span style="background:' + m.bg + ';color:' + m.color + ';padding:1px 6px;border-radius:10px;font-size:10px">' + m.label + '</span></div>' +
           '<div style="font-size:13px;font-weight:600;margin:3px 0">' + e.title + '</div>' +
-          '<div class="voc-text">' + e.complaint.replace(/\n/g,'<br>') + '</div>' +
+          (e.inquiry ? '<div class="voc-text" style="color:#2b6cb0"><strong>❓ 문의:</strong> ' + e.inquiry.replace(/\n/g,'<br>') + '</div>' : '') +
+        (e.complaint ? '<div class="voc-text" style="color:#e53e3e;margin-top:3px"><strong>🚨 컴플레인:</strong> ' + e.complaint.replace(/\n/g,'<br>') + '</div>' : '') +
           '</div>';
       });
     }
@@ -1021,11 +1050,106 @@ function renderStatsView() {
   document.getElementById('view-container').innerHTML = '<div>' + html + '</div>';
 }
 
-// ===== Hospital Datalist =====
-function updateHospitalDatalist() {
-  const hosps = [...new Set(events.map(e => e.hospital).filter(Boolean))].sort();
-  const dl = document.getElementById('hospital-list');
-  if (dl) dl.innerHTML = hosps.map(h => '<option value="' + h + '">').join('');
+// ===== Hospital Master List =====
+const HOSPITAL_KEY = 'ca_hospitals';
+const DEFAULT_HOSPITALS = [
+  '고대 구로병원','강동 경희대학교병원','인천백병원','한양대 구리병원',
+  '중앙대 광명병원','다빈치병원','양산부산대병원','아주대병원','한일병원',
+  '제주대병원','용인세브란스병원','광주센트럴병원','노원을지대학교병원',
+  '이대목동병원','원주 세브란스병원','명지춘혜재활병원','상남한마음병원',
+  '중앙대병원','원주의료원','SGH',
+];
+
+function loadHospitals() {
+  const stored = localStorage.getItem(HOSPITAL_KEY);
+  if (stored) return JSON.parse(stored);
+  // First run: init with default list
+  localStorage.setItem(HOSPITAL_KEY, JSON.stringify(DEFAULT_HOSPITALS));
+  return [...DEFAULT_HOSPITALS];
+}
+
+function saveHospitals(list) {
+  localStorage.setItem(HOSPITAL_KEY, JSON.stringify(list));
+}
+
+function addHospital(name) {
+  const input = document.getElementById('new-hospital-name');
+  const n = (name || (input && input.value) || '').trim();
+  if (!n) return;
+  const list = loadHospitals();
+  if (!list.includes(n)) {
+    list.push(n);
+    list.sort();
+    saveHospitals(list);
+  }
+  if (input) input.value = '';
+  renderHospitalMgmt();
+  updateAllHospitalSelects();
+}
+
+function deleteHospital(name) {
+  const list = loadHospitals().filter(h => h !== name);
+  saveHospitals(list);
+  renderHospitalMgmt();
+  updateAllHospitalSelects();
+}
+
+function updateAllHospitalSelects() {
+  const list = loadHospitals();
+  ['f-hospital', 'v-hospital'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const current = sel.value;
+    sel.innerHTML = '<option value="">병원 선택</option>' +
+      list.map(h => '<option value="' + h + '"' + (h === current ? ' selected' : '') + '>' + h + '</option>').join('') +
+      '<option value="__new__">➕ 새 병원 추가...</option>';
+  });
+}
+
+function onHospitalSelectChange() {
+  const sel = document.getElementById('f-hospital');
+  const wrap = document.getElementById('f-hospital-new-wrap');
+  if (sel.value === '__new__') {
+    wrap.style.display = 'block';
+    document.getElementById('f-hospital-new').focus();
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+
+function addHospitalFromForm() {
+  const name = document.getElementById('f-hospital-new').value.trim();
+  if (!name) return;
+  addHospital(name);
+  // Select the newly added hospital
+  const sel = document.getElementById('f-hospital');
+  sel.value = name;
+  document.getElementById('f-hospital-new-wrap').style.display = 'none';
+  document.getElementById('f-hospital-new').value = '';
+}
+
+function renderHospitalMgmt() {
+  const list = loadHospitals();
+  const el = document.getElementById('hospital-list-mgmt');
+  if (!el) return;
+  if (!list.length) {
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:#a0aec0">등록된 병원이 없습니다.</div>';
+    return;
+  }
+  el.innerHTML = list.map(h =>
+    '<div class="type-manager-row">' +
+    '<span style="font-size:13px;flex:1">🏥 ' + h + '</span>' +
+    '<button class="btn btn-danger" style="padding:2px 9px;font-size:11px" data-name="' + h.replace(/"/g,'&quot;') + '" onclick="deleteHospital(this.dataset.name)">삭제</button>' +
+    '</div>'
+  ).join('');
+}
+
+function switchSettingsTab(tab) {
+  document.getElementById('settings-type-panel').style.display = tab === 'type' ? '' : 'none';
+  document.getElementById('settings-hospital-panel').style.display = tab === 'hospital' ? '' : 'none';
+  document.getElementById('tab-type').classList.toggle('active', tab === 'type');
+  document.getElementById('tab-hospital').classList.toggle('active', tab === 'hospital');
+  if (tab === 'hospital') renderHospitalMgmt();
 }
 
 // ===== Event CRUD =====
@@ -1040,7 +1164,9 @@ function openAddModal(dateStr) {
   document.getElementById('f-time').value = '';
   document.getElementById('f-type').value = 'green';
   clearChips('person-chips'); clearChips('product-chips');
+  updateAllHospitalSelects();
   document.getElementById('f-hospital').value = '';
+  document.getElementById('f-hospital-new-wrap').style.display = 'none';
   document.getElementById('f-sido').value = '';
   document.getElementById('f-gugun').innerHTML = '<option value="">구/시/군 선택</option>';
   document.getElementById('f-detail').value = '';
@@ -1077,10 +1203,13 @@ function openEditModal(id) {
   updateGugun(ap.gugun);
   document.getElementById('f-detail').value = ap.detail;
   document.getElementById('f-notes').value = e.notes || '';
+  document.getElementById('f-inquiry').value = e.inquiry || '';
   document.getElementById('f-complaint').value = e.complaint || '';
   setStatus(e.status || 'plan');
   updateTypeSelect();
-  updateHospitalDatalist();
+  updateAllHospitalSelects();
+  document.getElementById('f-hospital').value = e.hospital || '';
+  document.getElementById('f-hospital-new-wrap').style.display = 'none';
   document.getElementById('detail-modal').classList.remove('open');
   document.getElementById('form-modal').classList.add('open');
 }
@@ -1127,9 +1256,10 @@ function doSaveEvent(title, date, type, persons) {
     time: document.getElementById('f-time').value,
     person: persons.join(', '),
     product: [...document.querySelectorAll('#product-chips .chip-input:checked')].map(el => el.value).join(', '),
-    hospital: document.getElementById('f-hospital').value.trim(),
+    hospital: (document.getElementById('f-hospital').value === '__new__' ? '' : document.getElementById('f-hospital').value),
     address: [document.getElementById('f-sido').value, document.getElementById('f-gugun').value, document.getElementById('f-detail').value.trim()].filter(Boolean).join(' '),
     notes: document.getElementById('f-notes').value.trim(),
+    inquiry: document.getElementById('f-inquiry').value.trim(),
     complaint: document.getElementById('f-complaint').value.trim(),
     status: getStatus(),
   };
@@ -1181,7 +1311,8 @@ function showDetail(id) {
     (e.product ? '<div class="detail-row"><span class="detail-label">제품</span><span class="detail-value">' + e.product + '</span></div>' : '') +
     (e.address ? '<div class="detail-row"><span class="detail-label">주소</span><span class="detail-value">📍 ' + e.address + '</span></div>' : '') +
     (e.notes ? '<div class="detail-row"><span class="detail-label">준비물</span><span class="detail-value" style="white-space:pre-wrap">📝 ' + e.notes + '</span></div>' : '') +
-    (e.complaint ? '<div class="detail-row"><span class="detail-label">VoC</span><span class="detail-value" style="white-space:pre-wrap;color:#e53e3e">💬 ' + e.complaint + '</span></div>' : '');
+    (e.inquiry ? '<div class="detail-row"><span class="detail-label">문의사항</span><span class="detail-value" style="white-space:pre-wrap;color:#2b6cb0">❓ ' + e.inquiry + '</span></div>' : '') +
+    (e.complaint ? '<div class="detail-row"><span class="detail-label">컴플레인</span><span class="detail-value" style="white-space:pre-wrap;color:#e53e3e">🚨 ' + e.complaint + '</span></div>' : '');
 
   document.getElementById('detail-edit-btn').onclick = () => openEditModal(id);
   document.getElementById('detail-modal').classList.add('open');
@@ -1320,6 +1451,7 @@ function emptyTrash() {
 
 // ===== Type Manager =====
 function openTypeModal() {
+  switchSettingsTab('type');
   const ct = loadCustomTypes();
   const builtIn = Object.entries(TYPE_META);
   let html = '<div style="font-size:11px;color:#718096;margin-bottom:7px">기본 유형 (편집 불가)</div>';
@@ -1719,6 +1851,7 @@ function rejectRequest(id) {
 // ===== Init =====
 loadEvents();
 updateTypeSelect();
+updateAllHospitalSelects();
 render();
 handleIncomingRequest();
 updateRequestBadge();
