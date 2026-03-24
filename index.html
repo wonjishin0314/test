@@ -99,8 +99,8 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
   display: block; font-weight: 500; line-height: 1.5;
 }
-.chip-done { opacity: 0.55; }
-.status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 3px; vertical-align: middle; }
+.chip-done { opacity: 0.75; text-decoration: line-through; text-decoration-color: rgba(0,0,0,0.3); }
+.status-dot { display: none; }
 .more-chip { font-size: 10px; color: #718096; padding: 1px 3px; cursor: pointer; }
 
 /* List view */
@@ -210,27 +210,69 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
 .req-card { background: #f8f4ff; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid #764ba2; }
 
 @media (max-width: 600px) {
-  .main { padding: 8px 10px; }
-  header { padding: 10px 12px; }
-  header h1 { font-size: 17px; }
-  .header-right .btn { padding: 6px 9px; font-size: 11px; }
-  .legend { padding: 6px 10px; gap: 8px; font-size: 11px; }
-  .filter-bar { padding: 6px 10px; }
-  .view-bar { padding: 7px 10px; }
-  .view-tab { padding: 4px 10px; font-size: 11px; }
-  .stats-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-  .stat-card { min-width: 0; padding: 8px 12px; }
-  .stat-card .num { font-size: 19px; }
-  .cal-body { grid-auto-rows: 68px; }
-  .cal-cell { height: 68px; overflow: hidden; padding: 3px; min-height: unset; }
-  .date-num { font-size: 11px; width: 19px; height: 19px; }
-  .event-chip { font-size: 9px; padding: 1px 3px; border-radius: 3px; white-space: nowrap; }
-  .cal-header-cell { font-size: 11px; padding: 7px 3px; }
-  .modal { padding: 16px; border-radius: 12px; }
+  /* header */
+  header { padding: 10px 14px; }
+  header h1 { font-size: 16px; }
+  header .subtitle { font-size: 10px; }
+  .header-right { gap: 4px; }
+  .header-right .btn { padding: 7px 9px; font-size: 13px; }
+
+  /* legend: horizontal scroll */
+  .legend { padding: 6px 12px; gap: 10px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; font-size: 11px; }
+  .legend::-webkit-scrollbar { display: none; }
+  .legend-item { flex-shrink: 0; }
+
+  /* filter bar: horizontal scroll */
+  .filter-bar { padding: 6px 12px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-chip { flex-shrink: 0; white-space: nowrap; padding: 6px 14px; font-size: 12px; }
+
+  /* view bar */
+  .view-bar { padding: 6px 12px; }
+  .view-tab { padding: 6px 11px; font-size: 11px; }
+  #current-label { min-width: 90px; font-size: 13px; }
+
+  /* main */
+  .main { padding: 10px 12px; }
+
+  /* stat cards: 2x2 grid */
+  .stats-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .stat-card { min-width: 0; padding: 10px 12px; border-radius: 10px; }
+  .stat-card .num { font-size: 22px; }
+  .stat-card .lbl { font-size: 11px; }
+
+  /* calendar */
+  .cal-body { grid-auto-rows: 72px; }
+  .cal-cell { height: 72px; overflow: hidden; padding: 3px 2px; min-height: unset; }
+  .date-num { font-size: 11px; width: 20px; height: 20px; }
+  .event-chip { font-size: 9px; padding: 1px 3px; border-radius: 3px; margin-top: 1px; }
+  .cal-header-cell { font-size: 12px; padding: 8px 2px; }
+
+  /* modal: bottom sheet */
+  .modal-overlay { align-items: flex-end; }
+  .modal {
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 88vh;
+    padding: 20px 16px 24px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+  .modal::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    margin: -8px auto 16px;
+  }
   .form-row { grid-template-columns: 1fr; }
+  .addr-row { grid-template-columns: 1fr 1fr; }
+
+  /* list */
   .list-item { padding: 10px 12px; gap: 8px; }
   .list-date .day { font-size: 17px; }
-  #current-label { min-width: 100px; font-size: 13px; }
 }
 </style>
 </head>
@@ -239,7 +281,7 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
 <header>
   <div>
     <h1>📅 CA 외근 캘린더</h1>
-    <div class="subtitle">뉴로펫 CA팀 외근 일정 관리</div>
+    <div class="subtitle">뉴로핏 CA팀 외근 일정 관리</div>
   </div>
   <div class="header-right">
     <button class="btn btn-white badge-btn" id="req-btn" onclick="openRequestQueue()" title="교육 요청 대기함" style="display:none">📋 <span class="req-badge" id="req-badge">0</span></button>
@@ -614,11 +656,17 @@ const KR_HOLIDAYS = {
   '2025-06-06': '현충일', '2025-08-15': '광복절', '2025-10-03': '개천절', '2025-10-05': '추석연휴',
   '2025-10-06': '추석', '2025-10-07': '추석연휴', '2025-10-08': '추석대체', '2025-10-09': '한글날',
   '2025-12-25': '크리스마스',
-  '2026-01-01': '새해', '2026-01-28': '설날연휴', '2026-01-29': '설날', '2026-01-30': '설날연휴',
-  '2026-02-06': '대체공휴일', '2026-03-01': '삼일절', '2026-05-05': '어린이날',
-  '2026-05-24': '부처님오신날', '2026-06-06': '현충일', '2026-08-15': '광복절',
-  '2026-09-24': '추석연휴', '2026-09-25': '추석', '2026-09-26': '추석연휴',
-  '2026-10-03': '개천절', '2026-10-09': '한글날', '2026-12-25': '크리스마스',
+  '2026-01-01': '새해',
+  '2026-02-16': '설날연휴', '2026-02-17': '설날', '2026-02-18': '설날연휴',
+  '2026-03-01': '삼일절', '2026-03-02': '삼일절 대체',
+  '2026-05-05': '어린이날',
+  '2026-05-24': '부처님오신날', '2026-05-25': '부처님오신날 대체',
+  '2026-06-06': '현충일', '2026-06-08': '현충일 대체',
+  '2026-08-15': '광복절', '2026-08-17': '광복절 대체',
+  '2026-09-24': '추석연휴', '2026-09-25': '추석', '2026-09-26': '추석연휴', '2026-09-28': '추석 대체',
+  '2026-10-03': '개천절', '2026-10-05': '개천절 대체',
+  '2026-10-09': '한글날',
+  '2026-12-25': '크리스마스',
 };
 
 const GUGUN_MAP = {
@@ -846,30 +894,14 @@ function getFilteredEvents() {
 
 function filterByType(typeKey) {
   if (typeKey === null) {
-    activeTypeFilter = null;               // 전체 = 항상 필터 해제
+    activeTypeFilter = null;
   } else {
-    activeTypeFilter = (activeTypeFilter === typeKey) ? null : typeKey; // 같은 거 누르면 해제
+    activeTypeFilter = (activeTypeFilter === typeKey) ? null : typeKey;
   }
   render();
-  updateTypeFilterBanner();
 }
 
-function updateTypeFilterBanner() {
-  let banner = document.getElementById('type-filter-banner');
-  if (!activeTypeFilter) {
-    if (banner) banner.remove();
-    return;
-  }
-  const labels = { edu: '교육 외근', purple: '학회 지원', orange: '반차/연차' };
-  const label = labels[activeTypeFilter] || activeTypeFilter;
-  if (!banner) {
-    banner = document.createElement('div');
-    banner.id = 'type-filter-banner';
-    banner.style.cssText = 'background:#f0e6ff;padding:6px 16px;font-size:12px;color:#553c9a;font-weight:600;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #d6bcfa;';
-    document.getElementById('stats-bar').parentNode.insertBefore(banner, document.getElementById('stats-bar').nextSibling);
-  }
-  banner.innerHTML = '🔍 필터: ' + label + ' <button onclick="filterByType(null)" style="border:none;background:none;color:#e53e3e;font-size:13px;cursor:pointer;font-weight:700">✕ 해제</button>';
-}
+function updateTypeFilterBanner() {}
 
 function renderStats() {
   const filtered = getFilteredEvents().filter(e => {
@@ -881,10 +913,10 @@ function renderStats() {
   const total = filtered.length;
   const eduCount = ['green','edu1','edu2','edu3','pink'].reduce((s,t) => s + (counts[t]||0), 0);
 
-  const activeStyle = 'outline:2px solid #764ba2;outline-offset:2px;';
+  const activeStyle = 'outline:2.5px solid #764ba2;outline-offset:2px;background:#f5f0ff;';
   const clickStyle = 'cursor:pointer;user-select:none;';
   document.getElementById('stats-bar').innerHTML =
-    '<div class="stat-card" style="' + clickStyle + (activeTypeFilter===null?activeStyle:'') + '" onclick="filterByType(null)">' +
+    '<div class="stat-card" style="' + clickStyle + '" onclick="filterByType(null)">' +
       '<div class="num">' + total + '</div><div class="lbl">' + (currentView==='calendar'?'이번 달':'올해') + ' 전체</div></div>' +
     '<div class="stat-card" style="' + clickStyle + (activeTypeFilter==='edu'?activeStyle:'') + '" onclick="filterByType(\'edu\')">' +
       '<div class="num" style="color:#48bb78">' + eduCount + '</div><div class="lbl">교육 외근</div></div>' +
@@ -1002,7 +1034,8 @@ function renderList() {
     }
     const statusBg = e.status==='done' ? '#c6f6d5' : '#ebf8ff';
     const statusColor = e.status==='done' ? '#276749' : '#2b6cb0';
-    html += '<div class="list-item" style="border-left-color:' + m.dot + '" onclick="showDetail(' + e.id + ')">' +
+    const isDoneList = e.status === 'done';
+    html += '<div class="list-item" style="border-left-color:' + (isDoneList?'#68d391':m.dot) + ';opacity:' + (isDoneList?'0.8':'1') + '" onclick="showDetail(' + e.id + ')">' +
       '<div class="list-date"><div class="day">' + d.getDate() + '</div><div>' + monthNames[d.getMonth()] + ' ' + dayNames[d.getDay()] + '</div>' +
       (e.time ? '<div style="color:#764ba2;font-weight:600">' + e.time + '</div>' : '') + '</div>' +
       '<div class="list-body"><div class="list-title">' + e.title + '</div>' +
@@ -1011,7 +1044,7 @@ function renderList() {
         (e.hospital ? ' &nbsp;· 🏥 ' + e.hospital : '') +
         (e.person ? ' &nbsp;· ' + e.person : '') +
         (e.product ? ' &nbsp;· ' + e.product : '') +
-        ' &nbsp;<span style="padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600;background:' + statusBg + ';color:' + statusColor + '">' + (e.status==='done'?'완료':'예정') + '</span>' +
+        (isDoneList ? ' &nbsp;<span style="font-size:11px;color:#38a169;font-weight:600">✅</span>' : '') +
       '</div>' +
       (e.address ? '<div class="list-meta" style="margin-top:3px">📍 ' + e.address + '</div>' : '') +
       ((e.inquiry||e.complaint) ? '<div class="list-meta" style="margin-top:3px">' + (e.inquiry?'<span style="color:#2b6cb0">❓ 문의 </span>':'') + (e.complaint?'<span style="color:#e53e3e">🚨 컴플레인</span>':'') + '</div>' : '') +
@@ -1368,6 +1401,7 @@ function doSaveEvent(title, date, type, persons) {
   }
 
   saveToStorage();
+  notifyEventSaved(data);
   closeModal('form-modal');
   render();
 }
@@ -1680,7 +1714,7 @@ function testTeamsNotif() {
   document.getElementById('notif-status').innerHTML = '<span style="color:#718096">전송 중...</span>';
   sendTeamsMessage(url, [{
     date: new Date().toISOString().slice(0,10),
-    time: '10:00', title: '테스트 일정 (CA 캘린더 연동 확인)', person: 'CA팀', hospital: '테스트', type: 'today'
+    time: '10:00', title: '테스트: 일정 등록 알림 확인', person: 'CA팀', hospital: '테스트병원', type: 'today'
   }]).then(() => {
     document.getElementById('notif-status').innerHTML =
       '<span style="color:#38a169">✅ 요청 전송됨 — Teams 채널을 확인하세요.<br>' +
@@ -1719,29 +1753,21 @@ function sendTeamsMessage(url, eventList) {
   });
 }
 
-function checkUpcomingEvents() {
+function notifyEventSaved(eventData) {
   const s = loadNotifSettings();
   if (!s.url) return;
-
-  // Avoid duplicate sends on same day
-  const today = new Date().toISOString().slice(0,10);
-  const lastSent = localStorage.getItem(NOTIF_SENT_KEY);
-  if (lastSent === today) return;
-
+  const todayStr = new Date().toISOString().slice(0,10);
   const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
   const tomorrowStr = tomorrow.toISOString().slice(0,10);
-
-  const upcoming = events.filter(e => e.status !== 'done').flatMap(e => {
-    if (s.today && e.date === today) return [{ ...e, type: 'today' }];
-    if (s.tomorrow && e.date === tomorrowStr) return [{ ...e, type: 'tomorrow' }];
-    return [];
-  });
-
-  if (!upcoming.length) return;
-
-  sendTeamsMessage(s.url, upcoming)
-    .then(() => localStorage.setItem(NOTIF_SENT_KEY, today))
+  // Only notify for upcoming events (today or future)
+  if (eventData.date < todayStr) return;
+  const label = eventData.date === todayStr ? 'today' : eventData.date === tomorrowStr ? 'tomorrow' : 'upcoming';
+  sendTeamsMessage(s.url, [{ ...eventData, type: label }])
     .catch(err => console.log('Teams notify failed:', err));
+}
+
+function checkUpcomingEvents() {
+  // Legacy: kept for test button only
 }
 
 // ===== Modal close =====

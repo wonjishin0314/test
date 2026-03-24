@@ -1,7 +1,7 @@
 {
   "name": "CA 외근 캘린더",
   "short_name": "외근캘린더",
-  "description": "뉴로펫 CA팀 외근 일정 관리",
+  "description": "뉴로핏 CA팀 외근 일정 관리",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
