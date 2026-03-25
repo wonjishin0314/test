@@ -65,8 +65,8 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
 #current-label { font-weight: 700; font-size: 15px; min-width: 130px; text-align: center; }
 
 .main { padding: 16px 20px; }
-.stats-bar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-.stat-card { background: white; border-radius: 10px; padding: 10px 16px; flex: 1; min-width: 110px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.stats-bar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: nowrap; }
+.stat-card { background: white; border-radius: 10px; padding: 10px 16px; flex: 1; min-width: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 .stat-card .num { font-size: 22px; font-weight: 700; color: #764ba2; }
 .stat-card .lbl { font-size: 11px; color: #718096; margin-top: 2px; }
 
@@ -236,11 +236,13 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
   /* main */
   .main { padding: 10px 12px; }
 
-  /* stat cards: 2x2 grid */
-  .stats-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-  .stat-card { min-width: 0; padding: 10px 12px; border-radius: 10px; }
-  .stat-card .num { font-size: 22px; }
-  .stat-card .lbl { font-size: 11px; }
+  /* stat cards: 3+2 layout on mobile */
+  .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
+  .stats-bar > :nth-child(4) { grid-column: 1 / 2; }
+  .stats-bar > :nth-child(5) { grid-column: 2 / 4; }
+  .stat-card { min-width: 0; padding: 8px 6px; border-radius: 10px; }
+  .stat-card .num { font-size: 18px; }
+  .stat-card .lbl { font-size: 10px; white-space: nowrap; }
 
   /* calendar */
   .cal-body { grid-auto-rows: 72px; }
@@ -709,33 +711,38 @@ const TEMPLATES = {
 };
 
 const SEED = [
-  { title: '[NI] 고대 구로병원 SCALE PET 설치', date: '2025-11-10', type: 'green', hospital: '고대 구로병원', person: '', product: 'SCALE PET', address: '', notes: '', complaint: '' },
-  { title: '[NM] 강동 경희대학교병원', date: '2025-11-17', time: '12:00', type: 'green', hospital: '강동 경희대학교병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
-  { title: '[NM] 인천백병원 tES lab 교육 참관', date: '2025-11-24', time: '12:00', type: 'green', hospital: '인천백병원', person: '', product: 'tES LAB', address: '', notes: '', complaint: '' },
-  { title: '[NM] 대한뇌자극학회 핸즈온 워크샵 지원 백범김구', date: '2025-11-25', time: '15:00', type: 'purple', hospital: '', person: '', product: 'NM', address: '백범김구기념관', notes: '', complaint: '' },
-  { title: '오전 반차/1시 출근', date: '2025-11-26', type: 'orange', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
-  { title: '단풍데이 서울숲', date: '2025-11-27', type: 'red', hospital: '', person: '', product: '', address: '서울숲', notes: '', complaint: '' },
-  { title: '[NM] 한양대 구리병원 innk & tES LAB 데모 설치', date: '2025-12-01', time: '16:00', type: 'green', hospital: '한양대 구리병원', person: '', product: 'INNK, tES LAB', address: '', notes: '', complaint: '' },
-  { title: 'PM팀 회식', date: '2025-12-02', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
-  { title: '[NM] 중앙대 광명병원 tES lab & INNK 교육', date: '2025-12-03', time: '16:30', type: 'green', hospital: '중앙대 광명병원', person: '', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
-  { title: '[NM] 다빈치병원 tES lab & INNK 교육', date: '2025-12-04', time: '13:00', type: 'green', hospital: '다빈치병원', person: '', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
-  { title: '[NM] 양산부산대병원 tES lab & INNK 교육', date: '2025-12-05', time: '12:00', type: 'green', hospital: '양산부산대병원', person: '', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
-  { title: '[NM] 아주대병원', date: '2025-12-08', time: '12:00', type: 'green', hospital: '아주대병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
-  { title: '[NM] 한일병원', date: '2025-12-09', time: '13:30', type: 'green', hospital: '한일병원', person: '', product: 'NM', address: '서울 도봉구 우이천로 308', notes: '', complaint: '' },
-  { title: '[NM] 제주대병원', date: '2025-12-10', time: '12:00', type: 'green', hospital: '제주대병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
-  { title: '[SP] 용인세브란스병원', date: '2025-12-11', time: '09:00', type: 'green', hospital: '용인세브란스병원', person: 'DH', product: 'JKD B001-3', address: '경기 용인시 기흥구 동백죽전대로 363', notes: '매뉴얼, 설명서, 교육동의서', complaint: '' },
-  { title: '연차', date: '2025-12-15', type: 'orange', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
-  { title: '연차', date: '2025-12-16', type: 'orange', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
-  { title: '[NM] 아주대병원 추가교육(2차 방문)', date: '2025-12-17', time: '12:00', type: 'pink', hospital: '아주대병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
-  { title: 'AQUA 데이터 선정 마감', date: '2025-12-19', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
-  { title: '[NM] 광주센트럴병원', date: '2025-12-22', time: '12:00', type: 'green', hospital: '광주센트럴병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
-  { title: '[사내] 해외세일즈 제품교육', date: '2025-12-24', time: '09:00', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  // 2025년 10월
+  { title: '[NM] 인천백병원 tES lab 교육 참관', date: '2025-10-23', time: '12:00', type: 'green', hospital: '인천백병원', person: '선용, 원지', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 대한뇌자극학회 핸즈온 워크샵 지원 백범김구', date: '2025-10-24', time: '15:00', type: 'purple', hospital: '', person: '선용, 원지', product: 'NM', address: '백범김구기념관', notes: '', complaint: '' },
+  { title: '오전 반차/1시 출근', date: '2025-10-28', type: 'orange', hospital: '', person: '선용', product: '', address: '', notes: '', complaint: '' },
+  { title: '🍁단풍데이 서울숲', date: '2025-10-29', type: 'red', hospital: '', person: '선용, 원지', product: '', address: '서울숲', notes: '', complaint: '' },
+  // 2025년 11월
+  { title: '[NM] 한양대 구리병원 innk & tES LAB 데모 설치', date: '2025-11-04', time: '16:00', type: 'green', hospital: '한양대 구리병원', person: '선용, 원지', product: 'INNK, tES LAB', address: '', notes: '', complaint: '' },
+  { title: 'PM팀 회식', date: '2025-11-12', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 중앙대 광명병원 tES lab & INNK 교육', date: '2025-11-13', time: '16:30', type: 'green', hospital: '중앙대 광명병원', person: '선용, 원지', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
+  { title: '[NM] 다빈치병원 tES lab & INNK 교육', date: '2025-11-14', time: '13:00', type: 'green', hospital: '다빈치병원', person: '선용, 원지', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
+  { title: '[NM] 양산부산대병원 tES lab & INNK 교육', date: '2025-11-18', time: '12:00', type: 'green', hospital: '양산부산대병원', person: '선용, 원지', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
+  { title: '[NM] 아주대병원 12시', date: '2025-11-24', time: '12:00', type: 'green', hospital: '아주대병원', person: '선용', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 한일병원', date: '2025-11-25', time: '13:30', type: 'green', hospital: '한일병원', person: '선용, 원지', product: 'NM', address: '서울 도봉구 우이천로 308', notes: '', complaint: '' },
+  { title: '[NM] 제주대병원', date: '2025-11-26', time: '12:00', type: 'green', hospital: '제주대병원', person: '원지', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[SP] 용인세브란스병원', date: '2025-11-26', time: '09:00', type: 'green', hospital: '용인세브란스병원', person: 'DH', product: 'SCALE PET', address: '경기 용인시 기흥구 동백죽전대로 363', notes: 'JKDB001-3 매뉴얼, 설명서, 교육동의서', complaint: '' },
+  { title: '연차', date: '2025-11-27', type: 'orange', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
+  { title: '연차', date: '2025-11-28', type: 'orange', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
+  // 2025년 12월
+  { title: '[NM] 아주대병원 추가교육(2차 방문)', date: '2025-12-02', time: '12:00', type: 'pink', hospital: '아주대병원', person: '선용', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: 'AQUA 데이터 선정 마감', date: '2025-12-12', type: 'red', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 광주센트럴병원', date: '2025-12-12', time: '12:00', type: 'green', hospital: '광주센트럴병원', person: '선용', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[사내] 해외세일즈 제품교육', date: '2025-12-16', time: '09:00', type: 'red', hospital: '', person: '선용', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 노원을지대학교병원', date: '2025-12-16', time: '14:00', type: 'green', hospital: '노원을지대학교병원', person: '선용', product: 'NM', address: '서울특별시 노원구 한글비석로 68', notes: '', complaint: '' },
+  { title: 'Josh 미팅 1-3pm', date: '2025-12-17', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 이대목동병원 tES LAB & Innk 제품설명회 & 데모', date: '2025-12-17', time: '12:00', type: 'green', hospital: '이대목동병원', person: '원지', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
+  { title: '팀 워크샵', date: '2025-12-22', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '연말회사행사', date: '2025-12-23', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '메일로 전사 공지', date: '2025-12-24', type: 'red', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
+  { title: 'NSA 영상 작업 마감일', date: '2025-12-24', type: 'red', hospital: '', person: '선용', product: '', address: '', notes: '', complaint: '' },
   { title: '크리스마스', date: '2025-12-25', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
-  { title: '[NM] 노원을지대학교병원', date: '2025-12-26', time: '14:00', type: 'green', hospital: '노원을지대학교병원', person: '', product: 'NM', address: '서울특별시 노원구 한글비석로 68', notes: '', complaint: '' },
-  { title: 'Josh 미팅 1~3pm', date: '2025-12-27', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
-  { title: '[NM] 이대목동병원 tES LAB & Innk 제품설명회 & 데모', date: '2025-12-29', time: '12:00', type: 'green', hospital: '이대목동병원', person: '', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
-  { title: '팀 워크샵', date: '2025-12-30', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
-  { title: '연말회사행사', date: '2025-12-31', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '선용/원지 연차', date: '2025-12-26', type: 'orange', hospital: '', person: '선용, 원지', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 중앙대 광명병원', date: '2025-12-31', time: '11:30', type: 'green', hospital: '중앙대 광명병원', person: '', product: 'NM', address: '경기도 광명시 덕안로 110 중앙대학교광명병원', notes: '', complaint: '' },
   { title: '새해첫날', date: '2026-01-01', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
   { title: '[NM] 아주대병원 교육', date: '2026-01-07', time: '14:00', type: 'green', hospital: '아주대병원', person: '', product: 'NM', address: '', notes: '', complaint: '' },
   { title: '원지 오후 반반차', date: '2026-01-08', type: 'orange', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
@@ -768,6 +775,8 @@ const SEED = [
   { title: '선용/원지 연차', date: '2026-03-10', type: 'orange', hospital: '', person: '선용, 원지', product: '', address: '', notes: '', complaint: '' },
   { title: '메일로 전사 공지', date: '2026-03-16', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
   { title: 'NSA 영상 작업 마감일', date: '2026-03-20', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
+  { title: '[NM] 강동 경희대학교병원', date: '2026-03-26', time: '12:00', type: 'green', hospital: '강동 경희대학교병원', person: '선용, 원지', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NI] 고대 구로병원 SCALE PET 설치', date: '2026-03-27', type: 'green', hospital: '고대 구로병원', person: '원지', product: 'SCALE PET', address: '', notes: '', complaint: '' },
 ];
 
 // ===== State =====
@@ -1276,7 +1285,7 @@ function addHospitalFromForm() {
   const name = document.getElementById('f-hospital-new').value.trim();
   if (!name) return;
   addHospital(name);
-  // Select the newly added hospital
+  updateAllHospitalSelects(); // 옵션 목록 재구성 후 선택
   const sel = document.getElementById('f-hospital');
   sel.value = name;
   document.getElementById('f-hospital-new-wrap').style.display = 'none';
