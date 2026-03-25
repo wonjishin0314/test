@@ -284,6 +284,15 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
 .edu-section-body.open { display: block; }
 .edu-section-body .form-group { margin-bottom: 10px; }
 .edu-section-body .form-group label { font-size: 12px; color: #555; margin-bottom: 3px; }
+
+/* ── Request Review Modal ── */
+#req-modal .modal { max-width: 480px; }
+.req-field { display: flex; flex-direction: column; gap: 3px; margin-bottom: 10px; }
+.req-field-label { font-size: 11px; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+.req-field-value { font-size: 13px; color: #2d3748; background: #f7fafc; border-radius: 6px; padding: 6px 10px; white-space: pre-wrap; }
+.req-badge { background: #e53e3e; color: white; border-radius: 99px; padding: 1px 6px; font-size: 10px; font-weight: 700; margin-left: 4px; display:none; }
+.req-badge.visible { display: inline; }
+.req-section-title { font-size: 11px; font-weight: 700; color: #553c9a; text-transform: uppercase; letter-spacing: 0.5px; margin: 12px 0 6px; border-top: 1px solid #e9d8fd; padding-top: 10px; }
 </style>
 </head>
 <body>
@@ -293,7 +302,7 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
     <h1>📅 CA 외근 캘린더</h1>
   </div>
   <div class="header-right">
-    <button class="btn btn-white badge-btn" id="req-btn" onclick="openRequestQueue()" title="교육 요청 대기함" style="display:none">📋 <span class="req-badge" id="req-badge">0</span></button>
+    <button class="btn btn-white badge-btn" id="req-btn" onclick="openRequestQueue()" title="교육 요청 대기함">📋<span class="req-badge" id="req-badge">0</span></button>
     <button class="btn btn-white" onclick="openTrashModal()" title="휴지통">🗑️</button>
     <button class="btn btn-white" onclick="openNotifSettings()" title="Teams 알림 설정">🔔</button>
     <button class="btn btn-white" onclick="openTypeModal()" title="유형 관리">⚙️</button>
@@ -566,6 +575,31 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
       <button class="btn btn-danger" id="delete-btn" onclick="deleteEvent()" style="display:none;">삭제</button>
       <button class="btn btn-cancel" onclick="closeModal('form-modal')">취소</button>
       <button class="btn btn-save" onclick="saveEvent()">저장</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Request Review Modal -->
+<div class="modal-overlay" id="req-modal">
+  <div class="modal">
+    <h2 id="req-modal-title" style="font-size:16px;margin-bottom:14px">📋 교육 지원 요청 검토</h2>
+    <div id="req-modal-body"></div>
+    <div class="modal-footer" style="gap:8px">
+      <button class="btn btn-cancel" onclick="closeModal('req-modal')">닫기</button>
+      <button class="btn" style="background:#e53e3e;color:white" onclick="rejectRequest()">❌ 거절</button>
+      <button class="btn btn-save" onclick="approveRequest()">✅ 승인 후 등록</button>
+    </div>
+  </div>
+</div>
+
+<!-- Request Queue Modal -->
+<div class="modal-overlay" id="req-queue-modal">
+  <div class="modal">
+    <h2 style="font-size:16px;margin-bottom:14px">📋 교육 요청 대기함</h2>
+    <div id="req-queue-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" onclick="closeModal('req-queue-modal')">닫기</button>
     </div>
   </div>
 </div>
@@ -2072,6 +2106,147 @@ function getTesOpValue() {
   const sel = document.getElementById('f-post-tes-op');
   if (sel.value === '__custom__') return document.getElementById('f-post-tes-op-text').value.trim();
   return sel.value;
+}
+
+
+// ===== Request Queue (교육 요청 대기함) =====
+const REQ_KEY = 'ca_pending_requests';
+
+function loadRequests() { return JSON.parse(localStorage.getItem(REQ_KEY) || '[]'); }
+function saveRequests(arr) { localStorage.setItem(REQ_KEY, JSON.stringify(arr)); }
+
+function updateReqBadge() {
+  const n = loadRequests().length;
+  const badge = document.getElementById('req-badge');
+  const btn = document.getElementById('req-btn');
+  if (badge) { badge.textContent = n; badge.classList.toggle('visible', n > 0); }
+  if (btn) btn.style.display = 'flex';
+}
+
+let currentReqIdx = null;
+
+function renderReqFields(req) {
+  const fields = [
+    ['신청 부서', req.department],
+    ['요청 날짜', req.date],
+    ['교육 시간', req.time ? req.time + (req.timeEnd ? ' ~ ' + req.timeEnd : '') : ''],
+    ['교육 기관/진료과', req.hospital],
+    ['교육 장소 및 형식', req.format],
+    ['교육 장소 상세', req.place],
+    ['참여 인원', req.count],
+    ['참가자 구성', req.participants],
+    ['요청 제품', req.product],
+    ['요청 내용', req.notes],
+    ['신청자', req.submitter],
+    ['연락처', req.contact],
+  ].filter(([, v]) => v);
+
+  return fields.map(([label, val]) =>
+    `<div class="req-field"><span class="req-field-label">${label}</span><span class="req-field-value">${val}</span></div>`
+  ).join('');
+}
+
+function showReqReview(idx) {
+  const reqs = loadRequests();
+  const req = reqs[idx];
+  if (!req) return;
+  currentReqIdx = idx;
+  document.getElementById('req-modal-title').textContent = '📋 교육 요청 검토 (' + (idx+1) + '/' + reqs.length + ')';
+  document.getElementById('req-modal-body').innerHTML = renderReqFields(req);
+  closeModal('req-queue-modal');
+  document.getElementById('req-modal').classList.add('open');
+}
+
+function openRequestQueue() {
+  const reqs = loadRequests();
+  if (reqs.length === 0) {
+    document.getElementById('req-queue-body').innerHTML = '<p style="text-align:center;color:#888;padding:20px">대기 중인 요청이 없습니다.</p>';
+  } else {
+    document.getElementById('req-queue-body').innerHTML = reqs.map((req, i) =>
+      `<div style="border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;margin-bottom:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="showReqReview(${i})">
+        <div>
+          <div style="font-weight:600;font-size:14px">${req.hospital || req.department || '요청 #' + (i+1)}</div>
+          <div style="font-size:12px;color:#666;margin-top:2px">${req.date || ''} ${req.time || ''}</div>
+        </div>
+        <div style="color:#764ba2;font-size:12px">검토 →</div>
+      </div>`
+    ).join('');
+  }
+  document.getElementById('req-queue-modal').classList.add('open');
+}
+
+function approveRequest() {
+  const reqs = loadRequests();
+  const req = reqs[currentReqIdx];
+  if (!req) return;
+
+  // 이벤트 추가 폼 열기 with pre-filled data
+  closeModal('req-modal');
+  openAddModal();
+
+  // 폼에 데이터 채우기
+  setTimeout(() => {
+    if (req.date) document.getElementById('f-date').value = req.date;
+    if (req.time) document.getElementById('f-time').value = req.time;
+    if (req.hospital) {
+      const hospitalSel = document.getElementById('f-hospital');
+      let found = false;
+      [...hospitalSel.options].forEach(o => { if (o.text.includes(req.hospital)) { hospitalSel.value = o.value; found = true; } });
+    }
+    if (req.place) document.getElementById('f-pre-place').value = req.place;
+    if (req.participants) document.getElementById('f-pre-target').value = req.participants + (req.count ? ' (총 ' + req.count + '명)' : '');
+    if (req.notes) document.getElementById('f-pre-request').value = req.notes;
+    if (req.product) {
+      document.querySelectorAll('#product-chips .chip-input').forEach(el => {
+        if (req.product.includes(el.value)) el.checked = true;
+      });
+    }
+    // 교육 섹션 펼치기
+    const preBody = document.getElementById('edu-pre-body');
+    const preIcon = document.getElementById('pre-toggle-icon');
+    if (preBody && !preBody.classList.contains('open')) { preBody.classList.add('open'); if(preIcon) preIcon.textContent = '▼'; }
+    updateEduSections();
+  }, 100);
+
+  // 대기함에서 제거
+  reqs.splice(currentReqIdx, 1);
+  saveRequests(reqs);
+  updateReqBadge();
+  currentReqIdx = null;
+}
+
+function rejectRequest() {
+  if (!confirm('이 요청을 거절하시겠습니까?')) return;
+  const reqs = loadRequests();
+  reqs.splice(currentReqIdx, 1);
+  saveRequests(reqs);
+  updateReqBadge();
+  closeModal('req-modal');
+  currentReqIdx = null;
+}
+
+function handleUrlRequest() {
+  const params = new URLSearchParams(window.location.search);
+  const reqParam = params.get('req');
+  if (!reqParam) return;
+
+  try {
+    const decoded = JSON.parse(atob(reqParam));
+    const reqs = loadRequests();
+    // 중복 체크 (같은 날짜+병원)
+    const isDup = reqs.some(r => r.date === decoded.date && r.hospital === decoded.hospital);
+    if (!isDup) {
+      reqs.push({ ...decoded, receivedAt: new Date().toISOString() });
+      saveRequests(reqs);
+    }
+    updateReqBadge();
+    // URL 파라미터 제거
+    history.replaceState({}, '', window.location.pathname);
+    // 자동으로 검토 모달 열기
+    setTimeout(() => showReqReview(reqs.length - 1), 500);
+  } catch(e) {
+    console.error('요청 파싱 오류:', e);
+  }
 }
 
 function insertTemplate(type) {
