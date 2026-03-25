@@ -429,6 +429,7 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
         <button type="button" class="btn btn-cancel" style="padding:3px 9px;font-size:11px" onclick="insertTemplate('교육')">교육</button>
         <button type="button" class="btn btn-cancel" style="padding:3px 9px;font-size:11px" onclick="insertTemplate('학회')">학회</button>
         <button type="button" class="btn btn-cancel" style="padding:3px 9px;font-size:11px" onclick="insertTemplate('설치')">설치</button>
+        <button type="button" class="btn btn-cancel" style="padding:3px 9px;font-size:11px" onclick="insertTemplate('교육보고')">교육보고</button>
       </div>
       <textarea id="f-notes" placeholder="준비물, 메모 등" rows="3"></textarea>
     </div>
@@ -735,6 +736,7 @@ const TEMPLATES = {
   '교육': '[ 준비물 ]\n- 매뉴얼\n- 설명서\n- 교육동의서\n\n[ 메모 ]\n- ',
   '학회': '[ 준비물 ]\n- 제품 브로셔\n- 명함\n- 데모 장비\n\n[ 메모 ]\n- ',
   '설치': '[ 준비물 ]\n- 제품 본체\n- 전원 어댑터\n- 매뉴얼\n- 설치 확인서\n\n[ 메모 ]\n- ',
+  '교육보고': '[ 세일즈 사전 정보 ]\n세일즈 담당자: \n교육 장소: \n교육 대상자: \n교육 가능 시간: \n교육 요청내용: \n담당자: \n제품이해상태: \n\n[ 교육 후 공유 사항 ]\n교육 대상자: \n소요시간: \n교육 시행 장소: \ntES lab 실행 주체: \n\n교육 내용: \n질문 사항: \n컴플레인/개선 요청 사항: \n칭찬 사항: \n고객 특이 사항: ',
 };
 
 const SEED = [
