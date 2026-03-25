@@ -784,6 +784,7 @@ let editingId = null;
 let currentImageData = null; // base64 or null
 let activePersonFilter = null;
 let statsHospitalFilter = null;
+let statsQuarterFilter = null;
 
 // ===== Storage =====
 function loadEvents() {
@@ -1149,26 +1150,57 @@ function filterStatsByHospital(h) {
 
 function renderStatsView() {
   const persons = ['선용', '원지'];
-  const allYearEvts = getFilteredEvents().filter(e => new Date(e.date).getFullYear() === currentYear);
 
-  // Hospital filter — only hospitals that appear in this year's events
+  // Year nav
+  const btnStyle = 'background:none;border:none;font-size:20px;cursor:pointer;color:#764ba2;padding:0 6px;line-height:1';
+  let html = '<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px">' +
+    '<button style="' + btnStyle + '" onclick="currentYear--;statsHospitalFilter=null;statsQuarterFilter=null;renderStatsView()">&#8249;</button>' +
+    '<span style="font-size:17px;font-weight:700;color:#764ba2">' + currentYear + '년</span>' +
+    '<button style="' + btnStyle + '" onclick="currentYear++;statsHospitalFilter=null;statsQuarterFilter=null;renderStatsView()">&#8250;</button>' +
+    '</div>';
+
+  // Quarter filter
+  const quarters = [null, 1, 2, 3, 4];
+  const qLabels = ['전체', '1분기', '2분기', '3분기', '4분기'];
+  html += '<div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">' +
+    '<span style="font-size:12px;font-weight:700;color:#553c9a;margin-right:2px">📅 분기</span>';
+  quarters.forEach((q, i) => {
+    const active = statsQuarterFilter === q;
+    html += '<button onclick="statsQuarterFilter=' + (q===null?'null':q) + ';renderStatsView()" style="padding:4px 10px;border-radius:14px;border:1.5px solid ' + (active?'#764ba2':'#e2e8f0') + ';background:' + (active?'#764ba2':'white') + ';color:' + (active?'white':'#4a5568') + ';font-size:12px;font-weight:600;cursor:pointer">' + qLabels[i] + '</button>';
+  });
+  html += '</div>';
+
+  const allYearEvts = getFilteredEvents().filter(e => {
+    const d = new Date(e.date);
+    if (d.getFullYear() !== currentYear) return false;
+    if (statsQuarterFilter !== null) {
+      const q = Math.floor(d.getMonth() / 3) + 1;
+      if (q !== statsQuarterFilter) return false;
+    }
+    return true;
+  });
+
+  // Hospital filter — only hospitals that appear in filtered events
   const hospitals = [...new Set(allYearEvts.map(e => e.hospital).filter(Boolean))].sort();
-  let hospitalHtml = '<div style="margin-bottom:14px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">' +
+  html += '<div style="margin-bottom:14px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">' +
     '<span style="font-size:12px;font-weight:700;color:#553c9a;margin-right:2px">🏥 병원</span>' +
     '<button onclick="filterStatsByHospital(null)" style="padding:4px 10px;border-radius:14px;border:1.5px solid ' + (statsHospitalFilter===null?'#764ba2':'#e2e8f0') + ';background:' + (statsHospitalFilter===null?'#764ba2':'white') + ';color:' + (statsHospitalFilter===null?'white':'#4a5568') + ';font-size:12px;font-weight:600;cursor:pointer">전체</button>';
   hospitals.forEach(h => {
     const active = statsHospitalFilter === h;
-    hospitalHtml += '<button onclick="filterStatsByHospital(\'' + h.replace(/'/g,"\\'") + '\')" style="padding:4px 10px;border-radius:14px;border:1.5px solid ' + (active?'#764ba2':'#e2e8f0') + ';background:' + (active?'#764ba2':'white') + ';color:' + (active?'white':'#4a5568') + ';font-size:12px;font-weight:600;cursor:pointer">' + h + '</button>';
+    html += '<button onclick="filterStatsByHospital(\'' + h.replace(/'/g,"\\'") + '\')" style="padding:4px 10px;border-radius:14px;border:1.5px solid ' + (active?'#764ba2':'#e2e8f0') + ';background:' + (active?'#764ba2':'white') + ';color:' + (active?'white':'#4a5568') + ';font-size:12px;font-weight:600;cursor:pointer">' + h + '</button>';
   });
-  hospitalHtml += '</div>';
+  html += '</div>';
 
   const yearEvts = statsHospitalFilter
     ? allYearEvts.filter(e => e.hospital === statsHospitalFilter)
     : allYearEvts;
 
+  // subtitle
+  const periodLabel = statsQuarterFilter ? statsQuarterFilter + '분기' : currentYear + '년';
+  const hospitalLabel = statsHospitalFilter ? ' · ' + statsHospitalFilter : '';
+
   // Education counts table
-  let html = hospitalHtml;
-  html += '<h3 style="font-size:14px;font-weight:700;color:#764ba2;margin-bottom:10px">담당자별 교육 횟수 (' + currentYear + '년' + (statsHospitalFilter ? ' · ' + statsHospitalFilter : '') + ')</h3>';
+  html += '<h3 style="font-size:14px;font-weight:700;color:#764ba2;margin-bottom:10px">담당자별 교육 횟수 (' + periodLabel + hospitalLabel + ')</h3>';
   html += '<div style="overflow-x:auto"><table class="stats-table"><thead><tr>' +
     '<th>담당자</th><th>교육 외근</th><th>1차</th><th>2차</th><th>3차+</th><th>추가</th><th>학회</th><th>합계</th>' +
     '</tr></thead><tbody>';
