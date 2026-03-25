@@ -784,6 +784,7 @@ let currentMonth = new Date().getMonth();
 let editingId = null;
 let currentImageData = null; // base64 or null
 let activePersonFilter = null;
+let statsHospitalFilter = null;
 
 // ===== Storage =====
 function loadEvents() {
@@ -1142,12 +1143,33 @@ function renderHospital() {
   document.getElementById('view-container').innerHTML = html;
 }
 
+function filterStatsByHospital(h) {
+  statsHospitalFilter = (statsHospitalFilter === h) ? null : h;
+  renderStatsView();
+}
+
 function renderStatsView() {
   const persons = ['선용', '원지'];
-  const yearEvts = getFilteredEvents().filter(e => new Date(e.date).getFullYear() === currentYear);
+  const allYearEvts = getFilteredEvents().filter(e => new Date(e.date).getFullYear() === currentYear);
+
+  // Hospital filter — only hospitals that appear in this year's events
+  const hospitals = [...new Set(allYearEvts.map(e => e.hospital).filter(Boolean))].sort();
+  let hospitalHtml = '<div style="margin-bottom:14px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">' +
+    '<span style="font-size:12px;font-weight:700;color:#553c9a;margin-right:2px">🏥 병원</span>' +
+    '<button onclick="filterStatsByHospital(null)" style="padding:4px 10px;border-radius:14px;border:1.5px solid ' + (statsHospitalFilter===null?'#764ba2':'#e2e8f0') + ';background:' + (statsHospitalFilter===null?'#764ba2':'white') + ';color:' + (statsHospitalFilter===null?'white':'#4a5568') + ';font-size:12px;font-weight:600;cursor:pointer">전체</button>';
+  hospitals.forEach(h => {
+    const active = statsHospitalFilter === h;
+    hospitalHtml += '<button onclick="filterStatsByHospital(\'' + h.replace(/'/g,"\\'") + '\')" style="padding:4px 10px;border-radius:14px;border:1.5px solid ' + (active?'#764ba2':'#e2e8f0') + ';background:' + (active?'#764ba2':'white') + ';color:' + (active?'white':'#4a5568') + ';font-size:12px;font-weight:600;cursor:pointer">' + h + '</button>';
+  });
+  hospitalHtml += '</div>';
+
+  const yearEvts = statsHospitalFilter
+    ? allYearEvts.filter(e => e.hospital === statsHospitalFilter)
+    : allYearEvts;
 
   // Education counts table
-  let html = '<h3 style="font-size:14px;font-weight:700;color:#764ba2;margin-bottom:10px">담당자별 교육 횟수 (' + currentYear + '년)</h3>';
+  let html = hospitalHtml;
+  html += '<h3 style="font-size:14px;font-weight:700;color:#764ba2;margin-bottom:10px">담당자별 교육 횟수 (' + currentYear + '년' + (statsHospitalFilter ? ' · ' + statsHospitalFilter : '') + ')</h3>';
   html += '<div style="overflow-x:auto"><table class="stats-table"><thead><tr>' +
     '<th>담당자</th><th>교육 외근</th><th>1차</th><th>2차</th><th>3차+</th><th>추가</th><th>학회</th><th>합계</th>' +
     '</tr></thead><tbody>';
