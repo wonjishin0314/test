@@ -310,6 +310,12 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
   <button class="filter-chip active" onclick="filterPerson(null, this)">전체</button>
   <button class="filter-chip" onclick="filterPerson('선용', this)">선용</button>
   <button class="filter-chip" onclick="filterPerson('원지', this)">원지</button>
+  <span id="status-filter-group" style="display:none;contents">
+    <span style="font-size:11px;color:#718096;font-weight:600;margin-left:6px;">상태:</span>
+    <button id="sf-all"    class="filter-chip active" onclick="setStatusFilter(null)">전체</button>
+    <button id="sf-upcoming" class="filter-chip" onclick="setStatusFilter('upcoming')">📅 예정</button>
+    <button id="sf-done"  class="filter-chip" onclick="setStatusFilter('done')">✅ 완료</button>
+  </span>
 </div>
 
 <div class="view-bar">
@@ -870,6 +876,8 @@ function switchView(view, btn) {
   btn.classList.add('active');
   const nb = document.querySelector('.nav-btns');
   nb.style.display = (view === 'stats' || view === 'hospital' || view === 'voc') ? 'none' : 'flex';
+  const sfg = document.getElementById('status-filter-group');
+  if (sfg) sfg.style.display = view === 'list' ? 'contents' : 'none';
   render();
 }
 
@@ -1025,14 +1033,7 @@ function renderList() {
     return;
   }
 
-  const asSel = 'background:#764ba2;color:white;border-color:#764ba2;';
-  const asNor = 'background:white;color:#718096;';
-  let html = '<div style="display:flex;gap:6px;margin-bottom:12px">' +
-    '<button onclick="setStatusFilter(null)" style="' + (!activeStatusFilter?asSel:asNor) + 'border:1.5px solid #e2e8f0;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer">전체</button>' +
-    '<button onclick="setStatusFilter(\'upcoming\')" style="' + (activeStatusFilter==='upcoming'?asSel:asNor) + 'border:1.5px solid #e2e8f0;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer">📅 예정만</button>' +
-    '<button onclick="setStatusFilter(\'done\')" style="' + (activeStatusFilter==='done'?asSel:asNor) + 'border:1.5px solid #e2e8f0;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer">✅ 완료만</button>' +
-    '</div>';
-  html += '<div class="list-view">';
+  let html = '<div class="list-view">';
   let lastMonth = -1;
   let shownPastDivider = false;
   let shownFutureDivider = false;
@@ -1085,6 +1086,13 @@ function renderList() {
 
 function setStatusFilter(val) {
   activeStatusFilter = val;
+  ['sf-all','sf-upcoming','sf-done'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  const activeId = val === null ? 'sf-all' : val === 'upcoming' ? 'sf-upcoming' : 'sf-done';
+  const el = document.getElementById(activeId);
+  if (el) el.classList.add('active');
   render();
 }
 
