@@ -1178,18 +1178,15 @@ function renderStatsView() {
   });
   html += '</div>';
 
-  const allYearEvts = getFilteredEvents().filter(e => {
-    const d = new Date(e.date);
-    if (d.getFullYear() !== currentYear) return false;
-    if (statsQuarterFilter !== null) {
-      const q = Math.floor(d.getMonth() / 3) + 1;
-      if (q !== statsQuarterFilter) return false;
-    }
-    return true;
-  });
+  // Full year events (for hospital list — always show all hospitals in the year)
+  const fullYearEvts = getFilteredEvents().filter(e => new Date(e.date).getFullYear() === currentYear);
 
-  // Hospital filter — only hospitals that appear in filtered events
-  const hospitals = [...new Set(allYearEvts.map(e => e.hospital).filter(Boolean))].sort();
+  const allYearEvts = statsQuarterFilter !== null
+    ? fullYearEvts.filter(e => Math.floor(new Date(e.date).getMonth() / 3) + 1 === statsQuarterFilter)
+    : fullYearEvts;
+
+  // Hospital filter — from full year so list doesn't disappear when quarter selected
+  const hospitals = [...new Set(fullYearEvts.map(e => e.hospital).filter(Boolean))].sort();
   html += '<div style="margin-bottom:14px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">' +
     '<span style="font-size:12px;font-weight:700;color:#553c9a;margin-right:2px">🏥 병원</span>' +
     '<button onclick="filterStatsByHospital(null)" style="padding:4px 10px;border-radius:14px;border:1.5px solid ' + (statsHospitalFilter===null?'#764ba2':'#e2e8f0') + ';background:' + (statsHospitalFilter===null?'#764ba2':'white') + ';color:' + (statsHospitalFilter===null?'white':'#4a5568') + ';font-size:12px;font-weight:600;cursor:pointer">전체</button>';
