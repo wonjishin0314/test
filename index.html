@@ -707,6 +707,30 @@ const GUGUN_MAP = {
   '제주특별자치도': ['제주시','서귀포시'],
 };
 
+const HOSPITAL_ADDR_MAP = {
+  '인천백병원': '인천광역시 동구 샛골로 214',
+  '한양대 구리병원': '경기도 구리시 경춘로 153',
+  '중앙대 광명병원': '경기도 광명시 덕안로 110',
+  '다빈치병원': '대전광역시 서구 계룡로 553번길 60',
+  '양산부산대병원': '경남 양산시 물금읍 어곡로 20',
+  '아주대병원': '경기도 수원시 영통구 월드컵로 164',
+  '아주대학교병원': '경기도 수원시 영통구 월드컵로 164',
+  '제주대병원': '제주특별자치도 제주시 아란13길 15',
+  '광주센트럴병원': '광주광역시 광산구 수완로 6',
+  '이대목동병원': '서울특별시 양천구 안양천로 1071',
+  '원주 세브란스병원': '강원도 원주시 일산로 20',
+  '명지춘혜재활병원': '서울특별시 영등포구 대림로 223',
+  '상남한마음병원': '경상남도 창원시 성산구 원이대로682번길 21',
+  '중앙대병원': '서울특별시 동작구 흑석로 102',
+  '중앙대학교병원': '서울특별시 동작구 흑석로 102',
+  '원주의료원': '강원도 원주시 건강로 32',
+  '강동 경희대학교병원': '서울특별시 강동구 동남로 892',
+  '고대 구로병원': '서울특별시 구로구 구로동로 148',
+  '노원을지대학교병원': '서울특별시 노원구 한글비석로 68',
+  '용인세브란스병원': '경기도 용인시 기흥구 동백죽전대로 363',
+  '한일병원': '서울특별시 도봉구 우이천로 308',
+};
+
 const TEMPLATES = {
   '교육': '[ 준비물 ]\n- 매뉴얼\n- 설명서\n- 교육동의서\n\n[ 메모 ]\n- ',
   '학회': '[ 준비물 ]\n- 제품 브로셔\n- 명함\n- 데모 장비\n\n[ 메모 ]\n- ',
@@ -715,30 +739,30 @@ const TEMPLATES = {
 
 const SEED = [
   // 2025년 10월
-  { title: '[NM] 인천백병원 tES lab 교육 참관', date: '2025-10-23', time: '12:00', type: 'green', hospital: '인천백병원', person: '선용, 원지', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 인천백병원 tES lab 교육 참관', date: '2025-10-23', time: '12:00', type: 'green', hospital: '인천백병원', person: '선용, 원지', product: 'NM', address: '인천광역시 동구 샛골로 214', notes: '', complaint: '' },
   { title: '[NM] 대한뇌자극학회 핸즈온 워크샵 지원 백범김구', date: '2025-10-24', time: '15:00', type: 'purple', hospital: '', person: '선용, 원지', product: 'NM', address: '백범김구기념관', notes: '', complaint: '' },
   { title: '오전 반차/1시 출근', date: '2025-10-28', type: 'orange', hospital: '', person: '선용', product: '', address: '', notes: '', complaint: '' },
   { title: '🍁단풍데이 서울숲', date: '2025-10-29', type: 'red', hospital: '', person: '선용, 원지', product: '', address: '서울숲', notes: '', complaint: '' },
   // 2025년 11월
-  { title: '[NM] 한양대 구리병원 innk & tES LAB 데모 설치', date: '2025-11-04', time: '16:00', type: 'green', hospital: '한양대 구리병원', person: '선용, 원지', product: 'INNK, tES LAB', address: '', notes: '', complaint: '' },
+  { title: '[NM] 한양대 구리병원 innk & tES LAB 데모 설치', date: '2025-11-04', time: '16:00', type: 'green', hospital: '한양대 구리병원', person: '선용, 원지', product: 'INNK, tES LAB', address: '경기도 구리시 경춘로 153', notes: '', complaint: '' },
   { title: 'PM팀 회식', date: '2025-11-12', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
-  { title: '[NM] 중앙대 광명병원 tES lab & INNK 교육', date: '2025-11-13', time: '16:30', type: 'green', hospital: '중앙대 광명병원', person: '선용, 원지', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
-  { title: '[NM] 다빈치병원 tES lab & INNK 교육', date: '2025-11-14', time: '13:00', type: 'green', hospital: '다빈치병원', person: '선용, 원지', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
-  { title: '[NM] 양산부산대병원 tES lab & INNK 교육', date: '2025-11-18', time: '12:00', type: 'green', hospital: '양산부산대병원', person: '선용, 원지', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
-  { title: '[NM] 아주대병원 12시', date: '2025-11-24', time: '12:00', type: 'green', hospital: '아주대병원', person: '선용', product: 'NM', address: '', notes: '', complaint: '' },
-  { title: '[NM] 한일병원', date: '2025-11-25', time: '13:30', type: 'green', hospital: '한일병원', person: '선용, 원지', product: 'NM', address: '서울 도봉구 우이천로 308', notes: '', complaint: '' },
-  { title: '[NM] 제주대병원', date: '2025-11-26', time: '12:00', type: 'green', hospital: '제주대병원', person: '원지', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 중앙대 광명병원 tES lab & INNK 교육', date: '2025-11-13', time: '16:30', type: 'green', hospital: '중앙대 광명병원', person: '선용, 원지', product: 'tES LAB, INNK', address: '경기도 광명시 덕안로 110', notes: '', complaint: '' },
+  { title: '[NM] 다빈치병원 tES lab & INNK 교육', date: '2025-11-14', time: '13:00', type: 'green', hospital: '다빈치병원', person: '선용, 원지', product: 'tES LAB, INNK', address: '대전광역시 서구 계룡로 553번길 60', notes: '', complaint: '' },
+  { title: '[NM] 양산부산대병원 tES lab & INNK 교육', date: '2025-11-18', time: '12:00', type: 'green', hospital: '양산부산대병원', person: '선용, 원지', product: 'tES LAB, INNK', address: '경남 양산시 물금읍 어곡로 20', notes: '', complaint: '' },
+  { title: '[NM] 아주대병원 12시', date: '2025-11-24', time: '12:00', type: 'green', hospital: '아주대병원', person: '선용', product: 'NM', address: '경기도 수원시 영통구 월드컵로 164', notes: '', complaint: '' },
+  { title: '[NM] 한일병원', date: '2025-11-25', time: '13:30', type: 'green', hospital: '한일병원', person: '선용, 원지', product: 'NM', address: '서울특별시 도봉구 우이천로 308', notes: '', complaint: '' },
+  { title: '[NM] 제주대병원', date: '2025-11-26', time: '12:00', type: 'green', hospital: '제주대병원', person: '원지', product: 'NM', address: '제주특별자치도 제주시 아란13길 15', notes: '', complaint: '' },
   { title: '[SP] 용인세브란스병원', date: '2025-11-26', time: '09:00', type: 'green', hospital: '용인세브란스병원', person: 'DH', product: 'SCALE PET', address: '경기 용인시 기흥구 동백죽전대로 363', notes: 'JKDB001-3 매뉴얼, 설명서, 교육동의서', complaint: '' },
   { title: '연차', date: '2025-11-27', type: 'orange', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
   { title: '연차', date: '2025-11-28', type: 'orange', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
   // 2025년 12월
-  { title: '[NM] 아주대병원 추가교육(2차 방문)', date: '2025-12-02', time: '12:00', type: 'pink', hospital: '아주대병원', person: '선용', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 아주대병원 추가교육(2차 방문)', date: '2025-12-02', time: '12:00', type: 'pink', hospital: '아주대병원', person: '선용', product: 'NM', address: '경기도 수원시 영통구 월드컵로 164', notes: '', complaint: '' },
   { title: 'AQUA 데이터 선정 마감', date: '2025-12-12', type: 'red', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
-  { title: '[NM] 광주센트럴병원', date: '2025-12-12', time: '12:00', type: 'green', hospital: '광주센트럴병원', person: '선용', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 광주센트럴병원', date: '2025-12-12', time: '12:00', type: 'green', hospital: '광주센트럴병원', person: '선용', product: 'NM', address: '광주광역시 광산구 수완로 6', notes: '', complaint: '' },
   { title: '[사내] 해외세일즈 제품교육', date: '2025-12-16', time: '09:00', type: 'red', hospital: '', person: '선용', product: '', address: '', notes: '', complaint: '' },
   { title: '[NM] 노원을지대학교병원', date: '2025-12-16', time: '14:00', type: 'green', hospital: '노원을지대학교병원', person: '선용', product: 'NM', address: '서울특별시 노원구 한글비석로 68', notes: '', complaint: '' },
   { title: 'Josh 미팅 1-3pm', date: '2025-12-17', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
-  { title: '[NM] 이대목동병원 tES LAB & Innk 제품설명회 & 데모', date: '2025-12-17', time: '12:00', type: 'green', hospital: '이대목동병원', person: '원지', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
+  { title: '[NM] 이대목동병원 tES LAB & Innk 제품설명회 & 데모', date: '2025-12-17', time: '12:00', type: 'green', hospital: '이대목동병원', person: '원지', product: 'tES LAB, INNK', address: '서울특별시 양천구 안양천로 1071', notes: '', complaint: '' },
   { title: '팀 워크샵', date: '2025-12-22', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
   { title: '연말회사행사', date: '2025-12-23', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
   { title: '메일로 전사 공지', date: '2025-12-24', type: 'red', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
@@ -748,37 +772,37 @@ const SEED = [
   { title: '[NM] 중앙대 광명병원', date: '2025-12-31', time: '11:30', type: 'green', hospital: '중앙대 광명병원', person: '', product: 'NM', address: '경기도 광명시 덕안로 110 중앙대학교광명병원', notes: '', complaint: '' },
   // 2026년 1월
   { title: '새해첫날', date: '2026-01-01', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
-  { title: '[NM] 아주대병원 교육', date: '2026-01-15', time: '14:00', type: 'green', hospital: '아주대병원', person: '선용', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 아주대병원 교육', date: '2026-01-15', time: '14:00', type: 'green', hospital: '아주대병원', person: '선용', product: 'NM', address: '경기도 수원시 영통구 월드컵로 164', notes: '', complaint: '' },
   { title: '원지 오후 반반차', date: '2026-01-16', type: 'orange', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
   { title: '오후 반반차 / 4시 퇴근', date: '2026-01-16', type: 'orange', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
-  { title: '[NM] 원주 세브란스병원 교육', date: '2026-01-27', time: '13:30', type: 'green', hospital: '원주 세브란스병원', person: '원지', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 원주 세브란스병원 교육', date: '2026-01-27', time: '13:30', type: 'green', hospital: '원주 세브란스병원', person: '원지', product: 'NM', address: '강원도 원주시 일산로 20', notes: '', complaint: '' },
   { title: '[NM] 명지춘혜재활병원', date: '2026-01-27', time: '12:30', type: 'edu1', hospital: '명지춘혜재활병원', person: '선용', product: 'NM', address: '서울특별시 영등포구 대림로 223', notes: '', complaint: '' },
-  { title: '[NM] 명지춘혜재활병원 2차 교육', date: '2026-01-28', type: 'edu2', hospital: '명지춘혜재활병원', person: '선용', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 명지춘혜재활병원 2차 교육', date: '2026-01-28', type: 'edu2', hospital: '명지춘혜재활병원', person: '선용', product: 'NM', address: '서울특별시 영등포구 대림로 223', notes: '', complaint: '' },
   { title: 'Singapore General Hospital (SGH) 온라인 미팅', date: '2026-01-29', time: '15:00', type: 'green', hospital: 'SGH', person: 'DH', product: 'SCALE PET', address: '온라인', notes: '', complaint: '' },
   // 2026년 2월
-  { title: '[NM] 명지춘혜재활병원 3차 교육', date: '2026-02-02', type: 'edu3', hospital: '명지춘혜재활병원', person: '선용', product: 'NM', address: '', notes: '', complaint: '' },
-  { title: '[NM] 명지춘혜재활병원 4차 교육', date: '2026-02-03', type: 'edu3', hospital: '명지춘혜재활병원', person: '선용', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 명지춘혜재활병원 3차 교육', date: '2026-02-02', type: 'edu3', hospital: '명지춘혜재활병원', person: '선용', product: 'NM', address: '서울특별시 영등포구 대림로 223', notes: '', complaint: '' },
+  { title: '[NM] 명지춘혜재활병원 4차 교육', date: '2026-02-03', type: 'edu3', hospital: '명지춘혜재활병원', person: '선용', product: 'NM', address: '서울특별시 영등포구 대림로 223', notes: '', complaint: '' },
   { title: '선용 오후 반차', date: '2026-02-06', type: 'orange', hospital: '', person: '선용', product: '', address: '', notes: '', complaint: '' },
   { title: '선용 연차', date: '2026-02-10', type: 'orange', hospital: '', person: '선용', product: '', address: '', notes: '', complaint: '' },
   { title: '설날', date: '2026-02-16', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
   { title: '설날', date: '2026-02-17', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
   { title: '설날', date: '2026-02-18', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
-  { title: '[NM] 상남한마음병원 tES LAB+innk 데모 시연', date: '2026-02-20', time: '12:30', type: 'green', hospital: '상남한마음병원', person: '원지', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
-  { title: '[NM] 중앙대병원 재활의학과 tES LAB + innk 데모 시연', date: '2026-02-24', time: '12:30', type: 'green', hospital: '중앙대병원', person: '원지', product: 'tES LAB, INNK', address: '', notes: '', complaint: '' },
+  { title: '[NM] 상남한마음병원 tES LAB+innk 데모 시연', date: '2026-02-20', time: '12:30', type: 'green', hospital: '상남한마음병원', person: '원지', product: 'tES LAB, INNK', address: '경상남도 창원시 성산구 원이대로682번길 21', notes: '', complaint: '' },
+  { title: '[NM] 중앙대병원 재활의학과 tES LAB + innk 데모 시연', date: '2026-02-24', time: '12:30', type: 'green', hospital: '중앙대병원', person: '원지', product: 'tES LAB, INNK', address: '서울특별시 동작구 흑석로 102', notes: '', complaint: '' },
   { title: '치매학회', date: '2026-02-27', type: 'purple', hospital: '', person: '선용, 원지', product: '', address: '삼정호텔', notes: '', complaint: '' },
   // 2026년 3월
   { title: '[대체 휴일]', date: '2026-03-02', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
   { title: 'GPH 대리점 영업 대상 교육', date: '2026-03-03', type: 'green', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
-  { title: '[NM] 중앙대 재활의학과 추가교육', date: '2026-03-04', time: '15:00', type: 'pink', hospital: '중앙대병원', person: '원지', product: 'NM', address: '', notes: '', complaint: '' },
-  { title: '[NM] 중앙대병원 재활의학과 추가교육', date: '2026-03-05', time: '15:00', type: 'pink', hospital: '중앙대병원', person: '원지', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 중앙대 재활의학과 추가교육', date: '2026-03-04', time: '15:00', type: 'pink', hospital: '중앙대병원', person: '원지', product: 'NM', address: '서울특별시 동작구 흑석로 102', notes: '', complaint: '' },
+  { title: '[NM] 중앙대병원 재활의학과 추가교육', date: '2026-03-05', time: '15:00', type: 'pink', hospital: '중앙대병원', person: '원지', product: 'NM', address: '서울특별시 동작구 흑석로 102', notes: '', complaint: '' },
   { title: '국내 세일즈 NM 교육 및 케이스 스터디', date: '2026-03-09', time: '09:35', type: 'red', hospital: '', person: '선용', product: 'NM', address: '', notes: '', complaint: '' },
-  { title: '[NM] 원주의료원', date: '2026-03-10', time: '10:00', type: 'edu1', hospital: '원주의료원', person: '원지', product: 'NM', address: '', notes: '', complaint: '' },
-  { title: '[NM] 원주의료원 추가 교육', date: '2026-03-11', time: '11:00', type: 'edu2', hospital: '원주의료원', person: '원지', product: 'NM', address: '', notes: '', complaint: '' },
+  { title: '[NM] 원주의료원', date: '2026-03-10', time: '10:00', type: 'edu1', hospital: '원주의료원', person: '원지', product: 'NM', address: '강원도 원주시 건강로 32', notes: '', complaint: '' },
+  { title: '[NM] 원주의료원 추가 교육', date: '2026-03-11', time: '11:00', type: 'edu2', hospital: '원주의료원', person: '원지', product: 'NM', address: '강원도 원주시 건강로 32', notes: '', complaint: '' },
   { title: '원지 오후 반차', date: '2026-03-13', type: 'orange', hospital: '', person: '원지', product: '', address: '', notes: '', complaint: '' },
   { title: '8:00 미국팀 미팅', date: '2026-03-18', time: '08:00', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
   { title: '뉴로써티 오픈', date: '2026-03-19', type: 'red', hospital: '', person: '', product: '', address: '', notes: '', complaint: '' },
-  { title: '[NM] 강동 경희대학교병원', date: '2026-03-26', time: '12:00', type: 'green', hospital: '강동 경희대학교병원', person: '선용, 원지', product: 'NM', address: '', notes: '', complaint: '' },
-  { title: '[NI] 고대 구로병원 SCALE PET 설치', date: '2026-03-27', type: 'green', hospital: '고대 구로병원', person: '원지', product: 'SCALE PET', address: '', notes: '', complaint: '' },
+  { title: '[NM] 강동 경희대학교병원', date: '2026-03-26', time: '12:00', type: 'green', hospital: '강동 경희대학교병원', person: '선용, 원지', product: 'NM', address: '서울특별시 강동구 동남로 892', notes: '', complaint: '' },
+  { title: '[NI] 고대 구로병원 SCALE PET 설치', date: '2026-03-27', type: 'green', hospital: '고대 구로병원', person: '원지', product: 'SCALE PET', address: '서울특별시 구로구 구로동로 148', notes: '', complaint: '' },
 ];
 
 // ===== State =====
@@ -810,6 +834,18 @@ function loadEvents() {
     }
   });
   if (changed) saveToStorage();
+  // One-time address migration
+  if (!localStorage.getItem('ca_addr_migrated_v1')) {
+    let addrChanged = false;
+    events.forEach(e => {
+      if (e.hospital && !e.address && HOSPITAL_ADDR_MAP[e.hospital]) {
+        e.address = HOSPITAL_ADDR_MAP[e.hospital];
+        addrChanged = true;
+      }
+    });
+    if (addrChanged) saveToStorage();
+    localStorage.setItem('ca_addr_migrated_v1', '1');
+  }
 }
 
 function saveToStorage() {
