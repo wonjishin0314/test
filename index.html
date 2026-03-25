@@ -2109,6 +2109,44 @@ function getTesOpValue() {
 }
 
 
+
+
+// ===== GitHub pending.json 동기화 =====
+const GH_PENDING_URL = 'https://raw.githubusercontent.com/wonjishin0314/test/gh-pages/pending.json';
+const PROCESSED_KEY = 'ca_processed_requests'; // 처리 완료된 receivedAt 목록
+
+function loadProcessed() { return JSON.parse(localStorage.getItem(PROCESSED_KEY) || '[]'); }
+function markProcessed(receivedAt) {
+  const list = loadProcessed();
+  if (!list.includes(receivedAt)) { list.push(receivedAt); localStorage.setItem(PROCESSED_KEY, JSON.stringify(list)); }
+}
+
+async function syncPendingFromGitHub() {
+  try {
+    const res = await fetch(GH_PENDING_URL + '?t=' + Date.now());
+    if (!res.ok) return;
+    const remote = await res.json();
+    if (!Array.isArray(remote) || remote.length === 0) return;
+
+    const processed = loadProcessed();
+    const local = loadRequests();
+    let added = 0;
+
+    remote.forEach(item => {
+      if (processed.includes(item.receivedAt)) return; // 이미 처리됨
+      const dup = local.some(l => l.receivedAt === item.receivedAt);
+      if (!dup) { local.push(item); added++; }
+    });
+
+    if (added > 0) {
+      saveRequests(local);
+      updateReqBadge();
+    }
+  } catch(e) {
+    console.warn('[Sync] 동기화 실패:', e.message);
+  }
+}
+
 // ===== Request Queue (교육 요청 대기함) =====
 const REQ_KEY = 'ca_pending_requests';
 
@@ -2208,20 +2246,24 @@ function approveRequest() {
     updateEduSections();
   }, 100);
 
-  // 대기함에서 제거
+  // 대기함에서 제거 + GitHub에서도 제거
+  const removedAt = req.receivedAt;
   reqs.splice(currentReqIdx, 1);
   saveRequests(reqs);
   updateReqBadge();
   currentReqIdx = null;
+  if (removedAt) markProcessed(removedAt);
 }
 
 function rejectRequest() {
   if (!confirm('이 요청을 거절하시겠습니까?')) return;
   const reqs = loadRequests();
+  const removedAt2 = reqs[currentReqIdx]?.receivedAt;
   reqs.splice(currentReqIdx, 1);
   saveRequests(reqs);
   updateReqBadge();
   closeModal('req-modal');
+  if (removedAt2) markProcessed(removedAt2);
   currentReqIdx = null;
 }
 
