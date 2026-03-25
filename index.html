@@ -12,7 +12,18 @@
       color: #1a1a2e;
       background: #f5f7fa;
     }
+<script>
+let currentView = 'month';
 
+function switchView(view) {
+  currentView = view;
+  renderCalendar();
+}
+
+function renderCalendar() {
+  console.log("현재 뷰:", currentView);
+}
+</script>
     /* ── Hero ── */
     .hero {
       background: linear-gradient(135deg, #0078d4 0%, #005a9e 50%, #003d6b 100%);
