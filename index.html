@@ -2451,15 +2451,15 @@ document.addEventListener('keydown', e => {
 });
 
 // ===== Education Request Queue =====
-const REQ_KEY = 'ca_edu_requests';
+const EDU_REQ_KEY = 'ca_edu_requests';
 let reviewingReqId = null;
 
 function loadRequests() {
-  const stored = localStorage.getItem(REQ_KEY);
+  const stored = localStorage.getItem(EDU_REQ_KEY);
   return stored ? JSON.parse(stored) : [];
 }
 function saveRequests(items) {
-  localStorage.setItem(REQ_KEY, JSON.stringify(items));
+  localStorage.setItem(EDU_REQ_KEY, JSON.stringify(items));
 }
 
 function updateRequestBadge() {
