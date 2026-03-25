@@ -1587,11 +1587,31 @@ function closeModal(id) {
 
 // ===== VoC (Standalone) =====
 const VOC_KEY = 'ca_voc_entries';
+const VOC_SEEDED_KEY = 'ca_voc_seeded_v1';
 let editingVocId = null;
+
+const VOC_SEED = [
+  { date: '2025-12-01', channel: '유선', hospital: '아주대학교병원', person: '선용', content: 'tDCS 환자 케이스 적절한지 문의 (Rt MCA infarction)', response: 'tDCS 금기사항에 해당되지 않는 경우, 적용 가능', status: 'done' },
+  { date: '2025-12-05', channel: '유선', hospital: '아주대학교병원', person: '선용', content: 'aneurysm clipping op 환자분, 티타늄 clip인데 tDCS 적용 가능한지?', response: '두개 내에 금속 관련 삽입물이 있는 경우 innk 의 사용 금기사항으로 분류하고 있습니다. 이는 이전에 저희가 모든 금속 관련 삽입물(티타늄 포함)에 대한 안전성을 검증하지 않았기 때문으로, 임상시험에서도 이러한 환자들은 제외하여 진행했습니다.', status: 'done' },
+  { date: '2026-01-13', channel: '유선', hospital: '아주대학교병원', person: '선용', content: 'tDCS 환자 케이스 적절한지 문의', response: '환자 2명 중 한명은 항경련제(빔스크) 복용중으로 금기사항은 아니나 의료진 판단하에 적용하실 것을 안내드림\n1/14 방문 교육하기로함', status: 'done' },
+  { date: '2026-01-29', channel: '유선', hospital: '명지춘혜재활병원', person: '선용', content: 'tES lab 3D 뇌 모델링 시 울퉁불퉁하면 전극 위치 측정이 불가한가요?\n매뉴얼이랑 연구 논문 보내주세요.\n잉크 기기 한개 더 추가하고 싶습니다.\n인지 기능 저하에도 쓸 수 있나요?\nmprage 이미지 사용 가능한가요?', response: '통화 5회 이상\n문자 및 카톡 다수', status: 'done' },
+  { date: '2026-02-06', channel: '유선', hospital: '명지춘혜재활병원', person: '선용', content: 'tES lab 사용방법\n뇌졸중환자에서의 tDCS 의 상지 기능 효과에 대한 논문 요청', response: '카카오톡 및 유선 안내\n논문은 다음주 월요일까지 정리하여 전달하기로함', status: 'done' },
+  { date: '2026-02-09', channel: '유선', hospital: '명지춘혜재활병원', person: '선용', content: 'tDCS 연구 논문 서치 및 전달\ninnk 제품 소개용 홍보물 요청', response: '연구논문 락균님 컨펌파에 전달 완료\n제품 홍보물 상하님께 전달 받음', status: 'done' },
+  { date: '2026-03-16', channel: '유선', hospital: '중앙대학교병원', person: '원지', content: 'Electrode Placement Guide 상의 Nasion to Inion 거리가 너무 짧게 나옵니다. 오류 수정 방법 안내 부탁드립니다.', response: '환자 모든 MRI 상 Vertex 잘려있어 10-20system 좌표 제대로 지정되지 않을 것으로 보임.\nConventional P3, P4 위치 전달(이미지+논문) 완료.', status: 'done' },
+];
 
 function loadVocEntries() {
   const stored = localStorage.getItem(VOC_KEY);
-  return stored ? JSON.parse(stored) : [];
+  const entries = stored ? JSON.parse(stored) : [];
+  // One-time seed injection
+  if (!localStorage.getItem(VOC_SEEDED_KEY)) {
+    const seeded = VOC_SEED.map((v, i) => ({ ...v, id: Date.now() + i + 9000 }));
+    const merged = [...entries, ...seeded];
+    localStorage.setItem(VOC_KEY, JSON.stringify(merged));
+    localStorage.setItem(VOC_SEEDED_KEY, '1');
+    return merged;
+  }
+  return entries;
 }
 
 function saveVocEntries(items) {
