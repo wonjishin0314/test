@@ -319,6 +319,7 @@ header .subtitle { font-size: 11px; opacity: 0.85; margin-top: 2px; }
     <button class="btn btn-white badge-btn" id="req-btn" onclick="openRequestQueue()" title="교육 요청 대기함">📋<span class="req-badge" id="req-badge">0</span></button>
     <button class="btn btn-white" onclick="openTrashModal()" title="휴지통">🗑️</button>
     <button class="btn btn-white" onclick="openNotifSettings()" title="Teams 알림 설정">🔔</button>
+    <button class="btn btn-white" id="sync-btn" onclick="syncEventsFromGitHub()" title="Forms 동기화">🔄</button>
     <button class="btn btn-white" onclick="openTypeModal()" title="유형 관리">⚙️</button>
     <button class="btn btn-white" onclick="openAddModal()">+ 추가</button>
   </div>
@@ -2125,8 +2126,10 @@ function getTesOpValue() {
 
 
 
-// ===== GitHub pending.json 동기화 =====
+// ===== GitHub 동기화 =====
 const GH_PENDING_URL = 'https://raw.githubusercontent.com/wonjishin0314/test/gh-pages/pending.json';
+const GH_EVENTS_URL  = 'https://raw.githubusercontent.com/wonjishin0314/test/gh-pages/events.json';
+const GH_SYNCED_KEY  = 'ca_gh_events_synced'; // 이미 추가된 formId 목록
 const PROCESSED_KEY = 'ca_processed_requests'; // 처리 완료된 receivedAt 목록
 
 function loadProcessed() { return JSON.parse(localStorage.getItem(PROCESSED_KEY) || '[]'); }
@@ -2158,6 +2161,58 @@ async function syncPendingFromGitHub() {
     }
   } catch(e) {
     console.warn('[Sync] 동기화 실패:', e.message);
+  }
+}
+
+// Forms → events.json → 캘린더 자동 추가
+async function syncEventsFromGitHub() {
+  const btn = document.getElementById('sync-btn');
+  if (btn) { btn.style.opacity = '0.4'; btn.style.pointerEvents = 'none'; }
+  try {
+    const res = await fetch(GH_EVENTS_URL + '?t=' + Date.now());
+    if (!res.ok) return;
+    const remote = await res.json();
+    if (!Array.isArray(remote) || remote.length === 0) return;
+
+    const synced = new Set(JSON.parse(localStorage.getItem(GH_SYNCED_KEY) || '[]'));
+    let added = 0;
+
+    remote.forEach((item, i) => {
+      if (!item.formId || synced.has(item.formId)) return;
+      events.push({
+        id: Date.now() + i,
+        title:    item.title    || '',
+        date:     item.date     || '',
+        time:     item.time     || '',
+        type:     item.type     || 'green',
+        person:   item.person   || '',
+        product:  item.product  || '',
+        hospital: item.hospital || '',
+        address:  item.address  || '',
+        notes:    item.notes    || '',
+        status:   'plan',
+        source:   'forms',
+        formId:   item.formId,
+        complaint: '', inquiry: '',
+      });
+      synced.add(item.formId);
+      added++;
+    });
+
+    if (added > 0) {
+      localStorage.setItem(GH_SYNCED_KEY, JSON.stringify([...synced]));
+      saveToStorage();
+      render();
+    }
+    if (btn) {
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = '';
+      const time = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+      btn.title = `Forms 동기화 완료 (${time}${added > 0 ? ', +' + added + '건 추가' : ''})`;
+    }
+  } catch (e) {
+    console.warn('[Forms Sync]', e.message);
+    if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = ''; btn.title = 'Forms 동기화 실패'; }
   }
 }
 
@@ -2654,7 +2709,11 @@ render();
 updateTypeFilterBanner();
 handleIncomingRequest();
 updateRequestBadge();
-window.addEventListener('load', () => setTimeout(checkUpcomingEvents, 1500));
+window.addEventListener('load', () => {
+  setTimeout(checkUpcomingEvents, 1500);
+  syncEventsFromGitHub();   // Forms → events.json 자동 동기화
+  syncPendingFromGitHub();  // 교육 요청 대기함 동기화
+});
 </script>
 
 <script>
